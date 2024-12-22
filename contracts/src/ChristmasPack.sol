@@ -128,7 +128,7 @@ contract ChristmasPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable {
             newPack.erc1155Assets.push(erc1155Assets[i]);
         }
 
-        _mint(msg.sender, packId);
+        _mint(this.owner(), packId);
         emit PackCreated(
             msg.sender,
             packId,
@@ -144,7 +144,7 @@ contract ChristmasPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable {
      * @dev Opens a pack and transfers all assets to the opener
      * @param packId The ID of the pack to open
      */
-    function openPack(uint256 packId) external nonReentrant {
+    function openPack(uint256 packId) external nonReentrant{
         if (ownerOf(packId) != msg.sender) {
             revert NotPackOwner();
         }
