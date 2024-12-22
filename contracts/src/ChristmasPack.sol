@@ -144,10 +144,10 @@ contract ChristmasPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable {
      * @dev Opens a pack and transfers all assets to the opener
      * @param packId The ID of the pack to open
      */
-    function openPack(uint256 packId) external nonReentrant{
-        if (ownerOf(packId) != msg.sender) {
-            revert NotPackOwner();
-        }
+    function openPack(uint256 packId, address receiver) external nonReentrant onlyOwner{
+        // if (ownerOf(packId) != msg.sender) {
+        //    revert NotPackOwner();
+        // }
         if (packs[packId].isOpened) {
             revert PackAlreadyOpened();
         }
@@ -158,7 +158,7 @@ contract ChristmasPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable {
         // Transfer ERC20 tokens
         for (uint i = 0; i < pack.erc20Assets.length; i++) {
             IERC20(pack.erc20Assets[i].token).safeTransfer(
-                msg.sender,
+                receiver,
                 pack.erc20Assets[i].amount
             );
         }
@@ -167,7 +167,7 @@ contract ChristmasPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable {
         for (uint i = 0; i < pack.erc721Assets.length; i++) {
             IERC721(pack.erc721Assets[i].token).transferFrom(
                 address(this),
-                msg.sender,
+                receiver,
                 pack.erc721Assets[i].tokenId
             );
         }
@@ -176,7 +176,7 @@ contract ChristmasPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable {
         for (uint i = 0; i < pack.erc1155Assets.length; i++) {
             IERC1155(pack.erc1155Assets[i].token).safeTransferFrom(
                 address(this),
-                msg.sender,
+                receiver,
                 pack.erc1155Assets[i].tokenId,
                 pack.erc1155Assets[i].amount,
                 ""
@@ -184,7 +184,7 @@ contract ChristmasPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable {
         }
 
         _burn(packId);
-        emit PackOpened(packId, msg.sender);
+        emit PackOpened(packId, receiver);
     }
 
     /**
