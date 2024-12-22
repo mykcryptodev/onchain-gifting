@@ -1,4 +1,5 @@
-import { postRouter } from "~/server/api/routers/post";
+import { tokenRouter } from "~/server/api/routers/token";
+import { walletRouter } from "~/server/api/routers/wallet";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -7,7 +8,8 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  post: postRouter,
+  token: tokenRouter,
+  wallet: walletRouter,
 });
 
 // export type definition of API

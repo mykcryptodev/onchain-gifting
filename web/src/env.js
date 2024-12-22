@@ -8,6 +8,7 @@ export const env = createEnv({
    */
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]),
+    ZAPPER_API_KEY: z.string(),
   },
 
   /**
@@ -18,6 +19,7 @@ export const env = createEnv({
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
     NEXT_PUBLIC_THIRDWEB_CLIENT_ID: z.string(),
+    NEXT_PUBLIC_ONCHAIN_API_KEY: z.string(),
   },
 
   /**
@@ -27,6 +29,8 @@ export const env = createEnv({
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_THIRDWEB_CLIENT_ID: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
+    NEXT_PUBLIC_ONCHAIN_API_KEY: process.env.NEXT_PUBLIC_ONCHAIN_API_KEY,
+    ZAPPER_API_KEY: process.env.ZAPPER_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
