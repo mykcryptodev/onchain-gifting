@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { env } from "~/env";
+import { type ZapperNFTResponse, type ZapperPortfolioResponse } from "~/types/zapper";
 
 export const walletRouter = createTRPCRouter({
   getBalances: publicProcedure
@@ -108,12 +109,9 @@ export const walletRouter = createTRPCRouter({
       ]);
 
       const [portfolioData, nftData] = await Promise.all([
-        portfolioResponse.json(),
-        nftResponse.json()
+        portfolioResponse.json() as Promise<ZapperPortfolioResponse>,
+        nftResponse.json() as Promise<ZapperNFTResponse>
       ]);
-
-      console.log('Portfolio Response:', JSON.stringify(portfolioData, null, 2));
-      console.log('NFT Response:', JSON.stringify(nftData, null, 2));
 
       if (portfolioData.errors) {
         throw new Error(portfolioData.errors[0]?.message ?? "Failed to fetch portfolio data");

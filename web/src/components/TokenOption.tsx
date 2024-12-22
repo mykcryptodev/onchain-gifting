@@ -4,7 +4,6 @@ import { type ZapperTokenBalance } from "~/types/zapper";
 import Image from "next/image";
 
 export const TokenOption: FC<{ option: ZapperTokenBalance }> = ({ option }) => {
-  console.log({ option })
   const [image, setImage] = useState(option.token.baseToken.imgUrl);
 
   return (
@@ -27,7 +26,7 @@ export const TokenOption: FC<{ option: ZapperTokenBalance }> = ({ option }) => {
       </div>
       <div className="flex flex-col items-end">
         <span>
-          {option.token.balance.toLocaleString(undefined, {
+          {Number(option.token.balance).toLocaleString(undefined, {
             minimumFractionDigits: 0,
             maximumFractionDigits: 4,
           })}

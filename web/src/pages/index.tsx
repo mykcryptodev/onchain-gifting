@@ -6,7 +6,7 @@ import { CLIENT } from "~/constants";
 export default function Home() {
   const account = useActiveAccount();
   return (
-    <main className="flex min-h-screen flex-col items-center p-24 w-full">
+    <main className="flex min-h-screen flex-col items-center sm:p-20 p-4 w-full">
       <div className="mb-8">
         <ConnectButton client={CLIENT} />
       </div>
