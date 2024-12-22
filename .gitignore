@@ -1,28 +1,24 @@
 # Foundry
-contracts/cache/
-contracts/out/
-contracts/lib/
-node_modules/
-yarn.lock
-.DS_Store
+contracts/cache
+contracts/out
+contracts/lib
 
 # Node
-*/node_modules/*
+node_modules
 web/node_modules
 .next
+yarn.lock
 
-# Compiler files
-contracts/cache/
-contracts/out/
+# OS
+.DS_Store
 
 # Ignores development broadcast logs
-contracts/broadcast/
-contracts/broadcast/*/31337/
-contracts/broadcast/**/dry-run/
-contracts/lib/forge-std/*
+contracts/broadcast
+contracts/broadcast/*/31337
+contracts/broadcast/**/dry-run
 
 # Docs
-contracts/docs/
+contracts/docs
 
 # Dotenv file
 .env
