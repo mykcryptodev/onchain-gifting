@@ -85,7 +85,7 @@ contract ChristmasPackTest is Test {
         badToken.mint(alice, 1000 ether);
         
         // Get some NFTs
-        uint256 nftId = nft.mint(alice);
+        nft.mint(alice);
         
         // Get some ERC1155 tokens
         multiToken.mint(alice, 1, 100);

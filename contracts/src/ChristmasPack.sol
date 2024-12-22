@@ -6,10 +6,12 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/interfaces/IERC165.sol";
 
-contract ChristmasPack is ERC721, ReentrancyGuard, Ownable {
+contract ChristmasPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable {
     using SafeERC20 for IERC20;
 
     // Custom errors
@@ -60,8 +62,19 @@ contract ChristmasPack is ERC721, ReentrancyGuard, Ownable {
     );
     event PackOpened(uint256 indexed packId, address indexed opener);
 
-    constructor() ERC721("Christmas Pack", "XPACK") {
-        _transferOwnership(msg.sender);
+    constructor() ERC721("Christmas Pack", "XPACK") Ownable(msg.sender) {}
+
+    /**
+     * @dev See {IERC165-supportsInterface}.
+     */
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ERC721, ERC1155Holder)
+        returns (bool)
+    {
+        return ERC721.supportsInterface(interfaceId) || ERC1155Holder.supportsInterface(interfaceId);
     }
 
     /**

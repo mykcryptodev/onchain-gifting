@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-import {stdError} from "../src/StdError.sol";
-import {Test} from "../src/Test.sol";
+import "../src/StdError.sol";
+import "../src/Test.sol";
 
 contract StdErrorsTest is Test {
     ErrorsTest test;
@@ -11,61 +11,59 @@ contract StdErrorsTest is Test {
         test = new ErrorsTest();
     }
 
-    function test_RevertIf_AssertionError() public {
+    function test_ExpectAssertion() public {
         vm.expectRevert(stdError.assertionError);
         test.assertionError();
     }
 
-    function test_RevertIf_ArithmeticError() public {
+    function test_ExpectArithmetic() public {
         vm.expectRevert(stdError.arithmeticError);
         test.arithmeticError(10);
     }
 
-    function test_RevertIf_DivisionError() public {
+    function test_ExpectDiv() public {
         vm.expectRevert(stdError.divisionError);
         test.divError(0);
     }
 
-    function test_RevertIf_ModError() public {
+    function test_ExpectMod() public {
         vm.expectRevert(stdError.divisionError);
         test.modError(0);
     }
 
-    function test_RevertIf_EnumConversionError() public {
+    function test_ExpectEnum() public {
         vm.expectRevert(stdError.enumConversionError);
         test.enumConversion(1);
     }
 
-    function test_RevertIf_EncodeStgError() public {
+    function test_ExpectEncodeStg() public {
         vm.expectRevert(stdError.encodeStorageError);
         test.encodeStgError();
     }
 
-    function test_RevertIf_PopError() public {
+    function test_ExpectPop() public {
         vm.expectRevert(stdError.popError);
         test.pop();
     }
 
-    function test_RevertIf_IndexOOBError() public {
+    function test_ExpectOOB() public {
         vm.expectRevert(stdError.indexOOBError);
         test.indexOOBError(1);
     }
 
-    function test_RevertIf_MemOverflowError() public {
+    function test_ExpectMem() public {
         vm.expectRevert(stdError.memOverflowError);
         test.mem();
     }
 
-    function test_RevertIf_InternError() public {
+    function test_ExpectIntern() public {
         vm.expectRevert(stdError.zeroVarError);
         test.intern();
     }
 }
 
 contract ErrorsTest {
-    enum T {
-        T1
-    }
+    enum T {T1}
 
     uint256[] public someArr;
     bytes someBytes;

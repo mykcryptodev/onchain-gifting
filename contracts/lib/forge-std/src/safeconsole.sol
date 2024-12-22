@@ -11,7 +11,6 @@ library safeconsole {
     function _sendLogPayload(uint256 offset, uint256 size) private pure {
         function(uint256, uint256) internal view fnIn = _sendLogPayloadView;
         function(uint256, uint256) internal pure pureSendLogPayload;
-        /// @solidity memory-safe-assembly
         assembly {
             pureSendLogPayload := fnIn
         }
@@ -19,7 +18,6 @@ library safeconsole {
     }
 
     function _sendLogPayloadView(uint256 offset, uint256 size) private view {
-        /// @solidity memory-safe-assembly
         assembly {
             pop(staticcall(gas(), CONSOLE_ADDR, offset, size, 0x0, 0x0))
         }
@@ -28,7 +26,6 @@ library safeconsole {
     function _memcopy(uint256 fromOffset, uint256 toOffset, uint256 length) private pure {
         function(uint256, uint256, uint256) internal view fnIn = _memcopyView;
         function(uint256, uint256, uint256) internal pure pureMemcopy;
-        /// @solidity memory-safe-assembly
         assembly {
             pureMemcopy := fnIn
         }
@@ -36,7 +33,6 @@ library safeconsole {
     }
 
     function _memcopyView(uint256 fromOffset, uint256 toOffset, uint256 length) private view {
-        /// @solidity memory-safe-assembly
         assembly {
             pop(staticcall(gas(), 0x4, fromOffset, length, toOffset, length))
         }
@@ -48,18 +44,16 @@ library safeconsole {
             bytes32 m0;
             bytes32 m1;
             bytes32 m2;
-            /// @solidity memory-safe-assembly
             assembly {
                 m0 := mload(sub(offset, 0x60))
                 m1 := mload(sub(offset, 0x40))
                 m2 := mload(sub(offset, 0x20))
-                // Selector of `log(bytes)`.
-                mstore(sub(offset, 0x60), 0x0be77f56)
+                // Selector of `logBytes(bytes)`.
+                mstore(sub(offset, 0x60), 0xe17bf956)
                 mstore(sub(offset, 0x40), 0x20)
                 mstore(sub(offset, 0x20), length)
             }
             _sendLogPayload(offset - 0x44, length + 0x44);
-            /// @solidity memory-safe-assembly
             assembly {
                 mstore(sub(offset, 0x60), m0)
                 mstore(sub(offset, 0x40), m1)
@@ -71,23 +65,20 @@ library safeconsole {
             bytes32 m1;
             bytes32 m2;
             uint256 endOffset = offset + length;
-            /// @solidity memory-safe-assembly
             assembly {
                 m0 := mload(add(endOffset, 0x00))
                 m1 := mload(add(endOffset, 0x20))
                 m2 := mload(add(endOffset, 0x40))
             }
             _memcopy(offset, offset + 0x60, length);
-            /// @solidity memory-safe-assembly
             assembly {
-                // Selector of `log(bytes)`.
-                mstore(add(offset, 0x00), 0x0be77f56)
+                // Selector of `logBytes(bytes)`.
+                mstore(add(offset, 0x00), 0xe17bf956)
                 mstore(add(offset, 0x20), 0x20)
                 mstore(add(offset, 0x40), length)
             }
             _sendLogPayload(offset + 0x1c, length + 0x44);
             _memcopy(offset + 0x60, offset, length);
-            /// @solidity memory-safe-assembly
             assembly {
                 mstore(add(endOffset, 0x00), m0)
                 mstore(add(endOffset, 0x20), m1)
@@ -99,7 +90,6 @@ library safeconsole {
     function log(address p0) internal pure {
         bytes32 m0;
         bytes32 m1;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -108,7 +98,6 @@ library safeconsole {
             mstore(0x20, p0)
         }
         _sendLogPayload(0x1c, 0x24);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -118,7 +107,6 @@ library safeconsole {
     function log(bool p0) internal pure {
         bytes32 m0;
         bytes32 m1;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -127,7 +115,6 @@ library safeconsole {
             mstore(0x20, p0)
         }
         _sendLogPayload(0x1c, 0x24);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -137,7 +124,6 @@ library safeconsole {
     function log(uint256 p0) internal pure {
         bytes32 m0;
         bytes32 m1;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -146,7 +132,6 @@ library safeconsole {
             mstore(0x20, p0)
         }
         _sendLogPayload(0x1c, 0x24);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -158,7 +143,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -177,7 +161,6 @@ library safeconsole {
             writeString(0x40, p0)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -190,7 +173,6 @@ library safeconsole {
         bytes32 m0;
         bytes32 m1;
         bytes32 m2;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -201,7 +183,6 @@ library safeconsole {
             mstore(0x40, p1)
         }
         _sendLogPayload(0x1c, 0x44);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -213,7 +194,6 @@ library safeconsole {
         bytes32 m0;
         bytes32 m1;
         bytes32 m2;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -224,7 +204,6 @@ library safeconsole {
             mstore(0x40, p1)
         }
         _sendLogPayload(0x1c, 0x44);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -236,7 +215,6 @@ library safeconsole {
         bytes32 m0;
         bytes32 m1;
         bytes32 m2;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -247,7 +225,6 @@ library safeconsole {
             mstore(0x40, p1)
         }
         _sendLogPayload(0x1c, 0x44);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -261,7 +238,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -282,7 +258,6 @@ library safeconsole {
             writeString(0x60, p1)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -296,7 +271,6 @@ library safeconsole {
         bytes32 m0;
         bytes32 m1;
         bytes32 m2;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -307,7 +281,6 @@ library safeconsole {
             mstore(0x40, p1)
         }
         _sendLogPayload(0x1c, 0x44);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -319,7 +292,6 @@ library safeconsole {
         bytes32 m0;
         bytes32 m1;
         bytes32 m2;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -330,7 +302,6 @@ library safeconsole {
             mstore(0x40, p1)
         }
         _sendLogPayload(0x1c, 0x44);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -342,7 +313,6 @@ library safeconsole {
         bytes32 m0;
         bytes32 m1;
         bytes32 m2;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -353,7 +323,6 @@ library safeconsole {
             mstore(0x40, p1)
         }
         _sendLogPayload(0x1c, 0x44);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -367,7 +336,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -388,7 +356,6 @@ library safeconsole {
             writeString(0x60, p1)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -402,7 +369,6 @@ library safeconsole {
         bytes32 m0;
         bytes32 m1;
         bytes32 m2;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -413,7 +379,6 @@ library safeconsole {
             mstore(0x40, p1)
         }
         _sendLogPayload(0x1c, 0x44);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -425,7 +390,6 @@ library safeconsole {
         bytes32 m0;
         bytes32 m1;
         bytes32 m2;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -436,7 +400,6 @@ library safeconsole {
             mstore(0x40, p1)
         }
         _sendLogPayload(0x1c, 0x44);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -448,7 +411,6 @@ library safeconsole {
         bytes32 m0;
         bytes32 m1;
         bytes32 m2;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -459,7 +421,6 @@ library safeconsole {
             mstore(0x40, p1)
         }
         _sendLogPayload(0x1c, 0x44);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -473,7 +434,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -494,7 +454,6 @@ library safeconsole {
             writeString(0x60, p1)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -510,7 +469,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -531,7 +489,6 @@ library safeconsole {
             writeString(0x60, p0)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -547,7 +504,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -568,7 +524,6 @@ library safeconsole {
             writeString(0x60, p0)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -584,7 +539,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -605,7 +559,6 @@ library safeconsole {
             writeString(0x60, p0)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -623,7 +576,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -647,7 +599,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -664,7 +615,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -677,7 +627,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -691,7 +640,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -704,7 +652,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -718,7 +665,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -731,7 +677,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -747,7 +692,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -770,7 +714,6 @@ library safeconsole {
             writeString(0x80, p2)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -786,7 +729,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -799,7 +741,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -813,7 +754,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -826,7 +766,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -840,7 +779,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -853,7 +791,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -869,7 +806,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -892,7 +828,6 @@ library safeconsole {
             writeString(0x80, p2)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -908,7 +843,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -921,7 +855,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -935,7 +868,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -948,7 +880,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -962,7 +893,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -975,7 +905,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -991,7 +920,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -1014,7 +942,6 @@ library safeconsole {
             writeString(0x80, p2)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1032,7 +959,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -1055,7 +981,6 @@ library safeconsole {
             writeString(0x80, p1)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1073,7 +998,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -1096,7 +1020,6 @@ library safeconsole {
             writeString(0x80, p1)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1114,7 +1037,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -1137,7 +1059,6 @@ library safeconsole {
             writeString(0x80, p1)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1157,7 +1078,6 @@ library safeconsole {
         bytes32 m5;
         bytes32 m6;
         bytes32 m7;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -1183,7 +1103,6 @@ library safeconsole {
             writeString(0xc0, p2)
         }
         _sendLogPayload(0x1c, 0xe4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1201,7 +1120,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -1214,7 +1132,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1228,7 +1145,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -1241,7 +1157,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1255,7 +1170,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -1268,7 +1182,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1284,7 +1197,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -1307,7 +1219,6 @@ library safeconsole {
             writeString(0x80, p2)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1323,7 +1234,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -1336,7 +1246,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1350,7 +1259,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -1363,7 +1271,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1377,7 +1284,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -1390,7 +1296,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1406,7 +1311,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -1429,7 +1333,6 @@ library safeconsole {
             writeString(0x80, p2)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1445,7 +1348,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -1458,7 +1360,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1472,7 +1373,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -1485,7 +1385,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1499,7 +1398,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -1512,7 +1410,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1528,7 +1425,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -1551,7 +1447,6 @@ library safeconsole {
             writeString(0x80, p2)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1569,7 +1464,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -1592,7 +1486,6 @@ library safeconsole {
             writeString(0x80, p1)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1610,7 +1503,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -1633,7 +1525,6 @@ library safeconsole {
             writeString(0x80, p1)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1651,7 +1542,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -1674,7 +1564,6 @@ library safeconsole {
             writeString(0x80, p1)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1694,7 +1583,6 @@ library safeconsole {
         bytes32 m5;
         bytes32 m6;
         bytes32 m7;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -1720,7 +1608,6 @@ library safeconsole {
             writeString(0xc0, p2)
         }
         _sendLogPayload(0x1c, 0xe4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1738,7 +1625,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -1751,7 +1637,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1765,7 +1650,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -1778,7 +1662,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1792,7 +1675,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -1805,7 +1687,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1821,7 +1702,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -1844,7 +1724,6 @@ library safeconsole {
             writeString(0x80, p2)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1860,7 +1739,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -1873,7 +1751,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1887,7 +1764,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -1900,7 +1776,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1914,7 +1789,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -1927,7 +1801,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1943,7 +1816,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -1966,7 +1838,6 @@ library safeconsole {
             writeString(0x80, p2)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -1982,7 +1853,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -1995,7 +1865,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2009,7 +1878,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -2022,7 +1890,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2036,7 +1903,6 @@ library safeconsole {
         bytes32 m1;
         bytes32 m2;
         bytes32 m3;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -2049,7 +1915,6 @@ library safeconsole {
             mstore(0x60, p2)
         }
         _sendLogPayload(0x1c, 0x64);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2065,7 +1930,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2088,7 +1952,6 @@ library safeconsole {
             writeString(0x80, p2)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2106,7 +1969,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2129,7 +1991,6 @@ library safeconsole {
             writeString(0x80, p1)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2147,7 +2008,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2170,7 +2030,6 @@ library safeconsole {
             writeString(0x80, p1)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2188,7 +2047,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2211,7 +2069,6 @@ library safeconsole {
             writeString(0x80, p1)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2231,7 +2088,6 @@ library safeconsole {
         bytes32 m5;
         bytes32 m6;
         bytes32 m7;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2257,7 +2113,6 @@ library safeconsole {
             writeString(0xc0, p2)
         }
         _sendLogPayload(0x1c, 0xe4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2277,7 +2132,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2300,7 +2154,6 @@ library safeconsole {
             writeString(0x80, p0)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2318,7 +2171,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2341,7 +2193,6 @@ library safeconsole {
             writeString(0x80, p0)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2359,7 +2210,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2382,7 +2232,6 @@ library safeconsole {
             writeString(0x80, p0)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2402,7 +2251,6 @@ library safeconsole {
         bytes32 m5;
         bytes32 m6;
         bytes32 m7;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2428,7 +2276,6 @@ library safeconsole {
             writeString(0xc0, p2)
         }
         _sendLogPayload(0x1c, 0xe4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2448,7 +2295,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2471,7 +2317,6 @@ library safeconsole {
             writeString(0x80, p0)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2489,7 +2334,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2512,7 +2356,6 @@ library safeconsole {
             writeString(0x80, p0)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2530,7 +2373,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2553,7 +2395,6 @@ library safeconsole {
             writeString(0x80, p0)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2573,7 +2414,6 @@ library safeconsole {
         bytes32 m5;
         bytes32 m6;
         bytes32 m7;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2599,7 +2439,6 @@ library safeconsole {
             writeString(0xc0, p2)
         }
         _sendLogPayload(0x1c, 0xe4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2619,7 +2458,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2642,7 +2480,6 @@ library safeconsole {
             writeString(0x80, p0)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2660,7 +2497,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2683,7 +2519,6 @@ library safeconsole {
             writeString(0x80, p0)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2701,7 +2536,6 @@ library safeconsole {
         bytes32 m3;
         bytes32 m4;
         bytes32 m5;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2724,7 +2558,6 @@ library safeconsole {
             writeString(0x80, p0)
         }
         _sendLogPayload(0x1c, 0xa4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2744,7 +2577,6 @@ library safeconsole {
         bytes32 m5;
         bytes32 m6;
         bytes32 m7;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2770,7 +2602,6 @@ library safeconsole {
             writeString(0xc0, p2)
         }
         _sendLogPayload(0x1c, 0xe4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2792,7 +2623,6 @@ library safeconsole {
         bytes32 m5;
         bytes32 m6;
         bytes32 m7;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2818,7 +2648,6 @@ library safeconsole {
             writeString(0xc0, p1)
         }
         _sendLogPayload(0x1c, 0xe4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2840,7 +2669,6 @@ library safeconsole {
         bytes32 m5;
         bytes32 m6;
         bytes32 m7;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2866,7 +2694,6 @@ library safeconsole {
             writeString(0xc0, p1)
         }
         _sendLogPayload(0x1c, 0xe4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2888,7 +2715,6 @@ library safeconsole {
         bytes32 m5;
         bytes32 m6;
         bytes32 m7;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2914,7 +2740,6 @@ library safeconsole {
             writeString(0xc0, p1)
         }
         _sendLogPayload(0x1c, 0xe4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2938,7 +2763,6 @@ library safeconsole {
         bytes32 m7;
         bytes32 m8;
         bytes32 m9;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -2967,7 +2791,6 @@ library safeconsole {
             writeString(0x100, p2)
         }
         _sendLogPayload(0x1c, 0x124);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -2988,7 +2811,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3003,7 +2825,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3019,7 +2840,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3034,7 +2854,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3050,7 +2869,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3065,7 +2883,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3083,7 +2900,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -3108,7 +2924,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3126,7 +2941,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3141,7 +2955,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3157,7 +2970,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3172,7 +2984,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3188,7 +2999,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3203,7 +3013,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3221,7 +3030,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -3246,7 +3054,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3264,7 +3071,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3279,7 +3085,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3295,7 +3100,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3310,7 +3114,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3326,7 +3129,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3341,7 +3143,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3359,7 +3160,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -3384,7 +3184,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3404,7 +3203,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -3429,7 +3227,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3449,7 +3246,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -3474,7 +3270,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3494,7 +3289,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -3519,7 +3313,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3541,7 +3334,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -3569,7 +3361,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3589,7 +3380,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3604,7 +3394,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3620,7 +3409,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3635,7 +3423,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3651,7 +3438,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3666,7 +3452,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3684,7 +3469,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -3709,7 +3493,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3727,7 +3510,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3742,7 +3524,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3758,7 +3539,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3773,7 +3553,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3789,7 +3568,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3804,7 +3582,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3822,7 +3599,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -3847,7 +3623,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3865,7 +3640,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3880,7 +3654,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3896,7 +3669,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3911,7 +3683,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3927,7 +3698,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -3942,7 +3712,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -3960,7 +3729,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -3985,7 +3753,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4005,7 +3772,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -4030,7 +3796,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4050,7 +3815,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -4075,7 +3839,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4095,7 +3858,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -4120,7 +3882,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4142,7 +3903,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -4170,7 +3930,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4190,7 +3949,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -4205,7 +3963,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4221,7 +3978,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -4236,7 +3992,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4252,7 +4007,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -4267,7 +4021,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4285,7 +4038,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -4310,7 +4062,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4328,7 +4079,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -4343,7 +4093,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4359,7 +4108,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -4374,7 +4122,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4390,7 +4137,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -4405,7 +4151,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4423,7 +4168,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -4448,7 +4192,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4466,7 +4209,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -4481,7 +4223,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4497,7 +4238,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -4512,7 +4252,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4528,7 +4267,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -4543,7 +4281,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4561,7 +4298,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -4586,7 +4322,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4606,7 +4341,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -4631,7 +4365,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4651,7 +4384,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -4676,7 +4408,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4696,7 +4427,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -4721,7 +4451,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4743,7 +4472,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -4771,7 +4499,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4793,7 +4520,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -4818,7 +4544,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4838,7 +4563,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -4863,7 +4587,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4883,7 +4606,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -4908,7 +4630,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4930,7 +4651,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -4958,7 +4678,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -4980,7 +4699,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -5005,7 +4723,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5025,7 +4742,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -5050,7 +4766,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5070,7 +4785,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -5095,7 +4809,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5117,7 +4830,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -5145,7 +4857,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5167,7 +4878,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -5192,7 +4902,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5212,7 +4921,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -5237,7 +4945,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5257,7 +4964,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -5282,7 +4988,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5304,7 +5009,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -5332,7 +5036,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5356,7 +5059,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -5384,7 +5086,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5408,7 +5109,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -5436,7 +5136,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5460,7 +5159,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -5488,7 +5186,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5514,7 +5211,6 @@ library safeconsole {
         bytes32 m8;
         bytes32 m9;
         bytes32 m10;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -5545,7 +5241,6 @@ library safeconsole {
             writeString(0x120, p3)
         }
         _sendLogPayload(0x1c, 0x144);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5567,7 +5262,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -5582,7 +5276,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5598,7 +5291,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -5613,7 +5305,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5629,7 +5320,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -5644,7 +5334,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5662,7 +5351,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -5687,7 +5375,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5705,7 +5392,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -5720,7 +5406,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5736,7 +5421,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -5751,7 +5435,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5767,7 +5450,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -5782,7 +5464,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5800,7 +5481,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -5825,7 +5505,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5843,7 +5522,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -5858,7 +5536,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5874,7 +5551,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -5889,7 +5565,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5905,7 +5580,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -5920,7 +5594,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5938,7 +5611,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -5963,7 +5635,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -5983,7 +5654,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -6008,7 +5678,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6028,7 +5697,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -6053,7 +5721,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6073,7 +5740,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -6098,7 +5764,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6120,7 +5785,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -6148,7 +5812,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6168,7 +5831,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -6183,7 +5845,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6199,7 +5860,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -6214,7 +5874,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6230,7 +5889,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -6245,7 +5903,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6263,7 +5920,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -6288,7 +5944,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6306,7 +5961,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -6321,7 +5975,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6337,7 +5990,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -6352,7 +6004,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6368,7 +6019,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -6383,7 +6033,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6401,7 +6050,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -6426,7 +6074,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6444,7 +6091,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -6459,7 +6105,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6475,7 +6120,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -6490,7 +6134,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6506,7 +6149,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -6521,7 +6163,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6539,7 +6180,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -6564,7 +6204,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6584,7 +6223,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -6609,7 +6247,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6629,7 +6266,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -6654,7 +6290,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6674,7 +6309,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -6699,7 +6333,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6721,7 +6354,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -6749,7 +6381,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6769,7 +6400,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -6784,7 +6414,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6800,7 +6429,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -6815,7 +6443,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6831,7 +6458,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -6846,7 +6472,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6864,7 +6489,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -6889,7 +6513,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6907,7 +6530,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -6922,7 +6544,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6938,7 +6559,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -6953,7 +6573,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -6969,7 +6588,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -6984,7 +6602,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7002,7 +6619,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7027,7 +6643,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7045,7 +6660,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -7060,7 +6674,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7076,7 +6689,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -7091,7 +6703,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7107,7 +6718,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -7122,7 +6732,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7140,7 +6749,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7165,7 +6773,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7185,7 +6792,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7210,7 +6816,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7230,7 +6835,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7255,7 +6859,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7275,7 +6878,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7300,7 +6902,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7322,7 +6923,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7350,7 +6950,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7372,7 +6971,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7397,7 +6995,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7417,7 +7014,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7442,7 +7038,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7462,7 +7057,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7487,7 +7081,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7509,7 +7102,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7537,7 +7129,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7559,7 +7150,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7584,7 +7174,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7604,7 +7193,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7629,7 +7217,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7649,7 +7236,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7674,7 +7260,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7696,7 +7281,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7724,7 +7308,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7746,7 +7329,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7771,7 +7353,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7791,7 +7372,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7816,7 +7396,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7836,7 +7415,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7861,7 +7439,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7883,7 +7460,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7911,7 +7487,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7935,7 +7510,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -7963,7 +7537,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -7987,7 +7560,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -8015,7 +7587,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8039,7 +7610,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -8067,7 +7637,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8093,7 +7662,6 @@ library safeconsole {
         bytes32 m8;
         bytes32 m9;
         bytes32 m10;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -8124,7 +7692,6 @@ library safeconsole {
             writeString(0x120, p3)
         }
         _sendLogPayload(0x1c, 0x144);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8146,7 +7713,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -8161,7 +7727,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8177,7 +7742,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -8192,7 +7756,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8208,7 +7771,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -8223,7 +7785,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8241,7 +7802,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -8266,7 +7826,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8284,7 +7843,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -8299,7 +7857,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8315,7 +7872,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -8330,7 +7886,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8346,7 +7901,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -8361,7 +7915,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8379,7 +7932,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -8404,7 +7956,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8422,7 +7973,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -8437,7 +7987,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8453,7 +8002,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -8468,7 +8016,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8484,7 +8031,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -8499,7 +8045,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8517,7 +8062,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -8542,7 +8086,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8562,7 +8105,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -8587,7 +8129,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8607,7 +8148,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -8632,7 +8172,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8652,7 +8191,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -8677,7 +8215,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8699,7 +8236,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -8727,7 +8263,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8747,7 +8282,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -8762,7 +8296,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8778,7 +8311,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -8793,7 +8325,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8809,7 +8340,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -8824,7 +8354,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8842,7 +8371,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -8867,7 +8395,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8885,7 +8412,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -8900,7 +8426,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8916,7 +8441,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -8931,7 +8455,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8947,7 +8470,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -8962,7 +8484,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -8980,7 +8501,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -9005,7 +8525,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9023,7 +8542,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -9038,7 +8556,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9054,7 +8571,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -9069,7 +8585,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9085,7 +8600,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -9100,7 +8614,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9118,7 +8631,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -9143,7 +8655,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9163,7 +8674,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -9188,7 +8698,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9208,7 +8717,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -9233,7 +8741,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9253,7 +8760,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -9278,7 +8784,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9300,7 +8805,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -9328,7 +8832,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9348,7 +8851,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -9363,7 +8865,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9379,7 +8880,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -9394,7 +8894,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9410,7 +8909,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -9425,7 +8923,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9443,7 +8940,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -9468,7 +8964,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9486,7 +8981,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -9501,7 +8995,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9517,7 +9010,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -9532,7 +9024,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9548,7 +9039,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -9563,7 +9053,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9581,7 +9070,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -9606,7 +9094,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9624,7 +9111,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -9639,7 +9125,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9655,7 +9140,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -9670,7 +9154,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9686,7 +9169,6 @@ library safeconsole {
         bytes32 m2;
         bytes32 m3;
         bytes32 m4;
-        /// @solidity memory-safe-assembly
         assembly {
             m0 := mload(0x00)
             m1 := mload(0x20)
@@ -9701,7 +9183,6 @@ library safeconsole {
             mstore(0x80, p3)
         }
         _sendLogPayload(0x1c, 0x84);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9719,7 +9200,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -9744,7 +9224,6 @@ library safeconsole {
             writeString(0xa0, p3)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9764,7 +9243,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -9789,7 +9267,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9809,7 +9286,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -9834,7 +9310,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9854,7 +9329,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -9879,7 +9353,6 @@ library safeconsole {
             writeString(0xa0, p2)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9901,7 +9374,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -9929,7 +9401,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9951,7 +9422,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -9976,7 +9446,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -9996,7 +9465,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10021,7 +9489,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10041,7 +9508,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10066,7 +9532,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10088,7 +9553,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10116,7 +9580,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10138,7 +9601,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10163,7 +9625,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10183,7 +9644,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10208,7 +9668,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10228,7 +9687,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10253,7 +9711,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10275,7 +9732,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10303,7 +9759,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10325,7 +9780,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10350,7 +9804,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10370,7 +9823,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10395,7 +9847,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10415,7 +9866,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10440,7 +9890,6 @@ library safeconsole {
             writeString(0xa0, p1)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10462,7 +9911,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10490,7 +9938,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10514,7 +9961,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10542,7 +9988,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10566,7 +10011,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10594,7 +10038,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10618,7 +10061,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10646,7 +10088,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10672,7 +10113,6 @@ library safeconsole {
         bytes32 m8;
         bytes32 m9;
         bytes32 m10;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10703,7 +10143,6 @@ library safeconsole {
             writeString(0x120, p3)
         }
         _sendLogPayload(0x1c, 0x144);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10727,7 +10166,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10752,7 +10190,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10772,7 +10209,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10797,7 +10233,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10817,7 +10252,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10842,7 +10276,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10864,7 +10297,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10892,7 +10324,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10914,7 +10345,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10939,7 +10369,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -10959,7 +10388,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -10984,7 +10412,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11004,7 +10431,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11029,7 +10455,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11051,7 +10476,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11079,7 +10503,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11101,7 +10524,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11126,7 +10548,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11146,7 +10567,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11171,7 +10591,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11191,7 +10610,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11216,7 +10634,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11238,7 +10655,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11266,7 +10682,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11290,7 +10705,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11318,7 +10732,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11342,7 +10755,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11370,7 +10782,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11394,7 +10805,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11422,7 +10832,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11448,7 +10857,6 @@ library safeconsole {
         bytes32 m8;
         bytes32 m9;
         bytes32 m10;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11479,7 +10887,6 @@ library safeconsole {
             writeString(0x120, p3)
         }
         _sendLogPayload(0x1c, 0x144);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11503,7 +10910,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11528,7 +10934,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11548,7 +10953,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11573,7 +10977,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11593,7 +10996,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11618,7 +11020,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11640,7 +11041,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11668,7 +11068,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11690,7 +11089,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11715,7 +11113,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11735,7 +11132,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11760,7 +11156,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11780,7 +11175,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11805,7 +11199,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11827,7 +11220,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11855,7 +11247,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11877,7 +11268,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11902,7 +11292,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11922,7 +11311,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11947,7 +11335,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -11967,7 +11354,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -11992,7 +11378,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12014,7 +11399,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12042,7 +11426,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12066,7 +11449,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12094,7 +11476,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12118,7 +11499,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12146,7 +11526,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12170,7 +11549,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12198,7 +11576,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12224,7 +11601,6 @@ library safeconsole {
         bytes32 m8;
         bytes32 m9;
         bytes32 m10;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12255,7 +11631,6 @@ library safeconsole {
             writeString(0x120, p3)
         }
         _sendLogPayload(0x1c, 0x144);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12279,7 +11654,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12304,7 +11678,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12324,7 +11697,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12349,7 +11721,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12369,7 +11740,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12394,7 +11764,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12416,7 +11785,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12444,7 +11812,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12466,7 +11833,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12491,7 +11857,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12511,7 +11876,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12536,7 +11900,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12556,7 +11919,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12581,7 +11943,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12603,7 +11964,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12631,7 +11991,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12653,7 +12012,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12678,7 +12036,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12698,7 +12055,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12723,7 +12079,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12743,7 +12098,6 @@ library safeconsole {
         bytes32 m4;
         bytes32 m5;
         bytes32 m6;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12768,7 +12122,6 @@ library safeconsole {
             writeString(0xa0, p0)
         }
         _sendLogPayload(0x1c, 0xc4);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12790,7 +12143,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12818,7 +12170,6 @@ library safeconsole {
             writeString(0xe0, p3)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12842,7 +12193,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12870,7 +12220,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12894,7 +12243,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12922,7 +12270,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -12946,7 +12293,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -12974,7 +12320,6 @@ library safeconsole {
             writeString(0xe0, p2)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13000,7 +12345,6 @@ library safeconsole {
         bytes32 m8;
         bytes32 m9;
         bytes32 m10;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13031,7 +12375,6 @@ library safeconsole {
             writeString(0x120, p3)
         }
         _sendLogPayload(0x1c, 0x144);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13057,7 +12400,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13085,7 +12427,6 @@ library safeconsole {
             writeString(0xe0, p1)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13109,7 +12450,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13137,7 +12477,6 @@ library safeconsole {
             writeString(0xe0, p1)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13161,7 +12500,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13189,7 +12527,6 @@ library safeconsole {
             writeString(0xe0, p1)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13215,7 +12552,6 @@ library safeconsole {
         bytes32 m8;
         bytes32 m9;
         bytes32 m10;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13246,7 +12582,6 @@ library safeconsole {
             writeString(0x120, p3)
         }
         _sendLogPayload(0x1c, 0x144);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13272,7 +12607,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13300,7 +12634,6 @@ library safeconsole {
             writeString(0xe0, p1)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13324,7 +12657,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13352,7 +12684,6 @@ library safeconsole {
             writeString(0xe0, p1)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13376,7 +12707,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13404,7 +12734,6 @@ library safeconsole {
             writeString(0xe0, p1)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13430,7 +12759,6 @@ library safeconsole {
         bytes32 m8;
         bytes32 m9;
         bytes32 m10;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13461,7 +12789,6 @@ library safeconsole {
             writeString(0x120, p3)
         }
         _sendLogPayload(0x1c, 0x144);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13487,7 +12814,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13515,7 +12841,6 @@ library safeconsole {
             writeString(0xe0, p1)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13539,7 +12864,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13567,7 +12891,6 @@ library safeconsole {
             writeString(0xe0, p1)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13591,7 +12914,6 @@ library safeconsole {
         bytes32 m6;
         bytes32 m7;
         bytes32 m8;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13619,7 +12941,6 @@ library safeconsole {
             writeString(0xe0, p1)
         }
         _sendLogPayload(0x1c, 0x104);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13645,7 +12966,6 @@ library safeconsole {
         bytes32 m8;
         bytes32 m9;
         bytes32 m10;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13676,7 +12996,6 @@ library safeconsole {
             writeString(0x120, p3)
         }
         _sendLogPayload(0x1c, 0x144);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13704,7 +13023,6 @@ library safeconsole {
         bytes32 m8;
         bytes32 m9;
         bytes32 m10;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13735,7 +13053,6 @@ library safeconsole {
             writeString(0x120, p2)
         }
         _sendLogPayload(0x1c, 0x144);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13763,7 +13080,6 @@ library safeconsole {
         bytes32 m8;
         bytes32 m9;
         bytes32 m10;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13794,7 +13110,6 @@ library safeconsole {
             writeString(0x120, p2)
         }
         _sendLogPayload(0x1c, 0x144);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13822,7 +13137,6 @@ library safeconsole {
         bytes32 m8;
         bytes32 m9;
         bytes32 m10;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13853,7 +13167,6 @@ library safeconsole {
             writeString(0x120, p2)
         }
         _sendLogPayload(0x1c, 0x144);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
@@ -13883,7 +13196,6 @@ library safeconsole {
         bytes32 m10;
         bytes32 m11;
         bytes32 m12;
-        /// @solidity memory-safe-assembly
         assembly {
             function writeString(pos, w) {
                 let length := 0
@@ -13917,7 +13229,6 @@ library safeconsole {
             writeString(0x160, p3)
         }
         _sendLogPayload(0x1c, 0x184);
-        /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, m0)
             mstore(0x20, m1)
