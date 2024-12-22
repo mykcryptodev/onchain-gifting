@@ -128,7 +128,7 @@ contract ChristmasPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable {
             newPack.erc1155Assets.push(erc1155Assets[i]);
         }
 
-        _mint(this.owner(), packId);
+        _mint(msg.sender, packId);
         emit PackCreated(
             msg.sender,
             packId,
