@@ -75,7 +75,7 @@ contract GiftPackTest is Test {
         // Give tokens to alice
         token1.mint(alice, 1000);
         token2.mint(alice, 1000);
-        uint256 nftId = erc721.mint(alice);
+        erc721.mint(alice);
         erc1155.mint(alice, 1, 10);
 
         // Give ETH to alice

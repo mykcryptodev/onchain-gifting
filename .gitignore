@@ -21,4 +21,4 @@ contracts/broadcast/**/dry-run
 contracts/docs
 
 # Dotenv file
-.env
+.envcontracts/lib/
