@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { type FC } from "react";
 import { getContract } from "thirdweb";
 import { NFTMedia, NFTProvider } from "thirdweb/react";
 import { CHAIN, CLIENT, GIFT_PACK_ADDRESS } from "~/constants";

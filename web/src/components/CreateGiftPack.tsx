@@ -1,5 +1,5 @@
 import { useMemo, useEffect, useState, useCallback } from "react";
-import { Transaction, TransactionButton, TransactionStatusLabel, TransactionStatus, TransactionStatusAction, LifecycleStatus } from "@coinbase/onchainkit/transaction"
+import { Transaction, TransactionButton, TransactionStatusLabel, TransactionStatus, TransactionStatusAction, type LifecycleStatus } from "@coinbase/onchainkit/transaction"
 import { encode, getContract, keccak256, ZERO_ADDRESS } from "thirdweb";
 import { CHAIN, GIFT_PACK_ADDRESS, CLIENT } from "~/constants";
 import { createPack } from "~/thirdweb/8453/0x1b6e902360035ac523e27d8fe69140a271ab9e7c";
