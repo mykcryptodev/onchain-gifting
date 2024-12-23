@@ -1,7 +1,7 @@
 import { useMemo, type FC } from "react";
 import { useGiftItems } from "~/contexts/GiftItemsContext";
 import { type ZapperNFT } from "~/types/zapper";
-import { ImageWithFallback } from "./utils/ImageWithFallback";
+import { ImageWithFallback } from "../utils/ImageWithFallback";
 
 interface NftOptionProps {
   nft: ZapperNFT;
@@ -42,7 +42,7 @@ export const NftOption: FC<NftOptionProps> = ({ nft }) => {
         
         {assetIsSelected ? (
           <button 
-            className="text-xs text-gray-500"
+            className="mt-1 px-3 py-1 text-xs font-medium text-red-600 border border-red-600 rounded-md hover:bg-red-50 w-full text-center"
             onClick={() => {
               removeERC721(
                 nft.collection.address,
@@ -50,20 +50,20 @@ export const NftOption: FC<NftOptionProps> = ({ nft }) => {
               );
             }}
           >
-            Remove from Pack
+            Remove
           </button>
         ) : (
           <button 
-            className="text-xs text-gray-500"
-          onClick={() => {
-            addERC721(
-              nft.collection.address,
-              nft.tokenId,
-              nft.estimatedValue?.valueUsd,
-            );
-          }}
-        >
-            Add to Pack
+            className="mt-1 px-3 py-1 text-xs font-medium text-blue-600 border border-blue-600 rounded-md hover:bg-blue-50 w-full text-center"
+            onClick={() => {
+              addERC721(
+                nft.collection.address,
+                nft.tokenId,
+                nft.estimatedValue?.valueUsd,
+              );
+            }}
+          >
+            Add
           </button>
         )}
       </div>

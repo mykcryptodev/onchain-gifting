@@ -1,8 +1,8 @@
 import { api } from "~/utils/api";
-import { TokenOption } from "./TokenOption";
+import { TokenOption } from "./Option/Token";
 import { type FC, useState } from "react";
 import { type WalletBalancesProps } from "~/types/zapper";
-import { NftOption } from "./NftOption";
+import { NftOption } from "./Option/Nft";
 
 export const WalletBalances: FC<WalletBalancesProps> = ({ address }) => {
   const [isTokenOpen, setIsTokenOpen] = useState(false);

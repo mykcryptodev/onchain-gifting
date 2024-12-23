@@ -16,6 +16,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           chain={WAGMI_CHAIN}
         >
           <Component {...pageProps} />
+          <div id="portal" />
         </OnchainKitProvider>
       </ThirdwebProvider>
     </GiftItemsProvider>

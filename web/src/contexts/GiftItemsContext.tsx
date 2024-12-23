@@ -1,7 +1,15 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 
 export type GiftItem = {
-  erc20: { token: string; amount: string; valueUsd?: number }[];
+  erc20: { 
+    token: string; 
+    decimals: number;
+    amount: string; 
+    valueUsd?: number;
+    symbol: string;
+    name: string;
+    imageUrl: string;
+  }[];
   erc721: { token: string; tokenId: string; valueUsd?: number }[];
   erc1155: { token: string; tokenId: string; amount: string; valueUsd?: number }[];
   ethAmount: string;
@@ -11,7 +19,7 @@ export type GiftItem = {
 type GiftItemsContextType = {
   selectedAssets: GiftItem;
   setSelectedAssets: (assets: GiftItem) => void;
-  addERC20: (token: string, amount: string, valueUsd?: number) => void;
+  addERC20: (token: string, amount: string, valueUsd?: number, symbol?: string, name?: string, imageUrl?: string, decimals?: number) => void;
   addERC721: (token: string, tokenId: string, valueUsd?: number) => void;
   addERC1155: (token: string, tokenId: string, amount: string, valueUsd?: number) => void;
   setEthAmount: (amount: string, valueUsd?: number) => void;
@@ -35,10 +43,26 @@ const initialState: GiftItem = {
 export function GiftItemsProvider({ children }: { children: ReactNode }) {
   const [selectedAssets, setSelectedAssets] = useState<GiftItem>(initialState);
 
-  const addERC20 = (token: string, amount: string, valueUsd?: number) => {
+  const addERC20 = (
+    token: string, 
+    amount: string, 
+    valueUsd?: number, 
+    symbol?: string, 
+    name?: string, 
+    imageUrl?: string,
+    decimals?: number
+  ) => {
     setSelectedAssets(prev => ({
       ...prev,
-      erc20: [...prev.erc20, { token, amount, valueUsd }]
+      erc20: [...prev.erc20, { 
+        token, 
+        amount, 
+        valueUsd,
+        symbol: symbol ?? "",
+        name: name ?? "",
+        imageUrl: imageUrl ?? "",
+        decimals: decimals ?? 18,
+      }]
     }));
   };
 
