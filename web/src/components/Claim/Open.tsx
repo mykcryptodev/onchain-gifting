@@ -31,8 +31,9 @@ export const Open: FC<Props> = ({ password }) => {
   }, [password, address]);
 
   const handleOpenPack = async () => {
+    console.log({password, address});
     const result = await open({
-      secret: password,
+      password,
       recipient: address!,
     });
     console.log({result});
