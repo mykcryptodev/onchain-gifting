@@ -9,7 +9,7 @@ export function Password() {
 
   useEffect(() => {
     updatePassword(debouncedPassword);
-  }, [debouncedPassword]);
+  }, [debouncedPassword, updatePassword]);
 
   return (
     <textarea 

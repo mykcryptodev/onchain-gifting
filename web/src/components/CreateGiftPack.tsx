@@ -83,7 +83,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
         tokenId: BigInt(tokenId),
         amount: BigInt(amount),
       })),
-      hash: hash ?? keccak256(`0x0`) as Hex,
+      hash: hash ?? keccak256(`0x0`),
     });
 
     const value = ethAmount !== "0" ? BigInt(ethAmount) : BigInt(0);
@@ -109,7 +109,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
           amountWei: BigInt(amount),
         });
     });
-  }, [erc20s]);
+  }, [erc20s, erc20sWithSufficientAllowance]);
 
   const erc721ApprovalTransactions = useMemo(() => {
     return erc721s.map(({ token, tokenId }) => {

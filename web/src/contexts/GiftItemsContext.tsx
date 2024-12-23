@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { ZERO_ADDRESS } from "thirdweb";
-import { isAddressEqual, Hex, encodeAbiParameters, keccak256 as viemKeccak256 } from "viem";
+import { isAddressEqual, type Hex, encodeAbiParameters, keccak256 as viemKeccak256 } from "viem";
 
 export type GiftItem = {
   erc20: { 

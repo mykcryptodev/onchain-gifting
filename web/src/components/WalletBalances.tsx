@@ -7,7 +7,7 @@ import { NftOption } from "./Option/Nft";
 export const WalletBalances: FC<WalletBalancesProps> = ({ address }) => {
   const [isTokenOpen, setIsTokenOpen] = useState(false);
   const [isNftOpen, setIsNftOpen] = useState(false);
-  const { data, isLoading } = api.wallet.getBalances.useQuery({ address }, {
+  const { data } = api.wallet.getBalances.useQuery({ address }, {
     enabled: !!address,
     refetchOnMount: false,
     refetchOnWindowFocus: false,

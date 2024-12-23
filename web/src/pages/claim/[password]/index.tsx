@@ -1,8 +1,7 @@
-import { IdentityCard } from "@coinbase/onchainkit/identity";
+import { Avatar, Name } from "@coinbase/onchainkit/identity";
 import { useEffect } from "react";
 import { useState } from "react";
 import { getContract } from "thirdweb";
-import { ClaimContents } from "~/components/Claim/Contents";
 import { CLIENT, GIFT_PACK_ADDRESS } from "~/constants";
 import { CHAIN } from "~/constants";
 import { getPackByHash } from "~/thirdweb/8453/0x445bf2d8c89472a2289360e4e15be0c1951ab536";
@@ -11,11 +10,17 @@ import { useRouter } from "next/router";
 import { Open } from "~/components/Claim/Open";
 import { keccak256 as viemKeccak256, encodeAbiParameters } from "viem";
 import { WatchClaim } from "~/components/Claim/WatchClaim";
+import {
+  AccountProvider,
+  AccountAvatar,
+  AccountName,
+} from "thirdweb/react";
 
 export default function Claim() {
   const router = useRouter();
   const { password } = router.query as { password: string };
   const [pack, setPack] = useState<Pack | null>(null);
+  const [claimingIsFinished, setClaimingIsFinished] = useState(false);
 
   useEffect(() => {
     const fetchPack = async () => {
@@ -39,18 +44,50 @@ export default function Claim() {
   }, [pack, password]);
 
   return (
-    <>
-      <h1 className="text-2xl font-bold mb-4 text-center">Claim a Gift Pack</h1>
+    <div className="flex flex-col gap-2 justify-center items-center">
+      <h1 className="text-2xl font-bold mb-4 text-center">Claim Your Gift Pack</h1>
       <p>You have been sent an onchain gift pack from</p>
-      <IdentityCard address={pack?.creator} />
-      <ClaimContents />
-      The password is {password}
-      <Open password={password} />
+      {pack?.creator && (
+        <div className="flex items-center gap-2 border border-gray-200 px-4 py-2 rounded-md">
+          <AccountProvider
+            client={CLIENT}
+            address={pack.creator}
+          >
+            <AccountAvatar 
+              width={40}
+              height={40}
+              className="rounded-full"
+              fallbackComponent={
+                <Avatar
+                  address={pack.creator}
+                  chain={CHAIN}
+                  className="rounded-full h-10 w-10"
+                />
+              }
+            />
+            <AccountName
+              fallbackComponent={
+                <Name
+                  address={pack.creator}
+                  chain={CHAIN}
+                />
+              }
+            />
+          </AccountProvider>
+        </div>
+      )}
+      <p>They said...</p>
+      <p className="text-lg font-bold">{password}</p>
+      <Open 
+        password={password} 
+        key={claimingIsFinished ? "finished" : "not-finished"}
+      />
       {!pack?.opened && (
         <WatchClaim onClaim={(id) => {
           console.log({gotClaim:true, id});
+          setClaimingIsFinished(true);
         }} />
       )}
-    </>
+    </div>
   );
 }
