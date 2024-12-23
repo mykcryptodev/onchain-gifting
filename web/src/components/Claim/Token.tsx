@@ -3,7 +3,7 @@ import { useReadContract } from "thirdweb/react";
 import { CHAIN, CLIENT, UNKNOWN_TOKEN_IMAGE } from "~/constants";
 import { api } from "~/utils/api";
 import { getContract, toTokens, ZERO_ADDRESS } from "thirdweb";
-import { Token, TokenRow } from '@coinbase/onchainkit/token';
+import { type Token, TokenRow } from '@coinbase/onchainkit/token';
 import { isAddressEqual } from "viem";
 type Props = {
   tokenAddress: string;

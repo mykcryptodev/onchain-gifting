@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { Pack } from "~/types/giftpack";
+import { type Pack } from "~/types/giftpack";
 import { ClaimedNft } from "./Nft";
 import { ClaimedToken } from "./Token";
 import { ZERO_ADDRESS } from "thirdweb";
