@@ -22,7 +22,7 @@ export function OnchainProviders(props: {
           config={{
             appearance: {
               name: APP_NAME,
-              logo: "/images/logo.png",
+              logo: "https://onchaingift.com/images/logo.png",
               mode: 'auto',
               theme: 'light',
             },
