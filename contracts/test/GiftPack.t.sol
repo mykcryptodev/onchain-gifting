@@ -328,7 +328,7 @@ contract GiftPackTest is Test {
         string memory password = "secret123";
         bytes32 hash = keccak256(abi.encode(password));
         
-        uint256 tokenId = pack.createPack(
+        pack.createPack(
             new GiftPack.ERC20Token[](0),
             new GiftPack.ERC721Token[](0),
             new GiftPack.ERC1155Token[](0),

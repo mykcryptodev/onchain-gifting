@@ -235,6 +235,10 @@ contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable, AccessCont
         return packs[tokenId];
     }
 
+    function isHashUsed(bytes32 hash) external view returns (bool) {
+        return hashUsed[hash];
+    }
+
     function isPackOpened(uint256 tokenId) external view returns (bool) {
         return packs[tokenId].opened;
     }

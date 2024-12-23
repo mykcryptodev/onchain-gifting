@@ -26,7 +26,7 @@ export default function Home() {
               const form = e.target as HTMLFormElement;
               const password = new FormData(form).get("password") as string;
               if (password) {
-                router.push(`/claim/${password}`);
+                void router.push(`/claim/${password}`);
               }
             }}
           >
