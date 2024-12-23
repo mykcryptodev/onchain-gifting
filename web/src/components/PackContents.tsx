@@ -4,7 +4,7 @@ import { Nft } from "./Selected/Nft";
 export const PackContents = () => {
   const { selectedAssets } = useGiftItems();
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-wrap justify-center items-center gap-2 max-w-xs">
       {selectedAssets.erc20.map((erc20) => (
         <div key={erc20.token}>
           <span>{erc20.token}</span>

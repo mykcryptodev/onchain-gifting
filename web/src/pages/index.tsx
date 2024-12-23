@@ -1,6 +1,7 @@
 import { ConnectButton, useActiveAccount } from "thirdweb/react";
 import { CreateGiftPack } from "~/components/CreateGiftPack";
 import { PackContents } from "~/components/PackContents";
+import { PackValue } from "~/components/PackValue";
 import { WalletBalances } from "~/components/WalletBalances";
 import { CLIENT } from "~/constants";
 import { useGiftItems } from "~/contexts/GiftItemsContext";
@@ -15,6 +16,7 @@ export default function Home() {
         <ConnectButton client={CLIENT} />
       </div>
       <h1 className="text-2xl font-bold mb-4 text-center">Create a Gift Pack</h1>
+      <PackValue />
       <PackContents />
       <CreateGiftPack 
         erc20s={selectedAssets.erc20} 

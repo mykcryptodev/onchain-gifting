@@ -1,23 +1,25 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 
 export type GiftItem = {
-  erc20: { token: string; amount: string }[];
-  erc721: { token: string; tokenId: string }[];
-  erc1155: { token: string; tokenId: string; amount: string }[];
+  erc20: { token: string; amount: string; valueUsd?: number }[];
+  erc721: { token: string; tokenId: string; valueUsd?: number }[];
+  erc1155: { token: string; tokenId: string; amount: string; valueUsd?: number }[];
   ethAmount: string;
+  ethValueUsd?: number;
 };
 
 type GiftItemsContextType = {
   selectedAssets: GiftItem;
   setSelectedAssets: (assets: GiftItem) => void;
-  addERC20: (token: string, amount: string) => void;
-  addERC721: (token: string, tokenId: string) => void;
-  addERC1155: (token: string, tokenId: string, amount: string) => void;
-  setEthAmount: (amount: string) => void;
+  addERC20: (token: string, amount: string, valueUsd?: number) => void;
+  addERC721: (token: string, tokenId: string, valueUsd?: number) => void;
+  addERC1155: (token: string, tokenId: string, amount: string, valueUsd?: number) => void;
+  setEthAmount: (amount: string, valueUsd?: number) => void;
   removeERC20: (token: string) => void;
   removeERC721: (token: string, tokenId: string) => void;
   removeERC1155: (token: string, tokenId: string) => void;
   clearAll: () => void;
+  getTotalValueUsd: () => number;
 };
 
 const GiftItemsContext = createContext<GiftItemsContextType | undefined>(undefined);
@@ -26,37 +28,39 @@ const initialState: GiftItem = {
   erc20: [],
   erc721: [],
   erc1155: [],
-  ethAmount: "0"
+  ethAmount: "0",
+  ethValueUsd: 0
 };
 
 export function GiftItemsProvider({ children }: { children: ReactNode }) {
   const [selectedAssets, setSelectedAssets] = useState<GiftItem>(initialState);
 
-  const addERC20 = (token: string, amount: string) => {
+  const addERC20 = (token: string, amount: string, valueUsd?: number) => {
     setSelectedAssets(prev => ({
       ...prev,
-      erc20: [...prev.erc20, { token, amount }]
+      erc20: [...prev.erc20, { token, amount, valueUsd }]
     }));
   };
 
-  const addERC721 = (token: string, tokenId: string) => {
+  const addERC721 = (token: string, tokenId: string, valueUsd?: number) => {
     setSelectedAssets(prev => ({
       ...prev,
-      erc721: [...prev.erc721, { token, tokenId }]
+      erc721: [...prev.erc721, { token, tokenId, valueUsd }]
     }));
   };
 
-  const addERC1155 = (token: string, tokenId: string, amount: string) => {
+  const addERC1155 = (token: string, tokenId: string, amount: string, valueUsd?: number) => {
     setSelectedAssets(prev => ({
       ...prev,
-      erc1155: [...prev.erc1155, { token, tokenId, amount }]
+      erc1155: [...prev.erc1155, { token, tokenId, amount, valueUsd }]
     }));
   };
 
-  const setEthAmount = (amount: string) => {
+  const setEthAmount = (amount: string, valueUsd?: number) => {
     setSelectedAssets(prev => ({
       ...prev,
-      ethAmount: amount
+      ethAmount: amount,
+      ethValueUsd: valueUsd
     }));
   };
 
@@ -81,6 +85,15 @@ export function GiftItemsProvider({ children }: { children: ReactNode }) {
     }));
   };
 
+  const getTotalValueUsd = () => {
+    const erc20Value = selectedAssets.erc20.reduce((sum, token) => sum + (token.valueUsd ?? 0), 0);
+    const erc721Value = selectedAssets.erc721.reduce((sum, token) => sum + (token.valueUsd ?? 0), 0);
+    const erc1155Value = selectedAssets.erc1155.reduce((sum, token) => sum + (token.valueUsd ?? 0), 0);
+    const ethValue = selectedAssets.ethValueUsd ?? 0;
+
+    return erc20Value + erc721Value + erc1155Value + ethValue;
+  };
+
   const clearAll = () => {
     setSelectedAssets(initialState);
   };
@@ -97,7 +110,8 @@ export function GiftItemsProvider({ children }: { children: ReactNode }) {
         removeERC20,
         removeERC721,
         removeERC1155,
-        clearAll
+        clearAll,
+        getTotalValueUsd
       }}
     >
       {children}

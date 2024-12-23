@@ -59,6 +59,7 @@ export const NftOption: FC<NftOptionProps> = ({ nft }) => {
             addERC721(
               nft.collection.address,
               nft.tokenId,
+              nft.estimatedValue?.valueUsd,
             );
           }}
         >
