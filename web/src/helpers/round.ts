@@ -19,5 +19,14 @@ export const round = (value: number) => {
   if (value >= 1000) {
     return `${(value / 1000).toFixed(1)}K`;
   }
+  // if the value is very small, show leading decimals until we get a non-zero number
+  if (value < 0.01) {
+    const str = value.toString();
+    const pattern = /^0\.0*[1-9]/;
+    const match = pattern.exec(str);
+    if (match) {
+      return value.toFixed(match[0].length - 2);
+    }
+  }
   return value.toFixed(2);
 };

@@ -53,7 +53,7 @@ export const TokenOption: FC<TokenOptionProps> = ({ option }) => {
           </div>
           {isSelected ? (
             <button
-              onClick={() => removeERC20(option.address)}
+              onClick={() => removeERC20(option.token.baseToken.address)}
               className="px-3 py-1 text-sm font-medium text-red-600 border border-red-600 rounded-md hover:bg-red-50"
             >
               Remove
