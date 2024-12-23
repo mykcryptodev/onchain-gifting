@@ -39,6 +39,7 @@ export default function Claim() {
       hash,
     });
     setPack(fetchedPack);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [password]);
 
   useEffect(() => {
