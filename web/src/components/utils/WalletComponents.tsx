@@ -14,11 +14,11 @@ import {
   WalletDropdownDisconnect,
   WalletDropdownFundLink,
 } from '@coinbase/onchainkit/wallet';
-import { createWallet, createWalletAdapter } from "thirdweb/wallets";
-import { ConnectButton, useActiveAccount, useActiveWalletChain, useSetActiveWallet } from "thirdweb/react";
-import { useConnect, useAccount, useDisconnect, useWalletClient, useSwitchChain } from "wagmi";
+import { createWalletAdapter } from "thirdweb/wallets";
+import { ConnectButton, useSetActiveWallet } from "thirdweb/react";
+import { useAccount, useDisconnect, useWalletClient, useSwitchChain } from "wagmi";
 import { viemAdapter } from "thirdweb/adapters/viem";
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { defineChain } from 'thirdweb/chains';
 import { CLIENT } from '~/constants';
 
