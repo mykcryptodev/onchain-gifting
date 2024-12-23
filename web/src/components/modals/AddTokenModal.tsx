@@ -21,7 +21,7 @@ export const AddTokenModal: FC<AddTokenModalProps> = ({ token, onClose }) => {
     const amountUnits = toUnits(amount.toString(), token.token.baseToken.decimals).toString();
     
     addERC20(
-      token.address, 
+      token.token.baseToken.address, 
       amountUnits, 
       valueUsd,
       token.token.baseToken.symbol,
@@ -33,6 +33,17 @@ export const AddTokenModal: FC<AddTokenModalProps> = ({ token, onClose }) => {
   };
 
   const maxAmount = token.token.balance;
+
+  const setPercentage = (percentage: number) => {
+    setAmount((parseFloat(maxAmount) * percentage).toString());
+  };
+
+  const percentageButtons = [
+    { value: 0.1, label: "10%" },
+    { value: 0.25, label: "25%" },
+    { value: 0.5, label: "50%" },
+    { value: 1, label: "100%" }
+  ];
 
   return createPortal(
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -53,13 +64,18 @@ export const AddTokenModal: FC<AddTokenModalProps> = ({ token, onClose }) => {
                 className="block w-full p-4 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 placeholder="0.0"
               />
-              <button
-                type="button"
-                onClick={() => setAmount(maxAmount)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-blue-600 hover:text-blue-700"
-              >
-                MAX
-              </button>
+            </div>
+            <div className="flex gap-2 mt-2">
+              {percentageButtons.map(({ value, label }) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => setPercentage(value)}
+                  className="flex-1 px-2 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-50"
+                >
+                  {label}
+                </button>
+              ))}
             </div>
             <p className="mt-1 text-sm text-gray-500">
               Balance: {maxAmount}
@@ -86,4 +102,4 @@ export const AddTokenModal: FC<AddTokenModalProps> = ({ token, onClose }) => {
     </div>,
     document.getElementById("portal")!
   );
-}; 
+};

@@ -18,6 +18,7 @@ export const walletRouter = createTRPCRouter({
                 balanceUSD
                 balance
                 baseToken {
+                  address
                   symbol
                   network
                   imgUrl

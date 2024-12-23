@@ -12,7 +12,9 @@ interface TokenOptionProps {
 export const TokenOption: FC<TokenOptionProps> = ({ option }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { selectedAssets, removeERC20 } = useGiftItems();
-  const isSelected = selectedAssets.erc20.some(token => token.token === option.address);
+  const isSelected = selectedAssets.erc20.some(token => 
+    token.token === option.token.baseToken.address
+  );
 
   return (
     <>
@@ -68,6 +70,7 @@ export const TokenOption: FC<TokenOptionProps> = ({ option }) => {
       </div>
       {isModalOpen && (
         <AddTokenModal
+          key={option.token.baseToken.address}
           token={option}
           onClose={() => setIsModalOpen(false)}
         />

@@ -26,6 +26,7 @@ export interface ZapperTokenBalance {
     balanceUSD: number;
     balance: string;
     baseToken: {
+      address: string;
       symbol: string;
       network: string;
       imgUrl: string;
