@@ -38,11 +38,23 @@ export const AddTokenModal: FC<AddTokenModalProps> = ({ token, onClose }) => {
     setAmount((parseFloat(maxAmount) * percentage).toString());
   };
 
+  const setUsdAmount = (usdValue: number) => {
+    const tokenAmount = usdValue / token.token.balanceUSD * parseFloat(token.token.balance);
+    setAmount(tokenAmount.toString());
+  };
+
   const percentageButtons = [
     { value: 0.1, label: "10%" },
     { value: 0.25, label: "25%" },
     { value: 0.5, label: "50%" },
     { value: 1, label: "100%" }
+  ];
+
+  const usdButtons = [
+    { value: 1, label: "$1" },
+    { value: 5, label: "$5" },
+    { value: 10, label: "$10" },
+    { value: 100, label: "$100" }
   ];
 
   return createPortal(
@@ -71,6 +83,18 @@ export const AddTokenModal: FC<AddTokenModalProps> = ({ token, onClose }) => {
                   key={label}
                   type="button"
                   onClick={() => setPercentage(value)}
+                  className="flex-1 px-2 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-50"
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-2 mt-2">
+              {usdButtons.map(({ value, label }) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => setUsdAmount(value)}
                   className="flex-1 px-2 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-50"
                 >
                   {label}
