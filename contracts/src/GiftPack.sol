@@ -18,7 +18,7 @@ contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable {
     error InvalidTokenAddress();
     error InvalidRecipient();
     error PackAlreadyOpened();
-    error NotPackOwner();
+    error NotPackOwnerOrContractOwner();
     error TransferFailed();
 
     struct ERC20Token {
@@ -125,7 +125,8 @@ contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable {
 
     function openPack(uint256 tokenId, address recipient) external nonReentrant {
         if (recipient == address(0)) revert InvalidRecipient();
-        if (ownerOf(tokenId) != msg.sender) revert NotPackOwner();
+        // owners of packs can open them for themselves or the admin can open on behalf of them
+        if (ownerOf(tokenId) != msg.sender && msg.sender != owner()) revert NotPackOwnerOrContractOwner();
         
         Pack storage pack = packs[tokenId];
         if (pack.opened) revert PackAlreadyOpened();
