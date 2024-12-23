@@ -1,12 +1,12 @@
 import { createThirdwebClient, defineChain } from "thirdweb";
 import { env } from "~/env";
-import { baseSepolia } from "wagmi/chains";
+import { base } from "wagmi/chains";
 
 export const APP_NAME = "Onchain Gifting";
 
-export const CHRISTMAS_PACK_ADDRESS = "0xFceDd91B776BeFF7abD417CDeaf83cbcC8cBffA2";
+export const CHRISTMAS_PACK_ADDRESS = "0xff65ca8f257261a0c0c5a82c422582c8d58bbcf2";// "0xA9Dc74673fb099885e830eb534b89e65Dd5a68f6";
 
-export const WAGMI_CHAIN = baseSepolia;
+export const WAGMI_CHAIN = base;
 export const CHAIN = defineChain(WAGMI_CHAIN);
 
 export const CLIENT = createThirdwebClient({

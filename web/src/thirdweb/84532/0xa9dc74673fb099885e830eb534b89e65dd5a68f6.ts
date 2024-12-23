@@ -124,8 +124,8 @@ export function ownershipTransferredEvent(filters: OwnershipTransferredEventFilt
  * Represents the filters for the "PackCreated" event.
  */
 export type PackCreatedEventFilters = Partial<{
-  creator: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","name":"creator","type":"address"}>
-packId: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"uint256","name":"packId","type":"uint256"}>
+  tokenId: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}>
+creator: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","name":"creator","type":"address"}>
 }>;
 
 /**
@@ -141,8 +141,8 @@ packId: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"uint256","na
  * contract,
  * events: [
  *  packCreatedEvent({
+ *  tokenId: ...,
  *  creator: ...,
- *  packId: ...,
  * })
  * ],
  * });
@@ -150,7 +150,7 @@ packId: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"uint256","na
  */
 export function packCreatedEvent(filters: PackCreatedEventFilters = {}) {
   return prepareEvent({
-    signature: "event PackCreated(address indexed creator, uint256 indexed packId, uint256 erc20Count, uint256 erc721Count, uint256 erc1155Count)",
+    signature: "event PackCreated(uint256 indexed tokenId, address indexed creator, (address tokenAddress, uint256 amount)[] erc20Tokens, (address tokenAddress, uint256 tokenId)[] erc721Tokens, (address tokenAddress, uint256 tokenId, uint256 amount)[] erc1155Tokens, uint256 ethAmount)",
     filters,
   });
 };
@@ -160,7 +160,7 @@ export function packCreatedEvent(filters: PackCreatedEventFilters = {}) {
  * Represents the filters for the "PackOpened" event.
  */
 export type PackOpenedEventFilters = Partial<{
-  packId: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"uint256","name":"packId","type":"uint256"}>
+  tokenId: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}>
 opener: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","name":"opener","type":"address"}>
 }>;
 
@@ -177,7 +177,7 @@ opener: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","na
  * contract,
  * events: [
  *  packOpenedEvent({
- *  packId: ...,
+ *  tokenId: ...,
  *  opener: ...,
  * })
  * ],
@@ -186,7 +186,7 @@ opener: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","na
  */
 export function packOpenedEvent(filters: PackOpenedEventFilters = {}) {
   return prepareEvent({
-    signature: "event PackOpened(uint256 indexed packId, address indexed opener)",
+    signature: "event PackOpened(uint256 indexed tokenId, address indexed opener)",
     filters,
   });
 };
@@ -331,37 +331,37 @@ export async function getApproved(
 
 
 /**
- * Represents the parameters for the "getPackContents" function.
+ * Represents the parameters for the "getPack" function.
  */
-export type GetPackContentsParams = {
-  packId: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"packId","type":"uint256"}>
+export type GetPackParams = {
+  tokenId: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"tokenId","type":"uint256"}>
 };
 
 /**
- * Calls the "getPackContents" function on the contract.
- * @param options - The options for the getPackContents function.
+ * Calls the "getPack" function on the contract.
+ * @param options - The options for the getPack function.
  * @returns The parsed result of the function call.
  * @example
  * ```
- * import { getPackContents } from "TODO";
+ * import { getPack } from "TODO";
  *
- * const result = await getPackContents({
- *  packId: ...,
+ * const result = await getPack({
+ *  tokenId: ...,
  * });
  *
  * ```
  */
-export async function getPackContents(
-  options: BaseTransactionOptions<GetPackContentsParams>
+export async function getPack(
+  options: BaseTransactionOptions<GetPackParams>
 ) {
   return readContract({
     contract: options.contract,
     method: [
-  "0x8d4c446a",
+  "0x895ec54c",
   [
     {
       "internalType": "uint256",
-      "name": "packId",
+      "name": "tokenId",
       "type": "uint256"
     }
   ],
@@ -370,66 +370,364 @@ export async function getPackContents(
       "components": [
         {
           "internalType": "address",
-          "name": "token",
+          "name": "creator",
           "type": "address"
         },
         {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "internalType": "struct ChristmasPack.ERC20Asset[]",
-      "name": "erc20Assets",
-      "type": "tuple[]"
-    },
-    {
-      "components": [
+          "components": [
+            {
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct GiftPack.ERC20Token[]",
+          "name": "erc20Tokens",
+          "type": "tuple[]"
+        },
         {
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
+          "components": [
+            {
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "tokenId",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct GiftPack.ERC721Token[]",
+          "name": "erc721Tokens",
+          "type": "tuple[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "tokenId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct GiftPack.ERC1155Token[]",
+          "name": "erc1155Tokens",
+          "type": "tuple[]"
+        },
+        {
+          "internalType": "bool",
+          "name": "opened",
+          "type": "bool"
         },
         {
           "internalType": "uint256",
-          "name": "tokenId",
+          "name": "ethAmount",
           "type": "uint256"
         }
       ],
-      "internalType": "struct ChristmasPack.ERC721Asset[]",
-      "name": "erc721Assets",
-      "type": "tuple[]"
-    },
-    {
-      "components": [
-        {
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "internalType": "struct ChristmasPack.ERC1155Asset[]",
-      "name": "erc1155Assets",
-      "type": "tuple[]"
-    },
-    {
-      "internalType": "bool",
-      "name": "isOpened",
-      "type": "bool"
+      "internalType": "struct GiftPack.Pack",
+      "name": "",
+      "type": "tuple"
     }
   ]
 ],
-    params: [options.packId]
+    params: [options.tokenId]
+  });
+};
+
+
+/**
+ * Represents the parameters for the "getPackCreator" function.
+ */
+export type GetPackCreatorParams = {
+  tokenId: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"tokenId","type":"uint256"}>
+};
+
+/**
+ * Calls the "getPackCreator" function on the contract.
+ * @param options - The options for the getPackCreator function.
+ * @returns The parsed result of the function call.
+ * @example
+ * ```
+ * import { getPackCreator } from "TODO";
+ *
+ * const result = await getPackCreator({
+ *  tokenId: ...,
+ * });
+ *
+ * ```
+ */
+export async function getPackCreator(
+  options: BaseTransactionOptions<GetPackCreatorParams>
+) {
+  return readContract({
+    contract: options.contract,
+    method: [
+  "0x63aae736",
+  [
+    {
+      "internalType": "uint256",
+      "name": "tokenId",
+      "type": "uint256"
+    }
+  ],
+  [
+    {
+      "internalType": "address",
+      "name": "",
+      "type": "address"
+    }
+  ]
+],
+    params: [options.tokenId]
+  });
+};
+
+
+/**
+ * Represents the parameters for the "getPackERC1155Tokens" function.
+ */
+export type GetPackERC1155TokensParams = {
+  tokenId: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"tokenId","type":"uint256"}>
+};
+
+/**
+ * Calls the "getPackERC1155Tokens" function on the contract.
+ * @param options - The options for the getPackERC1155Tokens function.
+ * @returns The parsed result of the function call.
+ * @example
+ * ```
+ * import { getPackERC1155Tokens } from "TODO";
+ *
+ * const result = await getPackERC1155Tokens({
+ *  tokenId: ...,
+ * });
+ *
+ * ```
+ */
+export async function getPackERC1155Tokens(
+  options: BaseTransactionOptions<GetPackERC1155TokensParams>
+) {
+  return readContract({
+    contract: options.contract,
+    method: [
+  "0x12124722",
+  [
+    {
+      "internalType": "uint256",
+      "name": "tokenId",
+      "type": "uint256"
+    }
+  ],
+  [
+    {
+      "components": [
+        {
+          "internalType": "address",
+          "name": "tokenAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "internalType": "struct GiftPack.ERC1155Token[]",
+      "name": "",
+      "type": "tuple[]"
+    }
+  ]
+],
+    params: [options.tokenId]
+  });
+};
+
+
+/**
+ * Represents the parameters for the "getPackERC20Tokens" function.
+ */
+export type GetPackERC20TokensParams = {
+  tokenId: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"tokenId","type":"uint256"}>
+};
+
+/**
+ * Calls the "getPackERC20Tokens" function on the contract.
+ * @param options - The options for the getPackERC20Tokens function.
+ * @returns The parsed result of the function call.
+ * @example
+ * ```
+ * import { getPackERC20Tokens } from "TODO";
+ *
+ * const result = await getPackERC20Tokens({
+ *  tokenId: ...,
+ * });
+ *
+ * ```
+ */
+export async function getPackERC20Tokens(
+  options: BaseTransactionOptions<GetPackERC20TokensParams>
+) {
+  return readContract({
+    contract: options.contract,
+    method: [
+  "0x0cb4dd99",
+  [
+    {
+      "internalType": "uint256",
+      "name": "tokenId",
+      "type": "uint256"
+    }
+  ],
+  [
+    {
+      "components": [
+        {
+          "internalType": "address",
+          "name": "tokenAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "internalType": "struct GiftPack.ERC20Token[]",
+      "name": "",
+      "type": "tuple[]"
+    }
+  ]
+],
+    params: [options.tokenId]
+  });
+};
+
+
+/**
+ * Represents the parameters for the "getPackERC721Tokens" function.
+ */
+export type GetPackERC721TokensParams = {
+  tokenId: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"tokenId","type":"uint256"}>
+};
+
+/**
+ * Calls the "getPackERC721Tokens" function on the contract.
+ * @param options - The options for the getPackERC721Tokens function.
+ * @returns The parsed result of the function call.
+ * @example
+ * ```
+ * import { getPackERC721Tokens } from "TODO";
+ *
+ * const result = await getPackERC721Tokens({
+ *  tokenId: ...,
+ * });
+ *
+ * ```
+ */
+export async function getPackERC721Tokens(
+  options: BaseTransactionOptions<GetPackERC721TokensParams>
+) {
+  return readContract({
+    contract: options.contract,
+    method: [
+  "0x23c35ca2",
+  [
+    {
+      "internalType": "uint256",
+      "name": "tokenId",
+      "type": "uint256"
+    }
+  ],
+  [
+    {
+      "components": [
+        {
+          "internalType": "address",
+          "name": "tokenAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "internalType": "struct GiftPack.ERC721Token[]",
+      "name": "",
+      "type": "tuple[]"
+    }
+  ]
+],
+    params: [options.tokenId]
+  });
+};
+
+
+/**
+ * Represents the parameters for the "getPackEthAmount" function.
+ */
+export type GetPackEthAmountParams = {
+  tokenId: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"tokenId","type":"uint256"}>
+};
+
+/**
+ * Calls the "getPackEthAmount" function on the contract.
+ * @param options - The options for the getPackEthAmount function.
+ * @returns The parsed result of the function call.
+ * @example
+ * ```
+ * import { getPackEthAmount } from "TODO";
+ *
+ * const result = await getPackEthAmount({
+ *  tokenId: ...,
+ * });
+ *
+ * ```
+ */
+export async function getPackEthAmount(
+  options: BaseTransactionOptions<GetPackEthAmountParams>
+) {
+  return readContract({
+    contract: options.contract,
+    method: [
+  "0xe9d4bf05",
+  [
+    {
+      "internalType": "uint256",
+      "name": "tokenId",
+      "type": "uint256"
+    }
+  ],
+  [
+    {
+      "internalType": "uint256",
+      "name": "",
+      "type": "uint256"
+    }
+  ]
+],
+    params: [options.tokenId]
   });
 };
 
@@ -485,6 +783,54 @@ export async function isApprovedForAll(
   ]
 ],
     params: [options.owner, options.operator]
+  });
+};
+
+
+/**
+ * Represents the parameters for the "isPackOpened" function.
+ */
+export type IsPackOpenedParams = {
+  tokenId: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"tokenId","type":"uint256"}>
+};
+
+/**
+ * Calls the "isPackOpened" function on the contract.
+ * @param options - The options for the isPackOpened function.
+ * @returns The parsed result of the function call.
+ * @example
+ * ```
+ * import { isPackOpened } from "TODO";
+ *
+ * const result = await isPackOpened({
+ *  tokenId: ...,
+ * });
+ *
+ * ```
+ */
+export async function isPackOpened(
+  options: BaseTransactionOptions<IsPackOpenedParams>
+) {
+  return readContract({
+    contract: options.contract,
+    method: [
+  "0x8a06e559",
+  [
+    {
+      "internalType": "uint256",
+      "name": "tokenId",
+      "type": "uint256"
+    }
+  ],
+  [
+    {
+      "internalType": "bool",
+      "name": "",
+      "type": "bool"
+    }
+  ]
+],
+    params: [options.tokenId]
   });
 };
 
@@ -644,9 +990,19 @@ export async function packs(
   ],
   [
     {
+      "internalType": "address",
+      "name": "creator",
+      "type": "address"
+    },
+    {
       "internalType": "bool",
-      "name": "isOpened",
+      "name": "opened",
       "type": "bool"
+    },
+    {
+      "internalType": "uint256",
+      "name": "ethAmount",
+      "type": "uint256"
     }
   ]
 ],
@@ -846,9 +1202,9 @@ export function approve(
  * Represents the parameters for the "createPack" function.
  */
 export type CreatePackParams = {
-  erc20Assets: AbiParameterToPrimitiveType<{"components":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"internalType":"struct ChristmasPack.ERC20Asset[]","name":"erc20Assets","type":"tuple[]"}>
-erc721Assets: AbiParameterToPrimitiveType<{"components":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"internalType":"struct ChristmasPack.ERC721Asset[]","name":"erc721Assets","type":"tuple[]"}>
-erc1155Assets: AbiParameterToPrimitiveType<{"components":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"internalType":"struct ChristmasPack.ERC1155Asset[]","name":"erc1155Assets","type":"tuple[]"}>
+  erc20Tokens: AbiParameterToPrimitiveType<{"components":[{"internalType":"address","name":"tokenAddress","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"internalType":"struct GiftPack.ERC20Token[]","name":"erc20Tokens","type":"tuple[]"}>
+erc721Tokens: AbiParameterToPrimitiveType<{"components":[{"internalType":"address","name":"tokenAddress","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"internalType":"struct GiftPack.ERC721Token[]","name":"erc721Tokens","type":"tuple[]"}>
+erc1155Tokens: AbiParameterToPrimitiveType<{"components":[{"internalType":"address","name":"tokenAddress","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"internalType":"struct GiftPack.ERC1155Token[]","name":"erc1155Tokens","type":"tuple[]"}>
 };
 
 /**
@@ -860,9 +1216,9 @@ erc1155Assets: AbiParameterToPrimitiveType<{"components":[{"internalType":"addre
  * import { createPack } from "TODO";
  *
  * const transaction = createPack({
- *  erc20Assets: ...,
- *  erc721Assets: ...,
- *  erc1155Assets: ...,
+ *  erc20Tokens: ...,
+ *  erc721Tokens: ...,
+ *  erc1155Tokens: ...,
  * });
  *
  * // Send the transaction
@@ -882,7 +1238,7 @@ export function createPack(
       "components": [
         {
           "internalType": "address",
-          "name": "token",
+          "name": "tokenAddress",
           "type": "address"
         },
         {
@@ -891,15 +1247,15 @@ export function createPack(
           "type": "uint256"
         }
       ],
-      "internalType": "struct ChristmasPack.ERC20Asset[]",
-      "name": "erc20Assets",
+      "internalType": "struct GiftPack.ERC20Token[]",
+      "name": "erc20Tokens",
       "type": "tuple[]"
     },
     {
       "components": [
         {
           "internalType": "address",
-          "name": "token",
+          "name": "tokenAddress",
           "type": "address"
         },
         {
@@ -908,15 +1264,15 @@ export function createPack(
           "type": "uint256"
         }
       ],
-      "internalType": "struct ChristmasPack.ERC721Asset[]",
-      "name": "erc721Assets",
+      "internalType": "struct GiftPack.ERC721Token[]",
+      "name": "erc721Tokens",
       "type": "tuple[]"
     },
     {
       "components": [
         {
           "internalType": "address",
-          "name": "token",
+          "name": "tokenAddress",
           "type": "address"
         },
         {
@@ -930,20 +1286,20 @@ export function createPack(
           "type": "uint256"
         }
       ],
-      "internalType": "struct ChristmasPack.ERC1155Asset[]",
-      "name": "erc1155Assets",
+      "internalType": "struct GiftPack.ERC1155Token[]",
+      "name": "erc1155Tokens",
       "type": "tuple[]"
     }
   ],
   [
     {
       "internalType": "uint256",
-      "name": "packId",
+      "name": "",
       "type": "uint256"
     }
   ]
 ],
-    params: [options.erc20Assets, options.erc721Assets, options.erc1155Assets]
+    params: [options.erc20Tokens, options.erc721Tokens, options.erc1155Tokens]
   });
 };
 
@@ -1110,7 +1466,8 @@ export function onERC1155Received(
  * Represents the parameters for the "openPack" function.
  */
 export type OpenPackParams = {
-  packId: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"packId","type":"uint256"}>
+  tokenId: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"tokenId","type":"uint256"}>
+recipient: AbiParameterToPrimitiveType<{"internalType":"address","name":"recipient","type":"address"}>
 };
 
 /**
@@ -1122,7 +1479,8 @@ export type OpenPackParams = {
  * import { openPack } from "TODO";
  *
  * const transaction = openPack({
- *  packId: ...,
+ *  tokenId: ...,
+ *  recipient: ...,
  * });
  *
  * // Send the transaction
@@ -1136,17 +1494,22 @@ export function openPack(
   return prepareContractCall({
     contract: options.contract,
     method: [
-  "0x50a88c7e",
+  "0x80f2540b",
   [
     {
       "internalType": "uint256",
-      "name": "packId",
+      "name": "tokenId",
       "type": "uint256"
+    },
+    {
+      "internalType": "address",
+      "name": "recipient",
+      "type": "address"
     }
   ],
   []
 ],
-    params: [options.packId]
+    params: [options.tokenId, options.recipient]
   });
 };
 

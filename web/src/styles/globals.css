@@ -29,3 +29,7 @@ body {
     margin: 0;
   }
 }
+
+.hide-media button[type="button"] {
+  display: none !important;
+}

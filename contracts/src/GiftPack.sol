@@ -181,6 +181,14 @@ contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable {
         return packs[tokenId].ethAmount;
     }
 
+    function getPackCreator(uint256 tokenId) external view returns (address) {
+        return packs[tokenId].creator;
+    }
+
+    function getPack(uint256 tokenId) external view returns (Pack memory) {
+        return packs[tokenId];
+    }
+
     function isPackOpened(uint256 tokenId) external view returns (bool) {
         return packs[tokenId].opened;
     }
