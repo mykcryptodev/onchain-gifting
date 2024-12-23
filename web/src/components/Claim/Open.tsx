@@ -27,19 +27,22 @@ export const Open: FC<Props> = ({ id }) => {
       data: await encode(tx),
     }]
   }, [id, address]);
+  
   return (
-    <Transaction
-      calls={calls}
-      isSponsored
-    >
-      <TransactionButton 
-        text="Open Gift Pack"
-        className="px-4 py-2 text-lg font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
-      />
-      <TransactionStatus>
-        <TransactionStatusLabel />
-        <TransactionStatusAction />
-      </TransactionStatus>
-    </Transaction>
+    <div className="flex justify-center mx-auto max-w-sm">
+      <Transaction
+        calls={calls}
+        isSponsored
+      >
+        <TransactionButton 
+          text="Open Gift Pack"
+          className="px-4 py-2 text-lg font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 w-fit mx-auto disabled:bg-gray-400"
+        />
+        <TransactionStatus>
+          <TransactionStatusLabel />
+          <TransactionStatusAction />
+        </TransactionStatus>
+      </Transaction>
+    </div>
   );
 };

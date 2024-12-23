@@ -3,11 +3,11 @@ import { Transaction, TransactionButton, TransactionStatusLabel, TransactionStat
 import { encode, getContract, ZERO_ADDRESS } from "thirdweb";
 import { CHAIN, GIFT_PACK_ADDRESS, CLIENT } from "~/constants";
 import { createPack } from "~/thirdweb/84532/0xa9dc74673fb099885e830eb534b89e65dd5a68f6";
-import { approve as approveERC20 } from "thirdweb/extensions/erc20";
+import { allowance, approve as approveERC20 } from "thirdweb/extensions/erc20";
 import { approve as approveERC721 } from "thirdweb/extensions/erc721";
 import { setApprovalForAll as setApprovalForAllERC1155 } from "thirdweb/extensions/erc1155";
 import { isAddressEqual } from "viem";
-
+import { useAccount } from "wagmi";
 type Props = {
   erc20s: { token: string; amount: string }[];
   erc721s: { token: string; tokenId: string }[];
@@ -22,6 +22,45 @@ type Call = {
 };
 
 export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount }: Props) {
+  const { address } = useAccount();
+  const [erc20sWithSufficientAllowance, setErc20sWithSufficientAllowance] = useState<string[]>([]);
+
+  useEffect(() => {
+    const checkAllowances = async () => {
+      if (!address) return [];
+      const erc20sWithSufficientAllowance = await Promise.all(erc20s.map(async ({ token, amount }) => {
+        if (isAddressEqual(token, ZERO_ADDRESS)) return {
+          token,
+          sufficient: true,
+        };
+        const approvals = await allowance({
+          contract: getContract({
+            chain: CHAIN,
+            address: token,
+            client: CLIENT,
+          }),
+          owner: address,
+          spender: GIFT_PACK_ADDRESS as `0x${string}`,
+        });
+        if (approvals >= BigInt(amount)) {
+          return {
+            token,
+            sufficient: true,
+          };
+        } else {
+          return {
+            token,
+            sufficient: false,
+          };
+        }
+      }));
+      setErc20sWithSufficientAllowance(erc20sWithSufficientAllowance
+        .filter(erc20 => erc20.sufficient).map(erc20 => erc20.token)
+      );
+    }
+    void checkAllowances();
+  }, [erc20s, address]);
+
   const createPackTransaction = useMemo(async () => {
     const tx = createPack({
       contract: getContract({
@@ -54,7 +93,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount }: Props) 
 
   const erc20ApprovalTransactions = useMemo(() => {
     return erc20s
-      .filter(({ token }) => !isAddressEqual(token, ZERO_ADDRESS))
+      .filter(({ token }) => !isAddressEqual(token, ZERO_ADDRESS) && !erc20sWithSufficientAllowance.includes(token))
       .map(({ token, amount }) => {
         return approveERC20({
           contract: getContract({
