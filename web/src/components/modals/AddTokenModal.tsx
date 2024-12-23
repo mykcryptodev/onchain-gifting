@@ -81,6 +81,9 @@ export const AddTokenModal: FC<AddTokenModalProps> = ({ token, onClose }) => {
                 placeholder="0.0"
               />
             </div>
+            <p className="mt-1 text-sm text-gray-500">
+              Balance: {maxAmount}
+            </p>
             <div className="flex gap-2 mt-2">
               {percentageButtons.map(({ value, label }) => (
                 <button
@@ -105,9 +108,6 @@ export const AddTokenModal: FC<AddTokenModalProps> = ({ token, onClose }) => {
                 </button>
               ))}
             </div>
-            <p className="mt-1 text-sm text-gray-500">
-              Balance: {maxAmount}
-            </p>
           </div>
           <div className="flex gap-2 justify-end">
             <button
