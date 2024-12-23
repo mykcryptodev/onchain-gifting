@@ -1,10 +1,8 @@
-import Image from "next/image";
 import { useAccount } from "wagmi";
 import { CreateGiftPack } from "~/components/CreateGiftPack";
 import { PackContents } from "~/components/PackContents";
 import { PackValue } from "~/components/PackValue";
 import { WalletBalances } from "~/components/WalletBalances";
-import { WalletComponents } from "~/components/utils/WalletComponents";
 import { useGiftItems } from "~/contexts/GiftItemsContext";
 
 export default function Home() {

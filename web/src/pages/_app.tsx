@@ -5,12 +5,16 @@ import '@coinbase/onchainkit/styles.css';
 import "~/styles/globals.css";
 import { GiftItemsProvider } from "~/contexts/GiftItemsContext";
 import { OnchainProviders } from "~/providers/OnchainProviders";
+import { Layout } from "~/components/utils/Layout";
+
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <GiftItemsProvider>
       <ThirdwebProvider>
         <OnchainProviders>
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
           <div id="portal" />
         </OnchainProviders>
       </ThirdwebProvider>
