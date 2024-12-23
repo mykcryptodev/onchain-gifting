@@ -1,5 +1,5 @@
-import { useMemo, useEffect, useState } from "react";
-import { Transaction, TransactionButton, TransactionStatusLabel, TransactionStatus, TransactionStatusAction } from "@coinbase/onchainkit/transaction"
+import { useMemo, useEffect, useState, useCallback } from "react";
+import { Transaction, TransactionButton, TransactionStatusLabel, TransactionStatus, TransactionStatusAction, LifecycleStatus } from "@coinbase/onchainkit/transaction"
 import { encode, getContract, keccak256, ZERO_ADDRESS } from "thirdweb";
 import { CHAIN, GIFT_PACK_ADDRESS, CLIENT } from "~/constants";
 import { createPack } from "~/thirdweb/8453/0x1b6e902360035ac523e27d8fe69140a271ab9e7c";
@@ -10,6 +10,7 @@ import { isAddressEqual, type Hex } from "viem";
 import { useAccount } from "wagmi";
 import { useGiftItems } from "~/contexts/GiftItemsContext";
 import { api } from "~/utils/api";
+import { toast } from "react-toastify";
 
 type Props = {
   erc20s: { token: string; amount: string }[];
@@ -28,12 +29,20 @@ type Call = {
 export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: Props) {
   const { address } = useAccount();
   const [erc20sWithSufficientAllowance, setErc20sWithSufficientAllowance] = useState<string[]>([]);
-  const { hash: giftHash } = useGiftItems();
+  const { hash: giftHash, password } = useGiftItems();
   const { data: isHashUsed } = api.engine.getIsHashUsed.useQuery({
     hash: giftHash ?? "",
   }, {
     enabled: !!giftHash,
   });
+  const [isCreated, setIsCreated] = useState(false);
+
+  const handleOnStatus = useCallback((status: LifecycleStatus) => { 
+    if (status.statusName === 'success') {
+      toast.success('Gift pack created!');
+      setIsCreated(true);
+    }
+  }, []); 
 
   useEffect(() => {
     const checkAllowances = async () => {
@@ -184,7 +193,8 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
       <Transaction
         calls={calls}
         isSponsored
-        >
+        onStatus={handleOnStatus}
+      >
         <TransactionButton 
           text="Create Gift Pack"
           disabled={!calls.length || !hash || isHashUsed}
@@ -195,6 +205,51 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
           <TransactionStatusAction />
         </TransactionStatus>
       </Transaction>
+      {isCreated && (
+        <div className="mt-4 flex flex-col items-center gap-2">
+          <p className="text-sm text-gray-600">Share this link with the recipient:</p>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              readOnly
+              value={`${window.location.origin}/claim/${encodeURIComponent(password ?? '')}`}
+              className="px-3 py-2 border border-gray-200 rounded-md w-64 text-sm"
+            />
+            <button
+              onClick={() => {
+                void navigator.clipboard.writeText(`${window.location.origin}/claim/${encodeURIComponent(password ?? '')}`);
+                toast.success('Copied to clipboard!');
+              }}
+              className="p-2 text-gray-600 hover:text-gray-800"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+            <button
+              onClick={() => {
+                if (navigator.share) {
+                  void navigator.share({
+                    title: 'Gift Pack',
+                    text: 'I sent you a gift pack!',
+                    url: `${window.location.origin}/claim/${encodeURIComponent(password ?? '')}`
+                  });
+                }
+              }}
+              className="p-2 text-gray-600 hover:text-gray-800"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
       {isHashUsed && (
         <p className="text-red-500 text-opacity-90 text-sm">
           Please use a different message.

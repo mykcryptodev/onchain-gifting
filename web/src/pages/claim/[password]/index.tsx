@@ -10,18 +10,24 @@ import { useRouter } from "next/router";
 import { Open } from "~/components/Claim/Open";
 import { keccak256 as viemKeccak256, encodeAbiParameters } from "viem";
 import { WatchClaim } from "~/components/Claim/WatchClaim";
+import Image from "next/image";
 import {
   AccountProvider,
   AccountAvatar,
   AccountName,
 } from "thirdweb/react";
 import { ClaimContents } from "~/components/Claim/Contents";
+import Confetti from "~/components/Claim/Confetti";
+import { UnwrappingAnimation } from "~/components/Claim/UnwrappingAnimation";
+import Link from "next/link";
 
 export default function Claim() {
   const router = useRouter();
   const { password } = router.query as { password: string };
   const [pack, setPack] = useState<Pack | null>(null);
   const [claimingIsFinished, setClaimingIsFinished] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [isClaiming, setIsClaiming] = useState(false);
 
   const fetchPack = useCallback(async () => {
     if (pack || !password) return;
@@ -54,8 +60,8 @@ export default function Claim() {
 
   return (
     <div className="flex flex-col gap-2 justify-center items-center">
-      <h1 className="text-2xl font-bold mb-4 text-center">Claim Your Gift Pack</h1>
-      <p>You have been sent an onchain gift pack from</p>
+      <h1 className="text-2xl font-bold text-center">Claim Your Gift Pack</h1>
+      <p className="text-center text-gray-600">You have been sent an onchain gift pack from</p>
       {pack?.creator && (
         <div className="flex items-center gap-2 border border-gray-200 px-4 py-2 rounded-md">
           <AccountProvider
@@ -63,17 +69,17 @@ export default function Claim() {
             address={pack.creator}
           >
             <AccountAvatar 
-              width={40}
-              height={40}
+              width={24}
+              height={24}
               className="rounded-full"
               loadingComponent={
-                <div className="h-10 w-10 rounded-full bg-gray-200 animate-pulse" />
+                <div className="h-6 w-6 rounded-full bg-gray-200 animate-pulse" />
               }
               fallbackComponent={
                 <Avatar
                   address={pack.creator}
                   chain={CHAIN}
-                  className="rounded-full h-10 w-10"
+                  className="rounded-full h-6 w-6"
                 />
               }
             />
@@ -91,7 +97,7 @@ export default function Claim() {
           </AccountProvider>
         </div>
       )}
-      <p>They said...</p>
+      <p className="text-center text-gray-600">they said...</p>
       <p className="text-lg font-bold">{password}</p>
       {pack?.opened ? (
         <ClaimContents pack={pack} />
@@ -100,13 +106,59 @@ export default function Claim() {
           <Open 
             password={password} 
             key={claimingIsFinished ? "finished" : "not-finished"}
+            onClaimStarted={() => setIsClaiming(true)}
           />
           <WatchClaim onClaim={(id) => {
             console.log({gotClaim:true, id});
             void fetchPack();
             setClaimingIsFinished(true);
+            setShowConfetti(true);
+            setIsClaiming(false);
           }} />
         </>
+      )}
+      {showConfetti && <Confetti />}
+      {isClaiming && <UnwrappingAnimation />}
+      {claimingIsFinished && (
+        <div className="mt-8">
+          <Image
+            src="https://images.ctfassets.net/o10es7wu5gm1/TWlW6aoAXPX7yUg5ShsZ0/c02522911b90b766eb8eef709e42b8eb/WalletLogo.png"
+            alt="Coinbase Wallet Logo"
+            width={64}
+            height={64}
+            className="mx-auto"
+          />
+          <h2 className="text-2xl text-center font-bold my-2 max-w-[200px] mx-auto">Get started with Coinbase Wallet!</h2>
+          <p className="text-center text-gray-600 mb-2 max-w-[300px] mx-auto">Bring your passkey to the mobile app and do more with your crypto!</p>
+          <div className="grid grid-cols-2 gap-2">
+            <Link 
+              href="https://go.cb-w.com/wallet-download?source=wallet_coinbase_com"
+              className="flex flex-col items-center gap-2 border border-gray-200 px-4 py-2 rounded-lg"
+            >
+              <Image 
+                src="https://images.ctfassets.net/o10es7wu5gm1/23ZZPYwd97q6mypmrs33VT/426c6e72f4e0892bd2801984700838c8/image_10.png" 
+                alt="Download on iOS" 
+                width={40} 
+                height={40} 
+                className="rounded-lg"
+              />
+              Download on iOS
+            </Link>
+            <Link 
+              href="https://go.cb-w.com/wallet-mobile-download?source=wallet_coinbase_com"
+              className="flex flex-col items-center gap-2 border border-gray-200 px-4 py-2 rounded-lg"
+            >
+              <Image 
+                src="https://images.ctfassets.net/o10es7wu5gm1/3HcmawNrvNUzoKNyMBtetL/e568428b7810a0133933a0321248579a/image_6.svg" 
+                alt="Download on Android" 
+                width={40} 
+                height={40} 
+                className="rounded-lg"
+              />
+              Download on Android
+            </Link>
+          </div>
+        </div>
       )}
     </div>
   );

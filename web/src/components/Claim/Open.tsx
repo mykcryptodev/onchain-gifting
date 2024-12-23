@@ -8,8 +8,9 @@ import { api } from "~/utils/api";
 
 type Props = {
   password: string;
+  onClaimStarted: () => void;
 }
-export const Open: FC<Props> = ({ password }) => {
+export const Open: FC<Props> = ({ password, onClaimStarted }) => {
   const { address } = useAccount();
   const { mutateAsync: open, isPending } = api.engine.openPack.useMutation();
   const [isGasFree, setIsGasFree] = useState(true);
@@ -33,13 +34,12 @@ export const Open: FC<Props> = ({ password }) => {
   }, [password, address]);
 
   const handleOpenPack = async () => {
-    console.log({password, address});
-    const result = await open({
+    await open({
       password,
       recipient: address!,
     });
     setIsClaiming(true);
-    console.log({result});
+    onClaimStarted();
   }
 
   return (
@@ -77,25 +77,27 @@ export const Open: FC<Props> = ({ password }) => {
           </TransactionStatus>
         </Transaction>
       )}
-      <div className="flex items-center justify-center gap-2 mt-4">
-        <span className="text-sm text-gray-600">Claim for free</span>
-        <button
-          type="button"
-          className={`relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 ${
-            isGasFree ? 'bg-blue-600' : 'bg-gray-200'
-          }`}
-          role="switch"
-          aria-checked={isGasFree}
-          onClick={() => setIsGasFree(!isGasFree)}
-        >
+      {!isClaiming && (
+        <div className="flex items-center justify-center gap-2 mt-4">
+          <span className="text-sm text-gray-600">Claim for free</span>
+          <button
+            type="button"
+            className={`relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 ${
+              isGasFree ? 'bg-blue-600' : 'bg-gray-200'
+            }`}
+            role="switch"
+            aria-checked={isGasFree}
+            onClick={() => setIsGasFree(!isGasFree)}
+          >
           <span
             aria-hidden="true"
             className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
               isGasFree ? 'translate-x-5' : 'translate-x-0'
             }`}
           />
-        </button>
-      </div>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

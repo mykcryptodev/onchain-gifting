@@ -3,6 +3,7 @@ import { type Pack } from "~/types/giftpack";
 import { ClaimedNft } from "./Nft";
 import { ClaimedToken } from "./Token";
 import { ZERO_ADDRESS } from "thirdweb";
+import Image from "next/image";
 
 type Props = {
   pack: Pack;
@@ -10,7 +11,14 @@ type Props = {
 export const ClaimContents: FC<Props> = ({ pack }) => {
   return (
     <div>
-      <h2 className="text-2xl font-bold text-center mt-4 mb-2">Your Pack Contents</h2>
+      <Image
+        src="/images/logo.png"
+        alt="Logo"
+        width={64}
+        height={64}
+        className="mx-auto mt-6"
+      />
+      <h2 className="text-2xl font-bold text-center mb-2">Your Pack Contents</h2>
       <div className="flex flex-col gap-4">
         {pack?.erc721Tokens.map((token) => (
           <ClaimedNft 
