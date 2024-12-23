@@ -9,6 +9,8 @@ export const env = createEnv({
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]),
     ZAPPER_API_KEY: z.string(),
+    THIRDWEB_ENGINE_ACCESS_TOKEN: z.string(),
+    THIRDWEB_ENGINE_URL: z.string(),
   },
 
   /**
@@ -31,6 +33,8 @@ export const env = createEnv({
     NEXT_PUBLIC_THIRDWEB_CLIENT_ID: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
     NEXT_PUBLIC_ONCHAIN_API_KEY: process.env.NEXT_PUBLIC_ONCHAIN_API_KEY,
     ZAPPER_API_KEY: process.env.ZAPPER_API_KEY,
+    THIRDWEB_ENGINE_ACCESS_TOKEN: process.env.THIRDWEB_ENGINE_ACCESS_TOKEN,
+    THIRDWEB_ENGINE_URL: process.env.THIRDWEB_ENGINE_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
