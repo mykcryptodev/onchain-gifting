@@ -94,11 +94,8 @@ contract GiftPackTest is Test {
         tokens[0] = GiftPack.ERC20Token(address(token1), 100);
         tokens[1] = GiftPack.ERC20Token(address(token2), 200);
 
-        uint256 tokenId = pack.createPack(
-            tokens,
-            new GiftPack.ERC721Token[](0),
-            new GiftPack.ERC1155Token[](0)
-        );
+        bytes32 hash = keccak256("test-hash");
+        uint256 tokenId = pack.createPack(tokens, new GiftPack.ERC721Token[](0), new GiftPack.ERC1155Token[](0), hash);
 
         // Verify pack creation
         assertEq(pack.ownerOf(tokenId), alice);
@@ -118,14 +115,16 @@ contract GiftPackTest is Test {
         GiftPack.ERC721Token[] memory erc721Tokens = new GiftPack.ERC721Token[](1);
         erc721Tokens[0] = GiftPack.ERC721Token(address(erc721), 0);
 
-        uint256 tokenId = pack.createPack(
+        bytes32 hash1 = keccak256("test-hash-erc721");
+        uint256 tokenId1 = pack.createPack(
             new GiftPack.ERC20Token[](0),
             erc721Tokens,
-            new GiftPack.ERC1155Token[](0)
+            new GiftPack.ERC1155Token[](0),
+            hash1
         );
 
         // Verify pack creation
-        assertEq(pack.ownerOf(tokenId), alice);
+        assertEq(pack.ownerOf(tokenId1), alice);
         assertEq(erc721.ownerOf(0), address(pack));
 
         vm.stopPrank();
@@ -141,14 +140,16 @@ contract GiftPackTest is Test {
         GiftPack.ERC1155Token[] memory erc1155Tokens = new GiftPack.ERC1155Token[](1);
         erc1155Tokens[0] = GiftPack.ERC1155Token(address(erc1155), 1, 5);
 
-        uint256 tokenId = pack.createPack(
+        bytes32 hash2 = keccak256("test-hash-erc1155");
+        uint256 tokenId2 = pack.createPack(
             new GiftPack.ERC20Token[](0),
             new GiftPack.ERC721Token[](0),
-            erc1155Tokens
+            erc1155Tokens,
+            hash2
         );
 
         // Verify pack creation
-        assertEq(pack.ownerOf(tokenId), alice);
+        assertEq(pack.ownerOf(tokenId2), alice);
         assertEq(erc1155.balanceOf(address(pack), 1), 5);
 
         vm.stopPrank();
@@ -174,16 +175,17 @@ contract GiftPackTest is Test {
         GiftPack.ERC1155Token[] memory erc1155Tokens = new GiftPack.ERC1155Token[](1);
         erc1155Tokens[0] = GiftPack.ERC1155Token(address(erc1155), 1, 5);
 
-        uint256 tokenId = pack.createPack{value: 1 ether}(tokens, erc721Tokens, erc1155Tokens);
+        bytes32 hash3 = keccak256("test-hash-everything");
+        uint256 tokenId3 = pack.createPack{value: 1 ether}(tokens, erc721Tokens, erc1155Tokens, hash3);
 
         // Verify pack creation
-        assertEq(pack.ownerOf(tokenId), alice);
+        assertEq(pack.ownerOf(tokenId3), alice);
         assertEq(token1.balanceOf(address(pack)), 100);
         assertEq(token2.balanceOf(address(pack)), 200);
         assertEq(erc721.ownerOf(0), address(pack));
         assertEq(erc1155.balanceOf(address(pack), 1), 5);
         assertEq(address(pack).balance, 1 ether);
-        assertEq(pack.getPackEthAmount(tokenId), 1 ether);
+        assertEq(pack.getPackEthAmount(tokenId3), 1 ether);
 
         vm.stopPrank();
     }
@@ -208,16 +210,17 @@ contract GiftPackTest is Test {
         GiftPack.ERC1155Token[] memory erc1155Tokens = new GiftPack.ERC1155Token[](1);
         erc1155Tokens[0] = GiftPack.ERC1155Token(address(erc1155), 1, 5);
 
-        uint256 tokenId = pack.createPack{value: 1 ether}(tokens, erc721Tokens, erc1155Tokens);
+        bytes32 hash4 = keccak256("test-hash-open-everything");
+        uint256 tokenId4 = pack.createPack{value: 1 ether}(tokens, erc721Tokens, erc1155Tokens, hash4);
 
         // Record bob's initial balance
         uint256 bobInitialBalance = bob.balance;
 
         // Open pack
-        pack.openPack(tokenId, bob);
+        pack.openPackAsOwner(tokenId4, bob);
 
         // Verify pack opening
-        assertTrue(pack.isPackOpened(tokenId));
+        assertTrue(pack.isPackOpened(tokenId4));
         assertEq(token1.balanceOf(bob), 100);
         assertEq(token2.balanceOf(bob), 200);
         assertEq(erc721.ownerOf(0), bob);
@@ -232,18 +235,20 @@ contract GiftPackTest is Test {
         vm.startPrank(alice);
 
         // Create pack
+        bytes32 hash = keccak256("test-hash-twice");
         uint256 tokenId = pack.createPack(
             new GiftPack.ERC20Token[](0),
             new GiftPack.ERC721Token[](0),
-            new GiftPack.ERC1155Token[](0)
+            new GiftPack.ERC1155Token[](0),
+            hash
         );
 
         // Open pack once
-        pack.openPack(tokenId, bob);
+        pack.openPackAsOwner(tokenId, bob);
 
         // Try to open pack again
         vm.expectRevert(GiftPack.PackAlreadyOpened.selector);
-        pack.openPack(tokenId, bob);
+        pack.openPackAsOwner(tokenId, bob);
 
         vm.stopPrank();
     }
@@ -252,10 +257,12 @@ contract GiftPackTest is Test {
         vm.startPrank(alice);
 
         // Create pack
+        bytes32 hash = keccak256("test-hash-non-owner");
         uint256 tokenId = pack.createPack(
             new GiftPack.ERC20Token[](0),
             new GiftPack.ERC721Token[](0),
-            new GiftPack.ERC1155Token[](0)
+            new GiftPack.ERC1155Token[](0),
+            hash
         );
 
         vm.stopPrank();
@@ -263,42 +270,100 @@ contract GiftPackTest is Test {
 
         // Try to open pack as non-owner
         vm.expectRevert(GiftPack.NotPackOwnerOrOpener.selector);
-        pack.openPack(tokenId, bob);
+        pack.openPackAsOwner(tokenId, bob);
 
         vm.stopPrank();
     }
 
-    function test_OpenerRoleCanOpenOthersPacks() public {
+    function test_OpenPackAsOwner() public {
         vm.startPrank(alice);
 
-        // Setup pack with tokens
-        uint256 erc20Amount = 100;
-        token1.approve(address(pack), erc20Amount);
-
+        // Create pack with tokens
+        token1.approve(address(pack), 100);
         GiftPack.ERC20Token[] memory tokens = new GiftPack.ERC20Token[](1);
-        tokens[0] = GiftPack.ERC20Token({
-            tokenAddress: address(token1),
-            amount: erc20Amount
-        });
+        tokens[0] = GiftPack.ERC20Token(address(token1), 100);
 
-        // Create pack
-        uint256 tokenId = pack.createPack(tokens, new GiftPack.ERC721Token[](0), new GiftPack.ERC1155Token[](0));
+        bytes32 hash = keccak256("test-hash");
+        uint256 tokenId = pack.createPack(tokens, new GiftPack.ERC721Token[](0), new GiftPack.ERC1155Token[](0), hash);
+
+        // Open pack as owner
+        pack.openPackAsOwner(tokenId, bob);
+
+        // Verify pack was opened
+        assertEq(token1.balanceOf(bob), 100);
+        assertTrue(pack.isPackOpened(tokenId));
+
+        vm.stopPrank();
+    }
+
+    function test_OpenPackWithPassword() public {
+        vm.startPrank(alice);
+
+        // Approve tokens
+        token1.approve(address(pack), 100);
+
+        // Create pack with tokens and password
+        GiftPack.ERC20Token[] memory tokens = new GiftPack.ERC20Token[](1);
+        tokens[0] = GiftPack.ERC20Token(address(token1), 100);
+
+        string memory password = "secret123";
+        bytes32 hash = keccak256(abi.encode(password));
+        
+        uint256 tokenId = pack.createPack(tokens, new GiftPack.ERC721Token[](0), new GiftPack.ERC1155Token[](0), hash);
         vm.stopPrank();
 
-        // Setup opener account
-        address opener = makeAddr("opener");
-        pack.grantRole(pack.OPENER_ROLE(), opener);
-        assertTrue(pack.hasRole(pack.OPENER_ROLE(), opener));
+        // Anyone can open with correct password
+        vm.prank(bob);
+        pack.openPackWithPassword(password, bob);
 
-        // Setup recipient
-        address recipient = makeAddr("recipient");
-
-        // Opener opens pack
-        vm.prank(opener);
-        pack.openPack(tokenId, recipient);
-
-        // Verify recipient received tokens
-        assertEq(token1.balanceOf(recipient), erc20Amount);
+        // Verify pack was opened
+        assertEq(token1.balanceOf(bob), 100);
         assertTrue(pack.isPackOpened(tokenId));
+    }
+
+    function test_RevertWhen_OpeningWithWrongPassword() public {
+        vm.startPrank(alice);
+
+        // Create pack with password
+        string memory password = "secret123";
+        bytes32 hash = keccak256(abi.encode(password));
+        
+        uint256 tokenId = pack.createPack(
+            new GiftPack.ERC20Token[](0),
+            new GiftPack.ERC721Token[](0),
+            new GiftPack.ERC1155Token[](0),
+            hash
+        );
+        vm.stopPrank();
+
+        // Try to open with wrong password
+        vm.prank(bob);
+        vm.expectRevert(GiftPack.HashNotFound.selector);
+        pack.openPackWithPassword("wrong-password", bob);
+    }
+
+    function test_RevertWhen_ReusingHash() public {
+        vm.startPrank(alice);
+
+        bytes32 hash = keccak256(abi.encode("test-hash"));
+        
+        // Create first pack with hash
+        pack.createPack(
+            new GiftPack.ERC20Token[](0),
+            new GiftPack.ERC721Token[](0),
+            new GiftPack.ERC1155Token[](0),
+            hash
+        );
+
+        // Try to create second pack with same hash
+        vm.expectRevert(GiftPack.HashAlreadyUsed.selector);
+        pack.createPack(
+            new GiftPack.ERC20Token[](0),
+            new GiftPack.ERC721Token[](0),
+            new GiftPack.ERC1155Token[](0),
+            hash
+        );
+
+        vm.stopPrank();
     }
 }

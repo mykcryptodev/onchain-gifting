@@ -1,35 +1,41 @@
 import { IdentityCard } from "@coinbase/onchainkit/identity";
 import { useEffect } from "react";
 import { useState } from "react";
-import { getContract } from "thirdweb";
+import { getContract, keccak256 } from "thirdweb";
 import { ClaimContents } from "~/components/Claim/Contents";
 import { CLIENT, GIFT_PACK_ADDRESS } from "~/constants";
 import { CHAIN } from "~/constants";
-import { getPack } from "~/thirdweb/84532/0xa9dc74673fb099885e830eb534b89e65dd5a68f6";
+import { getPackByHash } from "~/thirdweb/8453/0x445bf2d8c89472a2289360e4e15be0c1951ab536";
 import { type Pack } from "~/types/giftpack";
 import { useRouter } from "next/router";
 import { Open } from "~/components/Claim/Open";
+import { keccak256 as viemKeccak256, encodeAbiParameters } from "viem";
 
 export default function Claim() {
   const router = useRouter();
-  const { id } = router.query as { id: string };
+  const { password } = router.query as { password: string };
   const [pack, setPack] = useState<Pack | null>(null);
 
   useEffect(() => {
     const fetchPack = async () => {
-      if (pack || !id) return;
-      const fetchedPack = await getPack({
+      if (pack || !password) return;
+      const encodedPassword = encodeAbiParameters(
+        [{ type: 'string' }],
+        [password]
+      );
+      const hash = viemKeccak256(encodedPassword);
+      const fetchedPack = await getPackByHash({
         contract: getContract({
           address: GIFT_PACK_ADDRESS,
           chain: CHAIN,
           client: CLIENT,
         }),
-        tokenId: BigInt(id as string),
+        hash,
       });
       setPack(fetchedPack);
     };
     void fetchPack();
-  }, [pack, id]);
+  }, [pack, password]);
 
   return (
     <>
@@ -37,8 +43,8 @@ export default function Claim() {
       <p>You have been sent an onchain gift pack from</p>
       <IdentityCard address={pack?.creator} />
       <ClaimContents />
-      The id is {id}
-      <Open id={id} />
+      The password is {password}
+      <Open password={password} />
     </>
   );
 }

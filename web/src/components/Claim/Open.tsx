@@ -1,39 +1,39 @@
 import { useMemo, type FC } from "react";
 import { getContract, encode } from "thirdweb";
 import { CHAIN, CLIENT, GIFT_PACK_ADDRESS } from "~/constants";
-import { openPack } from "~/thirdweb/84532/0xa9dc74673fb099885e830eb534b89e65dd5a68f6";
+import { openPackWithPassword } from "~/thirdweb/8453/0x445bf2d8c89472a2289360e4e15be0c1951ab536";
 import { useAccount } from "wagmi";
 import { Transaction, TransactionButton, TransactionStatus, TransactionStatusAction, TransactionStatusLabel } from "@coinbase/onchainkit/transaction";
 import { api } from "~/utils/api";
 import { WatchClaim } from "./WatchClaim";
 
 type Props = {
-  id: string;
+  password: string;
 }
-export const Open: FC<Props> = ({ id }) => {
+export const Open: FC<Props> = ({ password }) => {
   const { address } = useAccount();
   const { mutateAsync: open, isPending } = api.engine.openPack.useMutation();
 
   const calls = useMemo(async () => {
     if (!address) return [];
-    const tx = openPack({
+    const tx = openPackWithPassword({
       contract: getContract({
         address: GIFT_PACK_ADDRESS,
         client: CLIENT,
         chain: CHAIN,
       }),
-      tokenId: BigInt(id as string),
+      password,
       recipient: address!,
     });
     return [{
       to: GIFT_PACK_ADDRESS as `0x${string}`,
       data: await encode(tx),
     }]
-  }, [id, address]);
+  }, [password, address]);
 
   const handleOpenPack = async () => {
     const result = await open({
-      secret: id,
+      secret: password,
       recipient: address!,
     });
     console.log({result});

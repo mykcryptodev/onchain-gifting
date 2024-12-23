@@ -13,7 +13,6 @@ export const WalletBalances: FC<WalletBalancesProps> = ({ address }) => {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });
-  console.log({data, isLoading});
 
   return (
     <div className="flex flex-col gap-4 w-full mx-auto max-w-lg">

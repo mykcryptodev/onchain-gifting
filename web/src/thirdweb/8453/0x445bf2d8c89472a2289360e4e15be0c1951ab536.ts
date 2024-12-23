@@ -193,6 +193,120 @@ export function packOpenedEvent(filters: PackOpenedEventFilters = {}) {
   
 
 /**
+ * Represents the filters for the "RoleAdminChanged" event.
+ */
+export type RoleAdminChangedEventFilters = Partial<{
+  role: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"}>
+previousAdminRole: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"bytes32","name":"previousAdminRole","type":"bytes32"}>
+newAdminRole: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"bytes32","name":"newAdminRole","type":"bytes32"}>
+}>;
+
+/**
+ * Creates an event object for the RoleAdminChanged event.
+ * @param filters - Optional filters to apply to the event.
+ * @returns The prepared event object.
+ * @example
+ * ```
+ * import { getContractEvents } from "thirdweb";
+ * import { roleAdminChangedEvent } from "TODO";
+ *
+ * const events = await getContractEvents({
+ * contract,
+ * events: [
+ *  roleAdminChangedEvent({
+ *  role: ...,
+ *  previousAdminRole: ...,
+ *  newAdminRole: ...,
+ * })
+ * ],
+ * });
+ * ```
+ */
+export function roleAdminChangedEvent(filters: RoleAdminChangedEventFilters = {}) {
+  return prepareEvent({
+    signature: "event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole)",
+    filters,
+  });
+};
+  
+
+/**
+ * Represents the filters for the "RoleGranted" event.
+ */
+export type RoleGrantedEventFilters = Partial<{
+  role: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"}>
+account: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","name":"account","type":"address"}>
+sender: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","name":"sender","type":"address"}>
+}>;
+
+/**
+ * Creates an event object for the RoleGranted event.
+ * @param filters - Optional filters to apply to the event.
+ * @returns The prepared event object.
+ * @example
+ * ```
+ * import { getContractEvents } from "thirdweb";
+ * import { roleGrantedEvent } from "TODO";
+ *
+ * const events = await getContractEvents({
+ * contract,
+ * events: [
+ *  roleGrantedEvent({
+ *  role: ...,
+ *  account: ...,
+ *  sender: ...,
+ * })
+ * ],
+ * });
+ * ```
+ */
+export function roleGrantedEvent(filters: RoleGrantedEventFilters = {}) {
+  return prepareEvent({
+    signature: "event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender)",
+    filters,
+  });
+};
+  
+
+/**
+ * Represents the filters for the "RoleRevoked" event.
+ */
+export type RoleRevokedEventFilters = Partial<{
+  role: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"}>
+account: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","name":"account","type":"address"}>
+sender: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","name":"sender","type":"address"}>
+}>;
+
+/**
+ * Creates an event object for the RoleRevoked event.
+ * @param filters - Optional filters to apply to the event.
+ * @returns The prepared event object.
+ * @example
+ * ```
+ * import { getContractEvents } from "thirdweb";
+ * import { roleRevokedEvent } from "TODO";
+ *
+ * const events = await getContractEvents({
+ * contract,
+ * events: [
+ *  roleRevokedEvent({
+ *  role: ...,
+ *  account: ...,
+ *  sender: ...,
+ * })
+ * ],
+ * });
+ * ```
+ */
+export function roleRevokedEvent(filters: RoleRevokedEventFilters = {}) {
+  return prepareEvent({
+    signature: "event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender)",
+    filters,
+  });
+};
+  
+
+/**
  * Represents the filters for the "Transfer" event.
  */
 export type TransferEventFilters = Partial<{
@@ -233,6 +347,76 @@ export function transferEvent(filters: TransferEventFilters = {}) {
 /**
 * Contract read functions
 */
+
+
+
+/**
+ * Calls the "DEFAULT_ADMIN_ROLE" function on the contract.
+ * @param options - The options for the DEFAULT_ADMIN_ROLE function.
+ * @returns The parsed result of the function call.
+ * @example
+ * ```
+ * import { DEFAULT_ADMIN_ROLE } from "TODO";
+ *
+ * const result = await DEFAULT_ADMIN_ROLE();
+ *
+ * ```
+ */
+export async function DEFAULT_ADMIN_ROLE(
+  options: BaseTransactionOptions
+) {
+  return readContract({
+    contract: options.contract,
+    method: [
+  "0xa217fddf",
+  [],
+  [
+    {
+      "internalType": "bytes32",
+      "name": "",
+      "type": "bytes32"
+    }
+  ]
+],
+    params: []
+  });
+};
+
+
+
+
+/**
+ * Calls the "OPENER_ROLE" function on the contract.
+ * @param options - The options for the OPENER_ROLE function.
+ * @returns The parsed result of the function call.
+ * @example
+ * ```
+ * import { OPENER_ROLE } from "TODO";
+ *
+ * const result = await OPENER_ROLE();
+ *
+ * ```
+ */
+export async function OPENER_ROLE(
+  options: BaseTransactionOptions
+) {
+  return readContract({
+    contract: options.contract,
+    method: [
+  "0x2cfc828b",
+  [],
+  [
+    {
+      "internalType": "bytes32",
+      "name": "",
+      "type": "bytes32"
+    }
+  ]
+],
+    params: []
+  });
+};
+
 
 /**
  * Represents the parameters for the "balanceOf" function.
@@ -447,6 +631,127 @@ export async function getPack(
   ]
 ],
     params: [options.tokenId]
+  });
+};
+
+
+/**
+ * Represents the parameters for the "getPackByHash" function.
+ */
+export type GetPackByHashParams = {
+  hash: AbiParameterToPrimitiveType<{"internalType":"bytes32","name":"hash","type":"bytes32"}>
+};
+
+/**
+ * Calls the "getPackByHash" function on the contract.
+ * @param options - The options for the getPackByHash function.
+ * @returns The parsed result of the function call.
+ * @example
+ * ```
+ * import { getPackByHash } from "TODO";
+ *
+ * const result = await getPackByHash({
+ *  hash: ...,
+ * });
+ *
+ * ```
+ */
+export async function getPackByHash(
+  options: BaseTransactionOptions<GetPackByHashParams>
+) {
+  return readContract({
+    contract: options.contract,
+    method: [
+  "0xd9f7d864",
+  [
+    {
+      "internalType": "bytes32",
+      "name": "hash",
+      "type": "bytes32"
+    }
+  ],
+  [
+    {
+      "components": [
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct GiftPack.ERC20Token[]",
+          "name": "erc20Tokens",
+          "type": "tuple[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "tokenId",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct GiftPack.ERC721Token[]",
+          "name": "erc721Tokens",
+          "type": "tuple[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "tokenId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct GiftPack.ERC1155Token[]",
+          "name": "erc1155Tokens",
+          "type": "tuple[]"
+        },
+        {
+          "internalType": "bool",
+          "name": "opened",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256",
+          "name": "ethAmount",
+          "type": "uint256"
+        }
+      ],
+      "internalType": "struct GiftPack.Pack",
+      "name": "",
+      "type": "tuple"
+    }
+  ]
+],
+    params: [options.hash]
   });
 };
 
@@ -728,6 +1033,109 @@ export async function getPackEthAmount(
   ]
 ],
     params: [options.tokenId]
+  });
+};
+
+
+/**
+ * Represents the parameters for the "getRoleAdmin" function.
+ */
+export type GetRoleAdminParams = {
+  role: AbiParameterToPrimitiveType<{"internalType":"bytes32","name":"role","type":"bytes32"}>
+};
+
+/**
+ * Calls the "getRoleAdmin" function on the contract.
+ * @param options - The options for the getRoleAdmin function.
+ * @returns The parsed result of the function call.
+ * @example
+ * ```
+ * import { getRoleAdmin } from "TODO";
+ *
+ * const result = await getRoleAdmin({
+ *  role: ...,
+ * });
+ *
+ * ```
+ */
+export async function getRoleAdmin(
+  options: BaseTransactionOptions<GetRoleAdminParams>
+) {
+  return readContract({
+    contract: options.contract,
+    method: [
+  "0x248a9ca3",
+  [
+    {
+      "internalType": "bytes32",
+      "name": "role",
+      "type": "bytes32"
+    }
+  ],
+  [
+    {
+      "internalType": "bytes32",
+      "name": "",
+      "type": "bytes32"
+    }
+  ]
+],
+    params: [options.role]
+  });
+};
+
+
+/**
+ * Represents the parameters for the "hasRole" function.
+ */
+export type HasRoleParams = {
+  role: AbiParameterToPrimitiveType<{"internalType":"bytes32","name":"role","type":"bytes32"}>
+account: AbiParameterToPrimitiveType<{"internalType":"address","name":"account","type":"address"}>
+};
+
+/**
+ * Calls the "hasRole" function on the contract.
+ * @param options - The options for the hasRole function.
+ * @returns The parsed result of the function call.
+ * @example
+ * ```
+ * import { hasRole } from "TODO";
+ *
+ * const result = await hasRole({
+ *  role: ...,
+ *  account: ...,
+ * });
+ *
+ * ```
+ */
+export async function hasRole(
+  options: BaseTransactionOptions<HasRoleParams>
+) {
+  return readContract({
+    contract: options.contract,
+    method: [
+  "0x91d14854",
+  [
+    {
+      "internalType": "bytes32",
+      "name": "role",
+      "type": "bytes32"
+    },
+    {
+      "internalType": "address",
+      "name": "account",
+      "type": "address"
+    }
+  ],
+  [
+    {
+      "internalType": "bool",
+      "name": "",
+      "type": "bool"
+    }
+  ]
+],
+    params: [options.role, options.account]
   });
 };
 
@@ -1205,6 +1613,7 @@ export type CreatePackParams = {
   erc20Tokens: AbiParameterToPrimitiveType<{"components":[{"internalType":"address","name":"tokenAddress","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"internalType":"struct GiftPack.ERC20Token[]","name":"erc20Tokens","type":"tuple[]"}>
 erc721Tokens: AbiParameterToPrimitiveType<{"components":[{"internalType":"address","name":"tokenAddress","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"internalType":"struct GiftPack.ERC721Token[]","name":"erc721Tokens","type":"tuple[]"}>
 erc1155Tokens: AbiParameterToPrimitiveType<{"components":[{"internalType":"address","name":"tokenAddress","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"internalType":"struct GiftPack.ERC1155Token[]","name":"erc1155Tokens","type":"tuple[]"}>
+hash: AbiParameterToPrimitiveType<{"internalType":"bytes32","name":"hash","type":"bytes32"}>
 };
 
 /**
@@ -1219,6 +1628,7 @@ erc1155Tokens: AbiParameterToPrimitiveType<{"components":[{"internalType":"addre
  *  erc20Tokens: ...,
  *  erc721Tokens: ...,
  *  erc1155Tokens: ...,
+ *  hash: ...,
  * });
  *
  * // Send the transaction
@@ -1232,7 +1642,7 @@ export function createPack(
   return prepareContractCall({
     contract: options.contract,
     method: [
-  "0x4f555f2f",
+  "0x6faa6188",
   [
     {
       "components": [
@@ -1289,6 +1699,11 @@ export function createPack(
       "internalType": "struct GiftPack.ERC1155Token[]",
       "name": "erc1155Tokens",
       "type": "tuple[]"
+    },
+    {
+      "internalType": "bytes32",
+      "name": "hash",
+      "type": "bytes32"
     }
   ],
   [
@@ -1299,7 +1714,59 @@ export function createPack(
     }
   ]
 ],
-    params: [options.erc20Tokens, options.erc721Tokens, options.erc1155Tokens]
+    params: [options.erc20Tokens, options.erc721Tokens, options.erc1155Tokens, options.hash]
+  });
+};
+
+
+/**
+ * Represents the parameters for the "grantRole" function.
+ */
+export type GrantRoleParams = {
+  role: AbiParameterToPrimitiveType<{"internalType":"bytes32","name":"role","type":"bytes32"}>
+account: AbiParameterToPrimitiveType<{"internalType":"address","name":"account","type":"address"}>
+};
+
+/**
+ * Calls the "grantRole" function on the contract.
+ * @param options - The options for the "grantRole" function.
+ * @returns A prepared transaction object.
+ * @example
+ * ```
+ * import { grantRole } from "TODO";
+ *
+ * const transaction = grantRole({
+ *  role: ...,
+ *  account: ...,
+ * });
+ *
+ * // Send the transaction
+ * ...
+ *
+ * ```
+ */
+export function grantRole(
+  options: BaseTransactionOptions<GrantRoleParams>
+) {
+  return prepareContractCall({
+    contract: options.contract,
+    method: [
+  "0x2f2ff15d",
+  [
+    {
+      "internalType": "bytes32",
+      "name": "role",
+      "type": "bytes32"
+    },
+    {
+      "internalType": "address",
+      "name": "account",
+      "type": "address"
+    }
+  ],
+  []
+],
+    params: [options.role, options.account]
   });
 };
 
@@ -1463,22 +1930,22 @@ export function onERC1155Received(
 
 
 /**
- * Represents the parameters for the "openPack" function.
+ * Represents the parameters for the "openPackAsOwner" function.
  */
-export type OpenPackParams = {
+export type OpenPackAsOwnerParams = {
   tokenId: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"tokenId","type":"uint256"}>
 recipient: AbiParameterToPrimitiveType<{"internalType":"address","name":"recipient","type":"address"}>
 };
 
 /**
- * Calls the "openPack" function on the contract.
- * @param options - The options for the "openPack" function.
+ * Calls the "openPackAsOwner" function on the contract.
+ * @param options - The options for the "openPackAsOwner" function.
  * @returns A prepared transaction object.
  * @example
  * ```
- * import { openPack } from "TODO";
+ * import { openPackAsOwner } from "TODO";
  *
- * const transaction = openPack({
+ * const transaction = openPackAsOwner({
  *  tokenId: ...,
  *  recipient: ...,
  * });
@@ -1488,13 +1955,13 @@ recipient: AbiParameterToPrimitiveType<{"internalType":"address","name":"recipie
  *
  * ```
  */
-export function openPack(
-  options: BaseTransactionOptions<OpenPackParams>
+export function openPackAsOwner(
+  options: BaseTransactionOptions<OpenPackAsOwnerParams>
 ) {
   return prepareContractCall({
     contract: options.contract,
     method: [
-  "0x80f2540b",
+  "0x9ab72eaf",
   [
     {
       "internalType": "uint256",
@@ -1510,6 +1977,58 @@ export function openPack(
   []
 ],
     params: [options.tokenId, options.recipient]
+  });
+};
+
+
+/**
+ * Represents the parameters for the "openPackWithPassword" function.
+ */
+export type OpenPackWithPasswordParams = {
+  password: AbiParameterToPrimitiveType<{"internalType":"string","name":"password","type":"string"}>
+recipient: AbiParameterToPrimitiveType<{"internalType":"address","name":"recipient","type":"address"}>
+};
+
+/**
+ * Calls the "openPackWithPassword" function on the contract.
+ * @param options - The options for the "openPackWithPassword" function.
+ * @returns A prepared transaction object.
+ * @example
+ * ```
+ * import { openPackWithPassword } from "TODO";
+ *
+ * const transaction = openPackWithPassword({
+ *  password: ...,
+ *  recipient: ...,
+ * });
+ *
+ * // Send the transaction
+ * ...
+ *
+ * ```
+ */
+export function openPackWithPassword(
+  options: BaseTransactionOptions<OpenPackWithPasswordParams>
+) {
+  return prepareContractCall({
+    contract: options.contract,
+    method: [
+  "0xc5f51513",
+  [
+    {
+      "internalType": "string",
+      "name": "password",
+      "type": "string"
+    },
+    {
+      "internalType": "address",
+      "name": "recipient",
+      "type": "address"
+    }
+  ],
+  []
+],
+    params: [options.password, options.recipient]
   });
 };
 
@@ -1542,6 +2061,110 @@ export function renounceOwnership(
   []
 ],
     params: []
+  });
+};
+
+
+/**
+ * Represents the parameters for the "renounceRole" function.
+ */
+export type RenounceRoleParams = {
+  role: AbiParameterToPrimitiveType<{"internalType":"bytes32","name":"role","type":"bytes32"}>
+callerConfirmation: AbiParameterToPrimitiveType<{"internalType":"address","name":"callerConfirmation","type":"address"}>
+};
+
+/**
+ * Calls the "renounceRole" function on the contract.
+ * @param options - The options for the "renounceRole" function.
+ * @returns A prepared transaction object.
+ * @example
+ * ```
+ * import { renounceRole } from "TODO";
+ *
+ * const transaction = renounceRole({
+ *  role: ...,
+ *  callerConfirmation: ...,
+ * });
+ *
+ * // Send the transaction
+ * ...
+ *
+ * ```
+ */
+export function renounceRole(
+  options: BaseTransactionOptions<RenounceRoleParams>
+) {
+  return prepareContractCall({
+    contract: options.contract,
+    method: [
+  "0x36568abe",
+  [
+    {
+      "internalType": "bytes32",
+      "name": "role",
+      "type": "bytes32"
+    },
+    {
+      "internalType": "address",
+      "name": "callerConfirmation",
+      "type": "address"
+    }
+  ],
+  []
+],
+    params: [options.role, options.callerConfirmation]
+  });
+};
+
+
+/**
+ * Represents the parameters for the "revokeRole" function.
+ */
+export type RevokeRoleParams = {
+  role: AbiParameterToPrimitiveType<{"internalType":"bytes32","name":"role","type":"bytes32"}>
+account: AbiParameterToPrimitiveType<{"internalType":"address","name":"account","type":"address"}>
+};
+
+/**
+ * Calls the "revokeRole" function on the contract.
+ * @param options - The options for the "revokeRole" function.
+ * @returns A prepared transaction object.
+ * @example
+ * ```
+ * import { revokeRole } from "TODO";
+ *
+ * const transaction = revokeRole({
+ *  role: ...,
+ *  account: ...,
+ * });
+ *
+ * // Send the transaction
+ * ...
+ *
+ * ```
+ */
+export function revokeRole(
+  options: BaseTransactionOptions<RevokeRoleParams>
+) {
+  return prepareContractCall({
+    contract: options.contract,
+    method: [
+  "0xd547741f",
+  [
+    {
+      "internalType": "bytes32",
+      "name": "role",
+      "type": "bytes32"
+    },
+    {
+      "internalType": "address",
+      "name": "account",
+      "type": "address"
+    }
+  ],
+  []
+],
+    params: [options.role, options.account]
   });
 };
 

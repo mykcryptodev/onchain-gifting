@@ -5,7 +5,7 @@ import { SelectedToken } from "./Selected/Token";
 export const PackContents = () => {
   const { selectedAssets } = useGiftItems();
   return (
-    <div className="flex flex-wrap justify-center items-center gap-2 max-w-xs">
+    <div className="flex flex-wrap mb-4 justify-center items-center gap-2 max-w-xs">
       {selectedAssets.erc20.map((erc20) => (
         <SelectedToken 
           key={erc20.token}

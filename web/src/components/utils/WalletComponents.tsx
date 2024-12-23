@@ -29,7 +29,7 @@ export function WalletComponents() {
           <Avatar className="h-6 w-6" />
           <Name />
         </ConnectWallet>
-        <WalletDropdown>
+        <WalletDropdown className="z-20">
           <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
             <Avatar />
             <Name />

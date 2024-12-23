@@ -9,7 +9,7 @@ import { useGiftItems } from "~/contexts/GiftItemsContext";
 
 export default function Home() {
   const { address } = useAccount();
-  const { selectedAssets } = useGiftItems();
+  const { selectedAssets, hash } = useGiftItems();
 
   return (
     <>
@@ -20,7 +20,8 @@ export default function Home() {
         erc20s={selectedAssets.erc20} 
         erc721s={selectedAssets.erc721} 
         erc1155s={selectedAssets.erc1155} 
-        ethAmount={selectedAssets.ethAmount} 
+        ethAmount={selectedAssets.ethAmount}
+        hash={hash}
       />
       {address && <WalletBalances address={address} />}
     </>

@@ -21,6 +21,8 @@ contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable, AccessCont
     error PackAlreadyOpened();
     error NotPackOwnerOrOpener();
     error TransferFailed();
+    error HashAlreadyUsed();
+    error HashNotFound();
 
     bytes32 public constant OPENER_ROLE = keccak256("OPENER_ROLE");
 
@@ -52,6 +54,9 @@ contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable, AccessCont
     uint256 private _nextTokenId;
     mapping(uint256 => Pack) public packs;
 
+    mapping(bytes32 => uint256) private tokenIdByHash;
+    mapping(bytes32 => bool) private hashUsed;
+
     event PackCreated(
         uint256 indexed tokenId, 
         address indexed creator, 
@@ -70,9 +75,17 @@ contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable, AccessCont
     function createPack(
         ERC20Token[] calldata erc20Tokens,
         ERC721Token[] calldata erc721Tokens,
-        ERC1155Token[] calldata erc1155Tokens
+        ERC1155Token[] calldata erc1155Tokens,
+        bytes32 hash
     ) external payable returns (uint256) {
+        // if there is already a pack with this hash, revert
+        if (hashUsed[hash]) revert HashAlreadyUsed();
+
         uint256 tokenId = _nextTokenId++;
+
+        // store the hash to tokenId mapping
+        tokenIdByHash[hash] = tokenId;
+        hashUsed[hash] = true;
 
         // Validate and transfer tokens
         for (uint256 i = 0; i < erc20Tokens.length; i++) {
@@ -129,16 +142,28 @@ contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable, AccessCont
         return tokenId;
     }
 
-    function openPack(uint256 tokenId, address recipient) external nonReentrant {
-        if (recipient == address(0)) revert InvalidRecipient();
+    function openPackWithPassword(string calldata password, address recipient) external nonReentrant {
+        bytes32 hash = keccak256(abi.encode(password));
+        if (!hashUsed[hash]) revert HashNotFound();
+        uint256 tokenId = tokenIdByHash[hash];
+        delete tokenIdByHash[hash];
+        delete hashUsed[hash];
+
+        _openPack(tokenId, recipient);
+    }
+
+    function openPackAsOwner(uint256 tokenId, address recipient) external nonReentrant {
         if (
-            // is the pack owner
             ownerOf(tokenId) != msg.sender && 
-            // is the contract owner
             msg.sender != owner() &&
-            // is an opener
             !hasRole(OPENER_ROLE, msg.sender)
         ) revert NotPackOwnerOrOpener();
+
+        _openPack(tokenId, recipient);
+    }
+
+    function _openPack(uint256 tokenId, address recipient) internal {
+        if (recipient == address(0)) revert InvalidRecipient();
         
         Pack storage pack = packs[tokenId];
         if (pack.opened) revert PackAlreadyOpened();
@@ -199,6 +224,12 @@ contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable, AccessCont
     }
 
     function getPack(uint256 tokenId) external view returns (Pack memory) {
+        return packs[tokenId];
+    }
+
+    function getPackByHash(bytes32 hash) external view returns (Pack memory) {
+        if (!hashUsed[hash]) revert HashNotFound();
+        uint256 tokenId = tokenIdByHash[hash];
         return packs[tokenId];
     }
 

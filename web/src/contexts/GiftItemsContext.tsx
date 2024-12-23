@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { ZERO_ADDRESS } from "thirdweb";
-import { isAddressEqual } from "viem";
+import { isAddressEqual, Hex, encodeAbiParameters, keccak256 as viemKeccak256 } from "viem";
 
 export type GiftItem = {
   erc20: { 
@@ -16,6 +16,8 @@ export type GiftItem = {
   erc1155: { token: string; tokenId: string; amount: string; valueUsd?: number }[];
   ethAmount: string;
   ethValueUsd?: number;
+  password: string;
+  hash: Hex | undefined;
 };
 
 type GiftItemsContextType = {
@@ -30,6 +32,9 @@ type GiftItemsContextType = {
   removeERC1155: (token: string, tokenId: string) => void;
   clearAll: () => void;
   getTotalValueUsd: () => number;
+  updatePassword: (password: string) => void;
+  hash: Hex | undefined;
+  password: string;
 };
 
 const GiftItemsContext = createContext<GiftItemsContextType | undefined>(undefined);
@@ -39,11 +44,16 @@ const initialState: GiftItem = {
   erc721: [],
   erc1155: [],
   ethAmount: "0",
-  ethValueUsd: 0
+  ethValueUsd: 0,
+  password: "",
+  hash: undefined
 };
 
 export function GiftItemsProvider({ children }: { children: ReactNode }) {
   const [selectedAssets, setSelectedAssets] = useState<GiftItem>(initialState);
+  const [password, setPassword] = useState<string>("");
+  const [hash, setHash] = useState<Hex | undefined>(undefined);
+  console.log({ hash });
 
   const addERC20 = (
     token: string, 
@@ -123,6 +133,15 @@ export function GiftItemsProvider({ children }: { children: ReactNode }) {
     }));
   };
 
+  const updatePassword = (password: string) => {
+    setPassword(password);
+    const encodedPassword = encodeAbiParameters(
+      [{ type: 'string' }],
+      [password]
+    );
+    setHash(viemKeccak256(encodedPassword));
+  };
+
   const getTotalValueUsd = () => {
     const erc20Value = selectedAssets.erc20.reduce((sum, token) => sum + (token.valueUsd ?? 0), 0);
     const erc721Value = selectedAssets.erc721.reduce((sum, token) => sum + (token.valueUsd ?? 0), 0);
@@ -149,7 +168,10 @@ export function GiftItemsProvider({ children }: { children: ReactNode }) {
         removeERC721,
         removeERC1155,
         clearAll,
-        getTotalValueUsd
+        getTotalValueUsd,
+        updatePassword,
+        hash,
+        password,
       }}
     >
       {children}

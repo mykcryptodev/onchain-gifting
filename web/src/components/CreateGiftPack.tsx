@@ -1,18 +1,20 @@
 import { useMemo, useEffect, useState } from "react";
 import { Transaction, TransactionButton, TransactionStatusLabel, TransactionStatus, TransactionStatusAction } from "@coinbase/onchainkit/transaction"
-import { encode, getContract, toWei, ZERO_ADDRESS } from "thirdweb";
+import { encode, getContract, keccak256, ZERO_ADDRESS } from "thirdweb";
 import { CHAIN, GIFT_PACK_ADDRESS, CLIENT } from "~/constants";
-import { createPack } from "~/thirdweb/84532/0xa9dc74673fb099885e830eb534b89e65dd5a68f6";
+import { createPack } from "~/thirdweb/8453/0x445bf2d8c89472a2289360e4e15be0c1951ab536";
 import { allowance, approve as approveERC20 } from "thirdweb/extensions/erc20";
 import { approve as approveERC721 } from "thirdweb/extensions/erc721";
 import { setApprovalForAll as setApprovalForAllERC1155 } from "thirdweb/extensions/erc1155";
-import { isAddressEqual } from "viem";
+import { isAddressEqual, Hex } from "viem";
 import { useAccount } from "wagmi";
+
 type Props = {
   erc20s: { token: string; amount: string }[];
   erc721s: { token: string; tokenId: string }[];
   erc1155s: { token: string; tokenId: string; amount: string }[];
   ethAmount: string;
+  hash: Hex | undefined;
 };
 
 type Call = {
@@ -21,7 +23,7 @@ type Call = {
   value: bigint;
 };
 
-export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount }: Props) {
+export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: Props) {
   const { address } = useAccount();
   const [erc20sWithSufficientAllowance, setErc20sWithSufficientAllowance] = useState<string[]>([]);
 
@@ -80,7 +82,8 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount }: Props) 
         tokenAddress: token,
         tokenId: BigInt(tokenId),
         amount: BigInt(amount),
-      }))
+      })),
+      hash: hash ?? keccak256(`0x0`) as Hex,
     });
 
     const value = ethAmount !== "0" ? BigInt(ethAmount) : BigInt(0);
@@ -90,7 +93,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount }: Props) 
       value,
       data: await encode(tx),
     };
-  }, [erc20s, erc721s, erc1155s, ethAmount]);
+  }, [erc20s, erc721s, erc1155s, ethAmount, hash]);
 
   const erc20ApprovalTransactions = useMemo(() => {
     return erc20s
@@ -176,6 +179,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount }: Props) 
         >
         <TransactionButton 
           text="Create Gift Pack"
+          disabled={!calls.length || !hash}
           className="px-4 py-2 text-lg font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
         />
         <TransactionStatus>
