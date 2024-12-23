@@ -2,12 +2,12 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { env } from "~/env";
-import { type ZapperNFTResponse, type ZapperPortfolioResponse } from "~/types/zapper";
+import { type ZapperNFTResponse, type ZapperPortfolioResponse, type WalletBalancesResponse } from "~/types/zapper";
 
 export const walletRouter = createTRPCRouter({
   getBalances: publicProcedure
     .input(z.object({ address: z.string() }))
-    .query(async ({ input }) => {
+    .query(async ({ input }): Promise<WalletBalancesResponse> => {
       const portfolioQuery = `
         query GetCompletePortfolio($addresses: [Address!]!, $networks: [Network!]) {
           portfolio(addresses: $addresses, networks: $networks) {
@@ -52,6 +52,7 @@ export const walletRouter = createTRPCRouter({
                 description
                 collection {
                   name
+                  address
                   floorPrice {
                     valueUsd
                   }
@@ -121,9 +122,12 @@ export const walletRouter = createTRPCRouter({
         throw new Error(nftData.errors[0]?.message ?? "Failed to fetch NFT data");
       }
 
+      const { portfolio } = portfolioData.data;
+      const nfts = nftData.data.nftUsersTokens.edges.map(edge => edge.node);
+
       return {
-        ...portfolioData.data.portfolio,
-        nfts: nftData.data.nftUsersTokens
+        ...portfolio,
+        nfts
       };
     }),
 });

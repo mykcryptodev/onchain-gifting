@@ -1,8 +1,10 @@
 import { api } from "~/utils/api";
 import { TokenOption } from "./TokenOption";
 import { type FC, useState } from "react";
+import { type WalletBalancesProps } from "~/types/zapper";
+import { NftOption } from "./NftOption";
 
-export const WalletBalances: FC<{ address: string }> = ({ address }) => {
+export const WalletBalances: FC<WalletBalancesProps> = ({ address }) => {
   const [isTokenOpen, setIsTokenOpen] = useState(false);
   const [isNftOpen, setIsNftOpen] = useState(false);
   const { data, isLoading } = api.wallet.getBalances.useQuery({ address }, {
@@ -41,12 +43,10 @@ export const WalletBalances: FC<{ address: string }> = ({ address }) => {
         </div>
         <h2 className="text-lg font-bold">NFTs</h2>
       </button>
-      <div className={`max-h-96 p-4 rounded-lg overflow-y-auto flex flex-col gap-4 content transition-all duration-200 ${isNftOpen ? 'max-h-[500px] opacity-100 visible' : 'max-h-0 opacity-0 overflow-hidden hidden'}`}>
-        {data?.nfts.edges.map((edge) => {
+      <div className={`max-h-96 p-4 rounded-lg overflow-y-auto grid grid-cols-2 sm:grid-cols-3 place-items-center gap-4 content transition-all duration-200 ${isNftOpen ? 'max-h-[500px] opacity-100 visible' : 'max-h-0 opacity-0 overflow-hidden hidden'}`}>
+        {data?.nfts.map((nft) => {
           return (
-            <div key={edge.node.tokenId}>
-              <span>{edge.node.name}</span>
-            </div>
+            <NftOption key={nft.tokenId} nft={nft} />
           )
         })}
       </div>

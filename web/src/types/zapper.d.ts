@@ -35,34 +35,54 @@ export interface ZapperTokenBalance {
   };
 }
 
+export interface ZapperNFT {
+  tokenId: string;
+  name: string;
+  description: string;
+  collection: {
+    name: string;
+    address: string;
+    floorPrice: {
+      valueUsd: number;
+    };
+  };
+  estimatedValue: {
+    valueUsd: number;
+  };
+  lastSale: {
+    valueUsd: number;
+  };
+  mediasV2: Array<{
+    url: string;
+  }>;
+}
+
 export interface ZapperNFTResponse {
   data: {
     nftUsersTokens: {
       edges: Array<{
-        node: {
-          tokenId: string;
-          name: string;
-          description: string;
-          collection: {
-            name: string;
-            floorPrice: {
-              valueUsd: number;
-            };
-          };
-          estimatedValue: {
-            valueUsd: number;
-          };
-          lastSale: {
-            valueUsd: number;
-          };
-          mediasV2: Array<{
-            url: string;
-          }>;
-        };
+        node: ZapperNFT;
       }>;
     };
   };
   errors?: Array<{ message: string }>;
+}
+
+export interface WalletBalancesResponse {
+  tokenBalances: ZapperTokenBalance[];
+  nftBalances: Array<{
+    network: string;
+    balanceUSD: number;
+  }>;
+  totals: {
+    total: number;
+    totalWithNFT: number;
+    totalByNetwork: Array<{
+      network: string;
+      total: number;
+    }>;
+  };
+  nfts: ZapperNFT[];
 }
 
 export interface WalletBalancesProps {
