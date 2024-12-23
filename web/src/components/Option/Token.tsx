@@ -16,6 +16,19 @@ export const TokenOption: FC<TokenOptionProps> = ({ option }) => {
     token.token === option.token.baseToken.address
   );
 
+  const formatBalance = (value: string) => {
+    const num = parseFloat(value);
+    if (num < 0.01) {
+      const str = num.toString();
+      const pattern = /^0\.0*[1-9]/;
+      const match = pattern.exec(str);
+      if (match) {
+        return num.toFixed(match[0].length - 2);
+      }
+    }
+    return num.toLocaleString();
+  };
+
   return (
     <>
       <div className="flex items-center justify-between w-full rounded-lg">
@@ -40,7 +53,7 @@ export const TokenOption: FC<TokenOptionProps> = ({ option }) => {
         <div className="flex items-center gap-4">
           <div className="text-right">
             <p className="font-medium">
-              {parseFloat(option.token.balance).toLocaleString()}
+              {formatBalance(option.token.balance)}
             </p>
             <p className="text-sm text-gray-500">
               {option.token.balanceUSD.toLocaleString(undefined, { 
