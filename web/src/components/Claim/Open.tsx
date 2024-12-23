@@ -59,7 +59,7 @@ export const Open: FC<Props> = ({ password }) => {
               Opening Gift Pack...
             </div>
           )}
-          {!isPending && "Open Gift Pack"}
+          {!isPending && !isClaiming && "Open Gift Pack"}
         </button>
       ) : (
         <Transaction

@@ -51,9 +51,5 @@ export const WatchClaim: FC<Prop> = ({ onClaim }) => {
     },
     pollingInterval: 1_000, 
   });
-  return (
-    <div>
-      <p>Watching for claim...</p>
-    </div>
-  )
+  return null;
 }

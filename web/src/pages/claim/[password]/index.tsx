@@ -1,5 +1,5 @@
 import { Avatar, Name } from "@coinbase/onchainkit/identity";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useState } from "react";
 import { getContract } from "thirdweb";
 import { CLIENT, GIFT_PACK_ADDRESS } from "~/constants";
@@ -15,6 +15,7 @@ import {
   AccountAvatar,
   AccountName,
 } from "thirdweb/react";
+import { ClaimContents } from "~/components/Claim/Contents";
 
 export default function Claim() {
   const router = useRouter();
@@ -22,26 +23,33 @@ export default function Claim() {
   const [pack, setPack] = useState<Pack | null>(null);
   const [claimingIsFinished, setClaimingIsFinished] = useState(false);
 
+  const fetchPack = useCallback(async () => {
+    if (pack || !password) return;
+    const encodedPassword = encodeAbiParameters(
+      [{ type: 'string' }],
+      [password]
+    );
+    const hash = viemKeccak256(encodedPassword);
+    const fetchedPack = await getPackByHash({
+      contract: getContract({
+        address: GIFT_PACK_ADDRESS,
+        chain: CHAIN,
+        client: CLIENT,
+      }),
+      hash,
+    });
+    setPack(fetchedPack);
+  }, [password]);
+
   useEffect(() => {
-    const fetchPack = async () => {
-      if (pack || !password) return;
-      const encodedPassword = encodeAbiParameters(
-        [{ type: 'string' }],
-        [password]
-      );
-      const hash = viemKeccak256(encodedPassword);
-      const fetchedPack = await getPackByHash({
-        contract: getContract({
-          address: GIFT_PACK_ADDRESS,
-          chain: CHAIN,
-          client: CLIENT,
-        }),
-        hash,
-      });
-      setPack(fetchedPack);
-    };
+    if (!fetchPack) return;
     void fetchPack();
-  }, [pack, password]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchPack]);
+
+  console.log({pack});
+
+  if (!pack) return null;
 
   return (
     <div className="flex flex-col gap-2 justify-center items-center">
@@ -57,6 +65,9 @@ export default function Claim() {
               width={40}
               height={40}
               className="rounded-full"
+              loadingComponent={
+                <div className="h-10 w-10 rounded-full bg-gray-200 animate-pulse" />
+              }
               fallbackComponent={
                 <Avatar
                   address={pack.creator}
@@ -66,6 +77,9 @@ export default function Claim() {
               }
             />
             <AccountName
+              loadingComponent={
+                <div className="h-6 w-24 rounded-lg bg-gray-200 animate-pulse" />
+              }
               fallbackComponent={
                 <Name
                   address={pack.creator}
@@ -78,15 +92,20 @@ export default function Claim() {
       )}
       <p>They said...</p>
       <p className="text-lg font-bold">{password}</p>
-      <Open 
-        password={password} 
-        key={claimingIsFinished ? "finished" : "not-finished"}
-      />
-      {!pack?.opened && (
-        <WatchClaim onClaim={(id) => {
-          console.log({gotClaim:true, id});
-          setClaimingIsFinished(true);
-        }} />
+      {pack?.opened ? (
+        <ClaimContents pack={pack} />
+      ) : (
+        <>
+          <Open 
+            password={password} 
+            key={claimingIsFinished ? "finished" : "not-finished"}
+          />
+          <WatchClaim onClaim={(id) => {
+            console.log({gotClaim:true, id});
+            void fetchPack();
+            setClaimingIsFinished(true);
+          }} />
+        </>
       )}
     </div>
   );

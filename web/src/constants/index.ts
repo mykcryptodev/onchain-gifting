@@ -4,7 +4,7 @@ import { base } from "wagmi/chains";
 
 export const APP_NAME = "Onchain Gifting";
 
-export const GIFT_PACK_ADDRESS = "0x445bf2d8c89472a2289360e4e15be0c1951ab536";// "0xA9Dc74673fb099885e830eb534b89e65Dd5a68f6";
+export const GIFT_PACK_ADDRESS = "0x1de1cedec09bb1a3dd5bfacc0540d9c1f836e6f2";// "0xA9Dc74673fb099885e830eb534b89e65Dd5a68f6";
 
 export const WAGMI_CHAIN = base;
 export const CHAIN = defineChain(WAGMI_CHAIN);
