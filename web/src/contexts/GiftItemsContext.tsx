@@ -74,14 +74,18 @@ export function GiftItemsProvider({ children }: { children: ReactNode }) {
   const removeERC721 = (token: string, tokenId: string) => {
     setSelectedAssets(prev => ({
       ...prev,
-      erc721: prev.erc721.filter((erc721) => erc721.token !== token && erc721.tokenId !== tokenId)
+      erc721: prev.erc721.filter((erc721) => 
+        !(erc721.token === token && erc721.tokenId === tokenId)
+      )
     }));
   };
 
   const removeERC1155 = (token: string, tokenId: string) => {
     setSelectedAssets(prev => ({
       ...prev,
-      erc1155: prev.erc1155.filter((erc1155) => erc1155.token !== token && erc1155.tokenId !== tokenId)
+      erc1155: prev.erc1155.filter((erc1155) => 
+        !(erc1155.token === token && erc1155.tokenId === tokenId)
+      )
     }));
   };
 
