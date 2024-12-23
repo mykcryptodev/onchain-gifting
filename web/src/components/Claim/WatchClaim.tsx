@@ -33,6 +33,7 @@ export const WatchClaim: FC<Prop> = ({ onClaim }) => {
       },
     ],
     eventName: 'PackOpened',
+    // if the pack is opened by the user, unwatch and call onClaim
     onLogs(logs) {
       console.log({ logs });
       if (

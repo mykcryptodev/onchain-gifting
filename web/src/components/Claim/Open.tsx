@@ -5,7 +5,6 @@ import { openPackWithPassword } from "~/thirdweb/8453/0x445bf2d8c89472a2289360e4
 import { useAccount } from "wagmi";
 import { Transaction, TransactionButton, TransactionStatus, TransactionStatusAction, TransactionStatusLabel } from "@coinbase/onchainkit/transaction";
 import { api } from "~/utils/api";
-import { WatchClaim } from "./WatchClaim";
 
 type Props = {
   password: string;
@@ -23,7 +22,7 @@ export const Open: FC<Props> = ({ password }) => {
         chain: CHAIN,
       }),
       password,
-      recipient: address!,
+      recipient: address,
     });
     return [{
       to: GIFT_PACK_ADDRESS as `0x${string}`,
@@ -66,9 +65,6 @@ export const Open: FC<Props> = ({ password }) => {
         )}
         {!isPending && "Open Pack"}
       </button>
-      <WatchClaim onClaim={(id) => {
-        console.log({gotClaim:true, id});
-      }} />
     </div>
   );
 };

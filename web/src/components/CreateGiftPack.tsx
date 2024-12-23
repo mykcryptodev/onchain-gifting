@@ -6,7 +6,7 @@ import { createPack } from "~/thirdweb/8453/0x445bf2d8c89472a2289360e4e15be0c195
 import { allowance, approve as approveERC20 } from "thirdweb/extensions/erc20";
 import { approve as approveERC721 } from "thirdweb/extensions/erc721";
 import { setApprovalForAll as setApprovalForAllERC1155 } from "thirdweb/extensions/erc1155";
-import { isAddressEqual, Hex } from "viem";
+import { isAddressEqual, type Hex } from "viem";
 import { useAccount } from "wagmi";
 
 type Props = {

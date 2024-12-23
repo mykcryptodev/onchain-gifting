@@ -1,7 +1,7 @@
 import { IdentityCard } from "@coinbase/onchainkit/identity";
 import { useEffect } from "react";
 import { useState } from "react";
-import { getContract, keccak256 } from "thirdweb";
+import { getContract } from "thirdweb";
 import { ClaimContents } from "~/components/Claim/Contents";
 import { CLIENT, GIFT_PACK_ADDRESS } from "~/constants";
 import { CHAIN } from "~/constants";
@@ -10,6 +10,7 @@ import { type Pack } from "~/types/giftpack";
 import { useRouter } from "next/router";
 import { Open } from "~/components/Claim/Open";
 import { keccak256 as viemKeccak256, encodeAbiParameters } from "viem";
+import { WatchClaim } from "~/components/Claim/WatchClaim";
 
 export default function Claim() {
   const router = useRouter();
@@ -45,6 +46,11 @@ export default function Claim() {
       <ClaimContents />
       The password is {password}
       <Open password={password} />
+      {!pack?.opened && (
+        <WatchClaim onClaim={(id) => {
+          console.log({gotClaim:true, id});
+        }} />
+      )}
     </>
   );
 }

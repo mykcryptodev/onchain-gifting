@@ -1,3 +1,4 @@
+import { Hex } from "thirdweb";
 import { z } from "zod";
 import { CHAIN, GIFT_PACK_ADDRESS } from "~/constants";
 import { env } from "~/env";
@@ -30,7 +31,8 @@ export const engineRouter = createTRPCRouter({
         },
       );
        
-      const { result } = await resp.json();
+      const { result } = await resp.json() as { result: Hex };
+      console.log({ result });
       return result;
     })
 });
