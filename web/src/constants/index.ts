@@ -4,10 +4,25 @@ import { base } from "wagmi/chains";
 
 export const APP_NAME = "Onchain Gifting";
 
-export const GIFT_PACK_ADDRESS = "0x1de1cedec09bb1a3dd5bfacc0540d9c1f836e6f2";// "0xA9Dc74673fb099885e830eb534b89e65Dd5a68f6";
+export const GIFT_PACK_ADDRESS = "0x1de1cedec09bb1a3dd5bfacc0540d9c1f836e6f2";
 
 export const WAGMI_CHAIN = base;
-export const CHAIN = defineChain(WAGMI_CHAIN);
+export const CHAIN = defineChain({
+  id: base.id,
+  name: base.name,
+  rpcUrls: {
+    default: {
+      http: [`https://${WAGMI_CHAIN.id}.rpc.thirdweb.com/${env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}`],
+    },
+  },
+  nativeCurrency: base.nativeCurrency,
+  blockExplorers: {
+    default: {
+      name: base.blockExplorers.default.name,
+      url: base.blockExplorers.default.url,
+    },
+  },
+});
 
 export const CLIENT = createThirdwebClient({
   clientId: env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
