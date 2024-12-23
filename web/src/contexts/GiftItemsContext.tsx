@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
+import { ZERO_ADDRESS } from "thirdweb";
+import { isAddressEqual } from "viem";
 
 export type GiftItem = {
   erc20: { 
@@ -93,6 +95,14 @@ export function GiftItemsProvider({ children }: { children: ReactNode }) {
       ...prev,
       erc20: prev.erc20.filter((erc20) => erc20.token !== token)
     }));
+    // if this is the zero address, remove the ethAmount
+    if (isAddressEqual(token, ZERO_ADDRESS)) {
+      setSelectedAssets(prev => ({
+        ...prev,
+        ethAmount: "0",
+        ethValueUsd: 0
+      }));
+    }
   };
 
   const removeERC721 = (token: string, tokenId: string) => {

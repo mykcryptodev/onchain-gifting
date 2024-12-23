@@ -2,7 +2,8 @@ import { type FC, useState } from "react";
 import { useGiftItems } from "~/contexts/GiftItemsContext";
 import { type ZapperTokenBalance } from "~/types/zapper";
 import { createPortal } from "react-dom";
-import { toUnits } from "thirdweb";
+import { toUnits, ZERO_ADDRESS } from "thirdweb";
+import { isAddressEqual } from "viem";
 
 interface AddTokenModalProps {
   token: ZapperTokenBalance;
@@ -11,7 +12,7 @@ interface AddTokenModalProps {
 
 export const AddTokenModal: FC<AddTokenModalProps> = ({ token, onClose }) => {
   const [amount, setAmount] = useState("");
-  const { addERC20 } = useGiftItems();
+  const { addERC20, setEthAmount } = useGiftItems();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,6 +21,9 @@ export const AddTokenModal: FC<AddTokenModalProps> = ({ token, onClose }) => {
     const valueUsd = token.token.balanceUSD * (parseFloat(amount) / parseFloat(token.token.balance));
     const amountUnits = toUnits(amount.toString(), token.token.baseToken.decimals).toString();
     
+    if (isAddressEqual(token.token.baseToken.address, ZERO_ADDRESS)) {
+      setEthAmount(amountUnits, valueUsd);
+    }
     addERC20(
       token.token.baseToken.address, 
       amountUnits, 

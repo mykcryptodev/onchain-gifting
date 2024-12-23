@@ -1,6 +1,7 @@
 import { useGiftItems } from "~/contexts/GiftItemsContext";
 import { Nft } from "./Selected/Nft";
 import { SelectedToken } from "./Selected/Token";
+import { ZERO_ADDRESS } from "thirdweb";
 
 export const PackContents = () => {
   const { selectedAssets } = useGiftItems();
