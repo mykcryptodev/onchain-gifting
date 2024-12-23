@@ -10,16 +10,19 @@ import {IERC1155} from "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import {ERC1155Holder} from "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable {
+contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable, AccessControl {
     using SafeERC20 for IERC20;
 
     error InvalidTokenAmount();
     error InvalidTokenAddress();
     error InvalidRecipient();
     error PackAlreadyOpened();
-    error NotPackOwnerOrContractOwner();
+    error NotPackOwnerOrOpener();
     error TransferFailed();
+
+    bytes32 public constant OPENER_ROLE = keccak256("OPENER_ROLE");
 
     struct ERC20Token {
         address tokenAddress;
@@ -59,7 +62,10 @@ contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable {
     );
     event PackOpened(uint256 indexed tokenId, address indexed opener);
 
-    constructor() ERC721("GiftPack", "GIFT") Ownable(msg.sender) {}
+    constructor() ERC721("GiftPack", "GIFT") Ownable(msg.sender) {
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _grantRole(OPENER_ROLE, msg.sender);
+    }
 
     function createPack(
         ERC20Token[] calldata erc20Tokens,
@@ -125,8 +131,14 @@ contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable {
 
     function openPack(uint256 tokenId, address recipient) external nonReentrant {
         if (recipient == address(0)) revert InvalidRecipient();
-        // owners of packs can open them for themselves or the admin can open on behalf of them
-        if (ownerOf(tokenId) != msg.sender && msg.sender != owner()) revert NotPackOwnerOrContractOwner();
+        if (
+            // is the pack owner
+            ownerOf(tokenId) != msg.sender && 
+            // is the contract owner
+            msg.sender != owner() &&
+            // is an opener
+            !hasRole(OPENER_ROLE, msg.sender)
+        ) revert NotPackOwnerOrOpener();
         
         Pack storage pack = packs[tokenId];
         if (pack.opened) revert PackAlreadyOpened();
@@ -198,10 +210,12 @@ contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable {
         public
         view
         virtual
-        override(ERC721, ERC1155Holder)
+        override(ERC721, ERC1155Holder, AccessControl)
         returns (bool)
     {
-        return ERC721.supportsInterface(interfaceId) || ERC1155Holder.supportsInterface(interfaceId);
+        return ERC721.supportsInterface(interfaceId) || 
+               ERC1155Holder.supportsInterface(interfaceId) ||
+               AccessControl.supportsInterface(interfaceId);
     }
 
     receive() external payable {}

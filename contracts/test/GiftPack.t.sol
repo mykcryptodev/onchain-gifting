@@ -262,9 +262,43 @@ contract GiftPackTest is Test {
         vm.startPrank(bob);
 
         // Try to open pack as non-owner
-        vm.expectRevert(GiftPack.NotPackOwner.selector);
+        vm.expectRevert(GiftPack.NotPackOwnerOrOpener.selector);
         pack.openPack(tokenId, bob);
 
         vm.stopPrank();
+    }
+
+    function test_OpenerRoleCanOpenOthersPacks() public {
+        vm.startPrank(alice);
+
+        // Setup pack with tokens
+        uint256 erc20Amount = 100;
+        token1.approve(address(pack), erc20Amount);
+
+        GiftPack.ERC20Token[] memory tokens = new GiftPack.ERC20Token[](1);
+        tokens[0] = GiftPack.ERC20Token({
+            tokenAddress: address(token1),
+            amount: erc20Amount
+        });
+
+        // Create pack
+        uint256 tokenId = pack.createPack(tokens, new GiftPack.ERC721Token[](0), new GiftPack.ERC1155Token[](0));
+        vm.stopPrank();
+
+        // Setup opener account
+        address opener = makeAddr("opener");
+        pack.grantRole(pack.OPENER_ROLE(), opener);
+        assertTrue(pack.hasRole(pack.OPENER_ROLE(), opener));
+
+        // Setup recipient
+        address recipient = makeAddr("recipient");
+
+        // Opener opens pack
+        vm.prank(opener);
+        pack.openPack(tokenId, recipient);
+
+        // Verify recipient received tokens
+        assertEq(token1.balanceOf(recipient), erc20Amount);
+        assertTrue(pack.isPackOpened(tokenId));
     }
 }
