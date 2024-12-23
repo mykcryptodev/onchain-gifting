@@ -1,11 +1,12 @@
 import { useMemo, useEffect, useState } from "react";
 import { Transaction, TransactionButton, TransactionStatusLabel, TransactionStatus, TransactionStatusAction } from "@coinbase/onchainkit/transaction"
-import { getContract } from "thirdweb";
+import { encode, getContract, ZERO_ADDRESS } from "thirdweb";
 import { CHAIN, GIFT_PACK_ADDRESS, CLIENT } from "~/constants";
 import { createPack } from "~/thirdweb/84532/0xa9dc74673fb099885e830eb534b89e65dd5a68f6";
 import { approve as approveERC20 } from "thirdweb/extensions/erc20";
 import { approve as approveERC721 } from "thirdweb/extensions/erc721";
 import { setApprovalForAll as setApprovalForAllERC1155 } from "thirdweb/extensions/erc1155";
+import { isAddressEqual } from "viem";
 
 type Props = {
   erc20s: { token: string; amount: string }[];
@@ -21,7 +22,7 @@ type Call = {
 };
 
 export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount }: Props) {
-  const createPackTransaction = useMemo(() => {
+  const createPackTransaction = useMemo(async () => {
     const tx = createPack({
       contract: getContract({
         chain: CHAIN,
@@ -42,24 +43,28 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount }: Props) 
         amount: BigInt(amount),
       }))
     });
+
+    
     return {
       to: tx.to as `0x${string}`,
       value: BigInt(ethAmount),
-      data: tx.data,
-    } as const;
+      data: await encode(tx),
+    };
   }, [erc20s, erc721s, erc1155s, ethAmount]);
 
   const erc20ApprovalTransactions = useMemo(() => {
-    return erc20s.map(({ token, amount }) => {
-      return approveERC20({
-        contract: getContract({
-          chain: CHAIN,
-          address: token,
-          client: CLIENT,
-        }),
-        spender: GIFT_PACK_ADDRESS as `0x${string}`,
-        amountWei: BigInt(amount),
-      });
+    return erc20s
+      .filter(({ token }) => !isAddressEqual(token, ZERO_ADDRESS))
+      .map(({ token, amount }) => {
+        return approveERC20({
+          contract: getContract({
+            chain: CHAIN,
+            address: token,
+            client: CLIENT,
+          }),
+          spender: GIFT_PACK_ADDRESS as `0x${string}`,
+          amountWei: BigInt(amount),
+        });
     });
   }, [erc20s]);
 
@@ -96,25 +101,25 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount }: Props) 
   useEffect(() => {
     const prepareCalls = async () => {
       const preparedCalls = await Promise.all([
-        ...erc20ApprovalTransactions.map(tx => ({
+        ...erc20ApprovalTransactions.map(async tx => ({
           to: tx.to as `0x${string}`,
-          data: tx.data as `0x${string}`,
+          data: await encode(tx),
           value: BigInt(0)
         })),
-        ...erc721ApprovalTransactions.map(tx => ({
+        ...erc721ApprovalTransactions.map(async tx => ({
           to: tx.to as `0x${string}`,
-          data: tx.data as `0x${string}`,
+          data: await encode(tx),
           value: BigInt(0)
         })),
-        ...erc1155ApprovalTransactions.map(tx => ({
+        ...erc1155ApprovalTransactions.map(async tx => ({
           to: tx.to as `0x${string}`,
-          data: tx.data as `0x${string}`,
+          data: await encode(tx),
           value: BigInt(0)
         })),
         {
-          to: createPackTransaction.to,
-          data: createPackTransaction.data as `0x${string}`,
-          value: createPackTransaction.value
+          to: (await createPackTransaction).to,
+          data: (await createPackTransaction).data,
+          value: (await createPackTransaction).value
         }
       ]);
       setCalls(preparedCalls);
