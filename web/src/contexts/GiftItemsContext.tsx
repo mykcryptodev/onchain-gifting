@@ -143,7 +143,9 @@ export function GiftItemsProvider({ children }: { children: ReactNode }) {
   };
 
   const getTotalValueUsd = () => {
-    const erc20Value = selectedAssets.erc20.reduce((sum, token) => sum + (token.valueUsd ?? 0), 0);
+    const erc20Value = selectedAssets.erc20
+      .filter(token => !isAddressEqual(token.token, ZERO_ADDRESS))
+      .reduce((sum, token) => sum + (token.valueUsd ?? 0), 0);
     const erc721Value = selectedAssets.erc721.reduce((sum, token) => sum + (token.valueUsd ?? 0), 0);
     const erc1155Value = selectedAssets.erc1155.reduce((sum, token) => sum + (token.valueUsd ?? 0), 0);
     const ethValue = selectedAssets.ethValueUsd ?? 0;
