@@ -1,8 +1,10 @@
+import { getContract } from "thirdweb";
 import { z } from "zod";
-import { CHAIN, GIFT_PACK_ADDRESS } from "~/constants";
+import { CHAIN, CLIENT, GIFT_PACK_ADDRESS } from "~/constants";
 import { env } from "~/env";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { isHashUsed } from "~/thirdweb/8453/0x1b6e902360035ac523e27d8fe69140a271ab9e7c";
 
 export const engineRouter = createTRPCRouter({
   openPack: publicProcedure
@@ -31,5 +33,20 @@ export const engineRouter = createTRPCRouter({
       );
        
       return await resp.json() as { queueId: string };
+    }),
+  getIsHashUsed: publicProcedure
+    .input(z.object({ 
+      hash: z.string(),
+    }))
+    .query(async ({ input }) => {
+      const contract = getContract({
+        address: GIFT_PACK_ADDRESS,
+        client: CLIENT,
+        chain: CHAIN,
+      });
+      return await isHashUsed({ 
+        contract,
+        hash: input.hash as `0x${string}`,
+      });
     })
 });

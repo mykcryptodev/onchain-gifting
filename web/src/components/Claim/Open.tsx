@@ -1,7 +1,7 @@
 import { useMemo, useState, type FC } from "react";
 import { getContract, encode } from "thirdweb";
 import { CHAIN, CLIENT, GIFT_PACK_ADDRESS } from "~/constants";
-import { openPackWithPassword } from "~/thirdweb/8453/0x445bf2d8c89472a2289360e4e15be0c1951ab536";
+import { openPackWithPassword } from "~/thirdweb/8453/0x1b6e902360035ac523e27d8fe69140a271ab9e7c";
 import { useAccount } from "wagmi";
 import { Transaction, TransactionButton, TransactionStatus, TransactionStatusAction, TransactionStatusLabel } from "@coinbase/onchainkit/transaction";
 import { api } from "~/utils/api";

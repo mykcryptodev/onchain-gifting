@@ -2,12 +2,14 @@ import { useMemo, useEffect, useState } from "react";
 import { Transaction, TransactionButton, TransactionStatusLabel, TransactionStatus, TransactionStatusAction } from "@coinbase/onchainkit/transaction"
 import { encode, getContract, keccak256, ZERO_ADDRESS } from "thirdweb";
 import { CHAIN, GIFT_PACK_ADDRESS, CLIENT } from "~/constants";
-import { createPack } from "~/thirdweb/8453/0x445bf2d8c89472a2289360e4e15be0c1951ab536";
+import { createPack } from "~/thirdweb/8453/0x1b6e902360035ac523e27d8fe69140a271ab9e7c";
 import { allowance, approve as approveERC20 } from "thirdweb/extensions/erc20";
 import { approve as approveERC721 } from "thirdweb/extensions/erc721";
 import { setApprovalForAll as setApprovalForAllERC1155 } from "thirdweb/extensions/erc1155";
 import { isAddressEqual, type Hex } from "viem";
 import { useAccount } from "wagmi";
+import { useGiftItems } from "~/contexts/GiftItemsContext";
+import { api } from "~/utils/api";
 
 type Props = {
   erc20s: { token: string; amount: string }[];
@@ -26,6 +28,12 @@ type Call = {
 export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: Props) {
   const { address } = useAccount();
   const [erc20sWithSufficientAllowance, setErc20sWithSufficientAllowance] = useState<string[]>([]);
+  const { hash: giftHash } = useGiftItems();
+  const { data: isHashUsed } = api.engine.getIsHashUsed.useQuery({
+    hash: giftHash ?? "",
+  }, {
+    enabled: !!giftHash,
+  });
 
   useEffect(() => {
     const checkAllowances = async () => {
@@ -179,7 +187,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
         >
         <TransactionButton 
           text="Create Gift Pack"
-          disabled={!calls.length || !hash}
+          disabled={!calls.length || !hash || isHashUsed}
           className="px-4 py-2 text-lg font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
         />
         <TransactionStatus>
@@ -187,6 +195,11 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
           <TransactionStatusAction />
         </TransactionStatus>
       </Transaction>
+      {isHashUsed && (
+        <p className="text-red-500 text-opacity-90 text-sm">
+          Please use a different message.
+        </p>
+      )}
     </div>
   );
 } 

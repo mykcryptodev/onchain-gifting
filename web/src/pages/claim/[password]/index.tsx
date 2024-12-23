@@ -4,7 +4,7 @@ import { useState } from "react";
 import { getContract } from "thirdweb";
 import { CLIENT, GIFT_PACK_ADDRESS } from "~/constants";
 import { CHAIN } from "~/constants";
-import { getPackByHash } from "~/thirdweb/8453/0x445bf2d8c89472a2289360e4e15be0c1951ab536";
+import { getPackByHash } from "~/thirdweb/8453/0x1b6e902360035ac523e27d8fe69140a271ab9e7c";
 import { type Pack } from "~/types/giftpack";
 import { useRouter } from "next/router";
 import { Open } from "~/components/Claim/Open";

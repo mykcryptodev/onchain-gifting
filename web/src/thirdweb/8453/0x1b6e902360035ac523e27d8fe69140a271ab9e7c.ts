@@ -1196,6 +1196,54 @@ export async function isApprovedForAll(
 
 
 /**
+ * Represents the parameters for the "isHashUsed" function.
+ */
+export type IsHashUsedParams = {
+  hash: AbiParameterToPrimitiveType<{"internalType":"bytes32","name":"hash","type":"bytes32"}>
+};
+
+/**
+ * Calls the "isHashUsed" function on the contract.
+ * @param options - The options for the isHashUsed function.
+ * @returns The parsed result of the function call.
+ * @example
+ * ```
+ * import { isHashUsed } from "TODO";
+ *
+ * const result = await isHashUsed({
+ *  hash: ...,
+ * });
+ *
+ * ```
+ */
+export async function isHashUsed(
+  options: BaseTransactionOptions<IsHashUsedParams>
+) {
+  return readContract({
+    contract: options.contract,
+    method: [
+  "0x20021d8b",
+  [
+    {
+      "internalType": "bytes32",
+      "name": "hash",
+      "type": "bytes32"
+    }
+  ],
+  [
+    {
+      "internalType": "bool",
+      "name": "",
+      "type": "bool"
+    }
+  ]
+],
+    params: [options.hash]
+  });
+};
+
+
+/**
  * Represents the parameters for the "isPackOpened" function.
  */
 export type IsPackOpenedParams = {
@@ -2276,6 +2324,51 @@ export function setApprovalForAll(
   []
 ],
     params: [options.operator, options.approved]
+  });
+};
+
+
+/**
+ * Represents the parameters for the "setBaseURI" function.
+ */
+export type SetBaseURIParams = {
+  baseURI: AbiParameterToPrimitiveType<{"internalType":"string","name":"baseURI","type":"string"}>
+};
+
+/**
+ * Calls the "setBaseURI" function on the contract.
+ * @param options - The options for the "setBaseURI" function.
+ * @returns A prepared transaction object.
+ * @example
+ * ```
+ * import { setBaseURI } from "TODO";
+ *
+ * const transaction = setBaseURI({
+ *  baseURI: ...,
+ * });
+ *
+ * // Send the transaction
+ * ...
+ *
+ * ```
+ */
+export function setBaseURI(
+  options: BaseTransactionOptions<SetBaseURIParams>
+) {
+  return prepareContractCall({
+    contract: options.contract,
+    method: [
+  "0x55f804b3",
+  [
+    {
+      "internalType": "string",
+      "name": "baseURI",
+      "type": "string"
+    }
+  ],
+  []
+],
+    params: [options.baseURI]
   });
 };
 

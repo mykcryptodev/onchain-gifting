@@ -23,7 +23,6 @@ export default async function handler(
     name: "Gift Pack",
     description: "This NFT represents a dynamic gift bundle designed to hold multiple digital assets in one place. Owners can deposit various tokens or collectibles into the pack, transfer it to a recipient, and allow them to unwrap the contents at their convenience. It's a seamless way to share and receive digital assets!",
     image: `${baseUrl}/image/${tokenId}`,
-    external_url: `${baseUrl}/claim/${tokenId}`,
     attributes: [
       {
         trait_type: "Type",
