@@ -366,4 +366,88 @@ contract GiftPackTest is Test {
 
         vm.stopPrank();
     }
+
+    function test_TokenURI_RevertWhen_TokenNotMinted() public {
+        vm.expectRevert(GiftPack.TokenNotMinted.selector);
+        pack.tokenURI(0);
+    }
+
+    function test_TokenURI_EmptyWhen_NoBaseURI() public {
+        bytes32 hash = keccak256(abi.encode("password"));
+        GiftPack.ERC20Token[] memory erc20Tokens = new GiftPack.ERC20Token[](0);
+        GiftPack.ERC721Token[] memory erc721Tokens = new GiftPack.ERC721Token[](0);
+        GiftPack.ERC1155Token[] memory erc1155Tokens = new GiftPack.ERC1155Token[](0);
+
+        vm.prank(alice);
+        uint256 tokenId = pack.createPack(erc20Tokens, erc721Tokens, erc1155Tokens, hash);
+
+        assertEq(pack.tokenURI(tokenId), "");
+    }
+
+    function test_TokenURI_ReturnsCorrectURI() public {
+        // Create a pack first
+        bytes32 hash = keccak256(abi.encode("password"));
+        GiftPack.ERC20Token[] memory erc20Tokens = new GiftPack.ERC20Token[](0);
+        GiftPack.ERC721Token[] memory erc721Tokens = new GiftPack.ERC721Token[](0);
+        GiftPack.ERC1155Token[] memory erc1155Tokens = new GiftPack.ERC1155Token[](0);
+
+        vm.prank(alice);
+        uint256 tokenId = pack.createPack(erc20Tokens, erc721Tokens, erc1155Tokens, hash);
+
+        // Set base URI
+        string memory baseURI = "https://api.example.com/metadata/";
+        pack.setBaseURI(baseURI);
+
+        // Check token URI
+        assertEq(pack.tokenURI(tokenId), string(abi.encodePacked(baseURI, vm.toString(tokenId))));
+    }
+
+    function test_SetBaseURI_OnlyAdmin() public {
+        string memory baseURI = "https://api.example.com/metadata/";
+        
+        // Non-admin should not be able to set base URI
+        vm.prank(alice);
+        vm.expectRevert();
+        pack.setBaseURI(baseURI);
+
+        // Admin should be able to set base URI
+        pack.setBaseURI(baseURI);
+        
+        // Create a pack and verify URI
+        bytes32 hash = keccak256(abi.encode("password"));
+        GiftPack.ERC20Token[] memory erc20Tokens = new GiftPack.ERC20Token[](0);
+        GiftPack.ERC721Token[] memory erc721Tokens = new GiftPack.ERC721Token[](0);
+        GiftPack.ERC1155Token[] memory erc1155Tokens = new GiftPack.ERC1155Token[](0);
+
+        vm.prank(alice);
+        uint256 tokenId = pack.createPack(erc20Tokens, erc721Tokens, erc1155Tokens, hash);
+
+        assertEq(pack.tokenURI(tokenId), string(abi.encodePacked(baseURI, vm.toString(tokenId))));
+    }
+
+    function test_SetBaseURI_CanUpdate() public {
+        string memory baseURI1 = "https://api.example.com/metadata/";
+        string memory baseURI2 = "https://new-api.example.com/metadata/";
+        
+        // Set initial base URI
+        pack.setBaseURI(baseURI1);
+        
+        // Create a pack
+        bytes32 hash = keccak256(abi.encode("password"));
+        GiftPack.ERC20Token[] memory erc20Tokens = new GiftPack.ERC20Token[](0);
+        GiftPack.ERC721Token[] memory erc721Tokens = new GiftPack.ERC721Token[](0);
+        GiftPack.ERC1155Token[] memory erc1155Tokens = new GiftPack.ERC1155Token[](0);
+
+        vm.prank(alice);
+        uint256 tokenId = pack.createPack(erc20Tokens, erc721Tokens, erc1155Tokens, hash);
+
+        // Verify initial URI
+        assertEq(pack.tokenURI(tokenId), string(abi.encodePacked(baseURI1, vm.toString(tokenId))));
+
+        // Update base URI
+        pack.setBaseURI(baseURI2);
+
+        // Verify updated URI
+        assertEq(pack.tokenURI(tokenId), string(abi.encodePacked(baseURI2, vm.toString(tokenId))));
+    }
 }

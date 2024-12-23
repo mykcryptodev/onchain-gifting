@@ -11,9 +11,11 @@ import {ERC1155Holder} from "@openzeppelin/contracts/token/ERC1155/utils/ERC1155
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable, AccessControl {
     using SafeERC20 for IERC20;
+    using Strings for uint256;
 
     error InvalidTokenAmount();
     error InvalidTokenAddress();
@@ -23,8 +25,10 @@ contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable, AccessCont
     error TransferFailed();
     error HashAlreadyUsed();
     error HashNotFound();
-
+    error TokenNotMinted();
     bytes32 public constant OPENER_ROLE = keccak256("OPENER_ROLE");
+
+    string private _baseTokenURI;
 
     struct ERC20Token {
         address tokenAddress;
@@ -146,8 +150,6 @@ contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable, AccessCont
         bytes32 hash = keccak256(abi.encode(password));
         if (!hashUsed[hash]) revert HashNotFound();
         uint256 tokenId = tokenIdByHash[hash];
-        delete tokenIdByHash[hash];
-        delete hashUsed[hash];
 
         _openPack(tokenId, recipient);
     }
@@ -235,6 +237,32 @@ contract GiftPack is ERC721, ERC1155Holder, ReentrancyGuard, Ownable, AccessCont
 
     function isPackOpened(uint256 tokenId) external view returns (bool) {
         return packs[tokenId].opened;
+    }
+
+    /**
+     * @dev Sets the base URI for token metadata
+     * @param baseURI The new base URI
+     */
+    function setBaseURI(string memory baseURI) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        _baseTokenURI = baseURI;
+    }
+
+    /**
+     * @dev Returns the base URI for token metadata
+     */
+    function _baseURI() internal view virtual override returns (string memory) {
+        return _baseTokenURI;
+    }
+
+    /**
+     * @dev Returns the URI for a given token ID
+     * @param tokenId The ID of the token
+     */
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        if (_nextTokenId <= tokenId) revert TokenNotMinted();
+
+        string memory baseURI = _baseURI();
+        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString())) : "";
     }
     
     function supportsInterface(bytes4 interfaceId)
