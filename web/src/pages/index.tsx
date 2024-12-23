@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useAccount } from "wagmi";
 import { CreateGiftPack } from "~/components/CreateGiftPack";
 import { PackContents } from "~/components/PackContents";
@@ -12,6 +13,9 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center sm:p-20 p-4 w-full">
+      <div className="absolute top-4 left-4">
+        <Image src="/images/logo.png" alt="Logo" width={32} height={32} />
+      </div>
       <div className="mb-8">
         <WalletComponents />
       </div>
