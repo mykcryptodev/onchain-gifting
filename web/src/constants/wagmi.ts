@@ -1,5 +1,6 @@
 import { http, cookieStorage, createConfig, createStorage } from 'wagmi';
 import { coinbaseWallet, metaMask, walletConnect, safe, injected } from 'wagmi/connectors';
+import { farcasterFrame } from '@farcaster/frame-wagmi-connector';
 import { WAGMI_CHAIN } from '.';
 import { env } from '~/env';
  
@@ -7,6 +8,7 @@ export function getConfig() {
   return createConfig({
     chains: [WAGMI_CHAIN], // add baseSepolia for testing
     connectors: [
+      farcasterFrame(),
       coinbaseWallet({
         appName: 'Onchain Gifting',
         preference: 'all',
