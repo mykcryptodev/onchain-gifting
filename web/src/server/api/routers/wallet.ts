@@ -44,8 +44,8 @@ export const walletRouter = createTRPCRouter({
       `;
 
       const nftQuery = `
-        query GetNFTs($owners: [Address!]!, $network: Network) {
-          nftUsersTokens(owners: $owners, network: $network) {
+        query GetNFTs($owners: [Address!]!, $network: Network, $first: Int) {
+          nftUsersTokens(owners: $owners, network: $network, first: $first) {
             edges {
               node {
                 tokenId
@@ -82,7 +82,8 @@ export const walletRouter = createTRPCRouter({
         addresses: [input.address],
         owners: [input.address],
         networks: ["BASE_MAINNET"],
-        network: "BASE_MAINNET"
+        network: "BASE_MAINNET",
+        first: 100,
       };
 
       const [portfolioResponse, nftResponse] = await Promise.all([
