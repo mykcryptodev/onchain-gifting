@@ -1,12 +1,27 @@
 import { type Metadata } from 'next'
 
+const frame = {
+  version: "next",
+  imageUrl: "https://onchaingift.com/images/logo.png",
+  button: {
+    title: "Launch Frame",
+    action: {
+      type: "launch_frame",
+      name: "Onchain Gift",
+      url: "https://onchaingift.com",
+      splashImageUrl: "https://onchaingift.com/images/logo.png",
+      splashBackgroundColor: "#f7f7f7",
+    },
+  },
+};
+
 export const metadata: Metadata = {
-  title: 'Gift Pack - Create and Share Digital Gift Packs',
-  description: 'Create and share personalized digital gift packs with your loved ones. Send memorable digital presents securely and beautifully wrapped.',
+  title: 'Onchain Gift',
+  description: 'Give the gift of coming onchain!',
   keywords: ['digital gifts', 'gift packs', 'online gifting', 'digital presents', 'gift sharing'],
-  authors: [{ name: 'Gift Pack Team' }],
-  creator: 'Gift Pack',
-  publisher: 'Gift Pack',
+  authors: [{ name: 'Onchain Gift Team' }],
+  creator: 'Onchain Gift',
+  publisher: 'Onchain Gift',
   robots: {
     index: true,
     follow: true,
@@ -18,28 +33,31 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://giftpack.app',
-    siteName: 'Gift Pack',
-    title: 'Gift Pack - Create and Share Digital Gift Packs',
-    description: 'Create and share personalized digital gift packs with your loved ones. Send memorable digital presents securely and beautifully wrapped.',
+    url: 'https://onchaingift.com',
+    siteName: 'Onchain Gift',
+    title: 'Onchain Gift',
+    description: 'Give the gift of coming onchain!',
     images: [
       {
-        url: '/images/logo.png',
+        url: 'https://onchaingift.com/api/og',
         width: 1200,
         height: 630,
-        alt: 'Gift Pack - Digital Gifting Platform',
+        alt: 'Onchain Gift - Digital Gifting Platform',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Gift Pack - Create and Share Digital Gift Packs',
-    description: 'Create and share personalized digital gift packs with your loved ones. Send memorable digital presents securely and beautifully wrapped.',
-    images: ['/images/logo.png'],
-    creator: '@giftpack',
+    title: 'Onchain Gift',
+    description: 'Give the gift of coming onchain!',
+    images: ['https://onchaingift.com/api/og'],
+    creator: '@onchaingift',
   },
   viewport: 'width=device-width, initial-scale=1',
   themeColor: '#ffffff',
+  other: {
+    'fc:frame': JSON.stringify(frame),
+  },
 }
 
 export default function RootLayout({
