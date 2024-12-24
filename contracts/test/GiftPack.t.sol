@@ -269,7 +269,7 @@ contract GiftPackTest is Test {
         vm.startPrank(bob);
 
         // Try to open pack as non-owner
-        vm.expectRevert(GiftPack.NotPackOwnerOrOpener.selector);
+        vm.expectRevert(GiftPack.NotPackOwner.selector);
         pack.openPackAsOwner(tokenId, bob);
 
         vm.stopPrank();
