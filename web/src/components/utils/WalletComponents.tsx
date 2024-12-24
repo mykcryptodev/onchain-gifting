@@ -27,7 +27,7 @@ import { useEffect } from 'react';
 import { defineChain } from 'thirdweb/chains';
 import { CLIENT } from '~/constants';
 
-const SHOW_THIRDWEB_WALLET = true;
+const SHOW_THIRDWEB_WALLET = false;
 
 export function WalletComponents() {
   const { isConnected } = useAccount();
