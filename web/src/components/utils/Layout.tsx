@@ -1,10 +1,13 @@
 import Link from "next/link";
-import { WalletComponents } from "./WalletComponents";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 
 const Frame = dynamic(() => import("~/components/utils/Frame"), {
+  ssr: false,
+});
+
+const WalletComponents = dynamic(() => import("~/components/utils/WalletComponents"), {
   ssr: false,
 });
 

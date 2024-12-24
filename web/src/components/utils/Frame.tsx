@@ -1,30 +1,24 @@
-import { useEffect, useState } from "react";
-import sdk, { type FrameContext } from "@farcaster/frame-sdk";
+import dynamic from 'next/dynamic';
+
+// Only load in browser
+const ClientFrame = dynamic(
+  () => {
+    // Additional runtime check
+    if (typeof window === 'undefined') {
+      return Promise.resolve(() => null);
+    }
+    return import('./ClientFrame')
+      .then((mod) => mod.default)
+      .catch(() => () => null);
+  },
+  {
+    ssr: false,
+    loading: () => null,
+  }
+);
 
 export default function Frame() {
-  const [isSDKLoaded, setIsSDKLoaded] = useState(false);
-  const [, setContext] = useState<FrameContext>();
-
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const context = await sdk.context;
-        setContext(context);
-        await sdk.actions.ready({});
-      } catch (error) {
-        console.error('Failed to load Frame SDK:', error);
-      }
-    };
-
-    if (sdk && !isSDKLoaded) {
-      setIsSDKLoaded(true);
-      void load();
-    }
-  }, [isSDKLoaded]);
-
-  if (!isSDKLoaded) {
-    return <div>Loading...</div>;
-  }
-
-  return null;
+  // Don't render on server
+  if (typeof window === 'undefined') return null;
+  return <ClientFrame />;
 }
