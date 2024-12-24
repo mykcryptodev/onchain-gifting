@@ -250,7 +250,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
           </div>
         </div>
       )}
-      {isHashUsed && (
+      {isHashUsed && password.length > 0 && (
         <p className="text-red-500 text-opacity-90 text-sm">
           Please use a different message.
         </p>

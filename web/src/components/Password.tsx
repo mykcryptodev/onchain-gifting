@@ -34,7 +34,7 @@ export function Password() {
         className={`w-full p-2 border rounded-md ${showError ? 'border-red-500' : 'border-gray-300'}`}
       />
       {showError && (
-        <p className="text-red-500 text-sm mt-1">
+        <p className="text-red-500 text-sm text-center opacity-90 mt-1">
           Message must be at least 20 characters long
         </p>
       )}
