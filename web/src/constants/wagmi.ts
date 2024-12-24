@@ -1,5 +1,5 @@
 import { http, cookieStorage, createConfig, createStorage } from 'wagmi';
-import { coinbaseWallet } from 'wagmi/connectors';
+import { coinbaseWallet, metaMask, walletConnect, safe, injected } from 'wagmi/connectors';
 import { WAGMI_CHAIN } from '.';
 import { env } from '~/env';
  
@@ -8,11 +8,17 @@ export function getConfig() {
     chains: [WAGMI_CHAIN], // add baseSepolia for testing
     connectors: [
       coinbaseWallet({
-        appName: 'OnchainKit',
+        appName: 'Onchain Gifting',
         preference: 'all',
         version: '4',
         appLogoUrl: 'https://onchaingift.com/images/logo.png',
       }),
+      metaMask(),
+      walletConnect({
+        projectId: 'c4d3090a956c5b2d21f433c265a76830'
+      }),
+      safe(),
+      injected(),
     ],
     storage: createStorage({
       storage: cookieStorage,

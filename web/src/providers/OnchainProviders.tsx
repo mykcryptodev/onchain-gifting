@@ -26,9 +26,6 @@ export function OnchainProviders(props: {
               mode: 'auto',
               theme: 'light',
             },
-            wallet: { 
-              display: 'modal',
-            },
           }}
         >
           {props.children}
