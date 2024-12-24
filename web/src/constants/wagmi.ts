@@ -8,7 +8,6 @@ export function getConfig() {
   return createConfig({
     chains: [WAGMI_CHAIN], // add baseSepolia for testing
     connectors: [
-      frameConnector(),
       coinbaseWallet({
         appName: 'Onchain Gifting',
         preference: 'all',
@@ -21,6 +20,7 @@ export function getConfig() {
       }),
       safe(),
       injected(),
+      frameConnector(),
     ],
     storage: createStorage({
       storage: cookieStorage,
