@@ -9,8 +9,9 @@ export function getConfig() {
     connectors: [
       coinbaseWallet({
         appName: 'OnchainKit',
-        preference: 'smartWalletOnly',
+        preference: 'all',
         version: '4',
+        appLogoUrl: 'https://onchaingift.com/images/logo.png',
       }),
     ],
     storage: createStorage({

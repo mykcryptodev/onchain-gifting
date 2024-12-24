@@ -8,19 +8,26 @@ import {
 import { color } from '@coinbase/onchainkit/theme';
 import {
   ConnectWallet,
+  ConnectWalletText,
   Wallet,
   WalletDropdown,
   WalletDropdownBasename, 
   WalletDropdownDisconnect,
   WalletDropdownFundLink,
+  WalletDropdownLink,
 } from '@coinbase/onchainkit/wallet';
 import { createWalletAdapter } from "thirdweb/wallets";
-import { ConnectButton, useSetActiveWallet } from "thirdweb/react";
+import { 
+  ConnectButton, 
+  useSetActiveWallet 
+} from "thirdweb/react";
 import { useAccount, useDisconnect, useWalletClient, useSwitchChain } from "wagmi";
 import { viemAdapter } from "thirdweb/adapters/viem";
 import { useEffect } from 'react';
 import { defineChain } from 'thirdweb/chains';
 import { CLIENT } from '~/constants';
+
+const SHOW_THIRDWEB_WALLET = true;
 
 export function WalletComponents() {
   const { isConnected } = useAccount();
@@ -58,7 +65,7 @@ export function WalletComponents() {
     void setActive();
   }, [disconnectAsync, setActiveWallet, switchChainAsync, walletClient]);
 
-  if (isConnected) {
+  if (isConnected && SHOW_THIRDWEB_WALLET) {
     return (
       <ConnectButton 
         client={CLIENT} 
@@ -68,11 +75,14 @@ export function WalletComponents() {
   }
 
   return (
-    <div className="flex justify-end">
+    <div className="flex flex-col gap-2 text-center justify-center items-center">
       <Wallet>
         <ConnectWallet
           className={`px-4 py-2 ${connectButtonTextSize} font-bold text-white ${connectButtonColor} rounded-md flex items-center gap-2`}
         >
+          <ConnectWalletText>
+            <span>Create or Connect Wallet</span>
+          </ConnectWalletText>
           <Avatar className="h-6 w-6" />
           <Name />
         </ConnectWallet>
@@ -85,9 +95,27 @@ export function WalletComponents() {
           </Identity>
           <WalletDropdownBasename />
           <WalletDropdownFundLink />
+          <WalletDropdownLink
+            icon={"wallet"}
+            href="https://wallet.coinbase.com"
+            rel="noopener noreferrer"
+          >
+            View Funds
+          </WalletDropdownLink> 
           <WalletDropdownDisconnect />
         </WalletDropdown>
       </Wallet>
+      {!isConnected && (
+        <p className="text-center text-gray-600 max-w-xs text-sm">
+          Create a wallet with 
+          <span className="font-bold mx-1">
+            <img src="/images/faceid.svg" className="inline h-4 w-4" alt="Face ID" /> Face ID 
+          </span>or 
+          <span className="font-bold mx-1">
+            <img src="/images/touchid.svg" className="inline h-4 w-4" alt="Touch ID" /> Touch ID 
+          </span>
+        </p>
+      )}
     </div>
   );
 }
