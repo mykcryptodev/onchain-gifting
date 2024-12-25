@@ -2,11 +2,17 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { env } from "~/env";
-import { type ZapperNFTResponse, type ZapperPortfolioResponse, type WalletBalancesResponse } from "~/types/zapper";
+import { type ZapperNFTResponse, type ZapperPortfolioResponse, type WalletBalancesResponse, type ZapperTokenBalance } from "~/types/zapper";
 
 export const walletRouter = createTRPCRouter({
   getBalances: publicProcedure
-    .input(z.object({ address: z.string() }))
+    .input(z.object({ 
+      address: z.string(),
+      cursor: z.object({
+        nftsAfter: z.string().optional(),
+      }).optional(),
+      nftsFirst: z.number().default(12)
+    }))
     .query(async ({ input }): Promise<WalletBalancesResponse> => {
       const portfolioQuery = `
         query GetCompletePortfolio($addresses: [Address!]!, $networks: [Network!]) {
@@ -44,8 +50,12 @@ export const walletRouter = createTRPCRouter({
       `;
 
       const nftQuery = `
-        query GetNFTs($owners: [Address!]!, $network: Network, $first: Int) {
-          nftUsersTokens(owners: $owners, network: $network, first: $first) {
+        query GetNFTs($owners: [Address!]!, $network: Network, $first: Int, $after: String) {
+          nftUsersTokens(owners: $owners, network: $network, first: $first, after: $after) {
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
             edges {
               node {
                 tokenId
@@ -83,7 +93,8 @@ export const walletRouter = createTRPCRouter({
         owners: [input.address],
         networks: ["BASE_MAINNET"],
         network: "BASE_MAINNET",
-        first: 100,
+        first: input.nftsFirst,
+        after: input.cursor?.nftsAfter,
       };
 
       const [portfolioResponse, nftResponse] = await Promise.all([
@@ -125,11 +136,15 @@ export const walletRouter = createTRPCRouter({
       }
 
       const { portfolio } = portfolioData.data;
+      const tokenBalances = portfolio.tokenBalances as unknown as ZapperTokenBalance[];
       const nfts = nftData.data.nftUsersTokens.edges.map(edge => edge.node);
+      const nftPageInfo = nftData.data.nftUsersTokens.pageInfo;
 
       return {
         ...portfolio,
-        nfts
+        tokenBalances,
+        nfts,
+        nftPageInfo,
       };
     }),
 });
