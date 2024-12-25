@@ -11,7 +11,7 @@ export const WalletBalances: FC<WalletBalancesProps> = ({ address }) => {
   const { data, fetchNextPage } = api.wallet.getBalances.useInfiniteQuery(
     { 
       address,
-      nftsFirst: 12,
+      nftsFirst: 100,
     },
     {
       enabled: !!address,
