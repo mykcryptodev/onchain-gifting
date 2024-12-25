@@ -1,7 +1,17 @@
+export interface PageInfo {
+  hasNextPage: boolean;
+  endCursor: string;
+}
+
 export interface ZapperPortfolioResponse {
   data: {
     portfolio: {
-      tokenBalances: ZapperTokenBalance[];
+      tokenBalances: {
+        pageInfo: PageInfo;
+        edges: Array<{
+          node: ZapperTokenBalance;
+        }>;
+      };
       nftBalances: Array<{
         network: string;
         balanceUSD: number;
@@ -61,6 +71,7 @@ export interface ZapperNFT {
 export interface ZapperNFTResponse {
   data: {
     nftUsersTokens: {
+      pageInfo: PageInfo;
       edges: Array<{
         node: ZapperNFT;
       }>;
@@ -84,6 +95,7 @@ export interface WalletBalancesResponse {
     }>;
   };
   nfts: ZapperNFT[];
+  nftPageInfo: PageInfo;
 }
 
 export interface WalletBalancesProps {
