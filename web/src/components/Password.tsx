@@ -9,10 +9,29 @@ export function Password() {
   const debouncedPassword = useDebounce(password, 500);
   const [hasSeenToast, setHasSeenToast] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   useEffect(() => {
-    const isValid = debouncedPassword.length >= 20;
-    setShowError(debouncedPassword.length > 0 && !isValid);
+    const isLongEnough = debouncedPassword.length >= 20;
+    const endsWithSpecialChar = /[^a-zA-Z0-9\s]$/.test(debouncedPassword);
+    const isValid = isLongEnough && !endsWithSpecialChar;
+
+    if (debouncedPassword.length > 0) {
+      if (!isLongEnough) {
+        setErrorMessage("Message must be at least 20 characters long");
+        setShowError(true);
+      } else if (endsWithSpecialChar) {
+        setErrorMessage("Message cannot end with a special character");
+        setShowError(true);
+      } else {
+        setShowError(false);
+        setErrorMessage("");
+      }
+    } else {
+      setShowError(false);
+      setErrorMessage("");
+    }
+
     if (isValid) {
       updatePassword(debouncedPassword);
     } else {
@@ -35,7 +54,7 @@ export function Password() {
       />
       {showError && (
         <p className="text-red-500 text-sm text-center opacity-90 mt-1">
-          Message must be at least 20 characters long
+          {errorMessage}
         </p>
       )}
     </div>
