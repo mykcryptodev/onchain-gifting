@@ -52,7 +52,7 @@ export const WalletBalances: FC<WalletBalancesProps> = ({ address }) => {
         <h2 className="text-lg font-bold">Tokens</h2>
       </button>
       <div className={`max-h-96 p-4 rounded-lg overflow-y-auto flex flex-col gap-4 content transition-all duration-200 ${isTokenOpen ? 'max-h-[500px] opacity-100 visible' : 'max-h-0 opacity-0 overflow-hidden hidden'}`}>
-        {allTokens.filter((tokenBalance) => tokenBalance.token.balanceUSD > 0.01).map((tokenBalance) => (
+        {allTokens.map((tokenBalance) => (
           <TokenOption key={`${tokenBalance.address}-${tokenBalance.token.baseToken.symbol}`} option={tokenBalance} />
         ))}
       </div>
