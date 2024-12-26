@@ -7,12 +7,14 @@ import { type State, WagmiProvider } from 'wagmi';
 import { APP_NAME, WAGMI_CHAIN } from '~/constants';
 import { getConfig } from '~/constants/wagmi';
 import { env } from '~/env';
+import { useIsInFrame } from '~/components/utils/ClientFrame';
  
 export function OnchainProviders(props: {
   children: ReactNode;
   initialState?: State;
 }) {
-  const [config] = useState(() => getConfig());
+  const isInFrame = useIsInFrame();
+  const [config] = useState(() => getConfig(isInFrame));
   const [queryClient] = useState(() => new QueryClient());
  
   return (
