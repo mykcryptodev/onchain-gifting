@@ -17,7 +17,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="mb-8">
+      <div className="my-8">
         <WalletComponents />
       </div>
       <h1 className="text-2xl font-bold mb-4 text-center">Create a Gift Pack</h1>
