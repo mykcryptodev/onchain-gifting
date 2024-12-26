@@ -11,9 +11,10 @@ import { CHAIN, CLIENT } from "~/constants";
 type Props = {
   tokenAddress: string;
   tokenId: string;
+  hideDetails?: boolean;
 }
 
-export const ClaimedNft: FC<Props> = ({ tokenAddress, tokenId }) => {
+export const ClaimedNft: FC<Props> = ({ tokenAddress, tokenId, hideDetails }) => {
   const contract = getContract({
     client: CLIENT,
     chain: CHAIN,
@@ -26,7 +27,7 @@ export const ClaimedNft: FC<Props> = ({ tokenAddress, tokenId }) => {
       <NFTProvider contract={contract} tokenId={BigInt(tokenId)}>
         <NFTMedia className="h-24 w-24 rounded-lg" />
         <NFTName className="text-center" />
-        <NFTDescription className="text-center" />
+        {!hideDetails && <NFTDescription className="text-center" />}
       </NFTProvider>
     </div>
   );

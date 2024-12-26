@@ -7,24 +7,29 @@ import Image from "next/image";
 
 type Props = {
   pack: Pack;
+  hideNftDetails?: boolean;
+  hideHeader?: boolean;
 }
-export const ClaimContents: FC<Props> = ({ pack }) => {
+export const ClaimContents: FC<Props> = ({ pack, hideNftDetails, hideHeader }) => {
   return (
     <div>
-      <Image
-        src="/images/logo.png"
-        alt="Logo"
-        width={64}
-        height={64}
-        className="mx-auto mt-6"
-      />
-      <h2 className="text-2xl font-bold text-center mb-2">Your Pack Contents</h2>
+      {!hideHeader && (
+        <Image
+          src="/images/logo.png"
+          alt="Logo"
+          width={64}
+          height={64}
+          className="mx-auto mt-6"
+        />
+      )}
+      {!hideHeader && <h2 className="text-2xl font-bold text-center mb-2">Your Pack Contents</h2>}
       <div className="flex flex-col gap-4">
         {pack?.erc721Tokens.map((token) => (
           <ClaimedNft 
             key={`${token.tokenAddress}-${token.tokenId}`} 
             tokenAddress={token.tokenAddress}
             tokenId={token.tokenId.toString()} 
+            hideDetails={hideNftDetails}
           />
         ))}
       </div>

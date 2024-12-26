@@ -1,4 +1,5 @@
 import { engineRouter } from "~/server/api/routers/engine";
+import { packRouter } from "~/server/api/routers/pack";
 import { tokenRouter } from "~/server/api/routers/token";
 import { walletRouter } from "~/server/api/routers/wallet";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
@@ -10,6 +11,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   engine: engineRouter,
+  pack: packRouter,
   token: tokenRouter,
   wallet: walletRouter,
 });

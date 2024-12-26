@@ -1,4 +1,4 @@
-import { Avatar, Name } from "@coinbase/onchainkit/identity";
+import { Name } from "@coinbase/onchainkit/identity";
 import { useCallback, useEffect } from "react";
 import { useState } from "react";
 import { getContract } from "thirdweb";
@@ -13,7 +13,6 @@ import { WatchClaim } from "~/components/Claim/WatchClaim";
 import Image from "next/image";
 import {
   AccountProvider,
-  AccountAvatar,
   AccountName,
 } from "thirdweb/react";
 import { ClaimContents } from "~/components/Claim/Contents";
@@ -22,6 +21,7 @@ import { UnwrappingAnimation } from "~/components/Claim/UnwrappingAnimation";
 import Link from "next/link";
 import { useAccount } from "wagmi";
 import dynamic from "next/dynamic";
+import { Profile } from "~/components/utils/Profile";
 
 const WalletComponents = dynamic(() => import("~/components/utils/WalletComponents"), {
   ssr: false,
@@ -86,37 +86,7 @@ export default function Claim() {
       <p className="text-center text-gray-600">You have been sent an onchain gift pack from</p>
       {pack?.creator && (
         <div className="flex items-center gap-2 border border-gray-200 px-4 py-2 rounded-md">
-          <AccountProvider
-            client={CLIENT}
-            address={pack.creator}
-          >
-            <AccountAvatar 
-              width={24}
-              height={24}
-              className="rounded-full"
-              loadingComponent={
-                <div className="h-6 w-6 rounded-full bg-gray-200 animate-pulse" />
-              }
-              fallbackComponent={
-                <Avatar
-                  address={pack.creator}
-                  chain={CHAIN}
-                  className="rounded-full h-6 w-6"
-                />
-              }
-            />
-            <AccountName
-              loadingComponent={
-                <div className="h-6 w-24 rounded-lg bg-gray-200 animate-pulse" />
-              }
-              fallbackComponent={
-                <Name
-                  address={pack.creator}
-                  chain={CHAIN}
-                />
-              }
-            />
-          </AccountProvider>
+          <Profile address={pack.creator} />
         </div>
       )}
       <p className="text-center text-gray-600">they said...</p>

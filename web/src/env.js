@@ -11,6 +11,8 @@ export const env = createEnv({
     ZAPPER_API_KEY: z.string(),
     THIRDWEB_ENGINE_ACCESS_TOKEN: z.string(),
     THIRDWEB_ENGINE_URL: z.string(),
+    GHOST_QUERY_URL: z.string(),
+    GHOST_API_KEY: z.string(),
   },
 
   /**
@@ -35,6 +37,8 @@ export const env = createEnv({
     ZAPPER_API_KEY: process.env.ZAPPER_API_KEY,
     THIRDWEB_ENGINE_ACCESS_TOKEN: process.env.THIRDWEB_ENGINE_ACCESS_TOKEN,
     THIRDWEB_ENGINE_URL: process.env.THIRDWEB_ENGINE_URL,
+    GHOST_QUERY_URL: process.env.GHOST_QUERY_URL,
+    GHOST_API_KEY: process.env.GHOST_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
