@@ -53,7 +53,7 @@ const Pack: FC<Props> = ({ tokenId, packMetadata, onReclaimed }) => {
       {isOpened ? (
         <div className="flex flex-col w-full justify-center items-center gap-2">
           <div className="flex flex-row gap-2 items-start mt-4">
-            <span className="text-sm text-gray-500">Opened by:</span>
+            <span className="text-sm text-gray-500 mt-0.5">Opened by:</span>
             <Profile address={packMetadata.opener} />
           </div>
           <div className="flex flex-row gap-2 items-start">

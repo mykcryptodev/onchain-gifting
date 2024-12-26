@@ -81,7 +81,6 @@ export const packRouter = createTRPCRouter({
       owner: z.string(),
     }))
     .query(async ({ input }) => {
-      console.log(input);
       const queryUrl = env.GHOST_QUERY_URL;
       const apiKey = env.GHOST_API_KEY;
 
@@ -123,7 +122,6 @@ export const packRouter = createTRPCRouter({
         }
 
         const json = (await response.json()) as PackMetadataResponse;
-        console.log(JSON.stringify(json, null, 2));
         const packs = json.data.packs.items;
 
         return packs;

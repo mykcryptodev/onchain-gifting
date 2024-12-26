@@ -26,6 +26,7 @@ import { viemAdapter } from "thirdweb/adapters/viem";
 import { useEffect } from 'react';
 import { defineChain } from 'thirdweb/chains';
 import { CLIENT } from '~/constants';
+import Image from 'next/image';
 
 const SHOW_THIRDWEB_WALLET = true;
 
@@ -113,10 +114,22 @@ export function WalletComponents({ btnClassName, hideText }: Props) {
         <p className="text-center text-gray-600 max-w-xs text-sm">
           Create a wallet with 
           <span className="font-bold mx-1">
-            <img src="/images/faceid.svg" className="inline h-4 w-4" alt="Face ID" /> Face ID 
+            <Image 
+              src="/images/faceid.svg" 
+              className="inline h-4 w-4" 
+              alt="Face ID" 
+              width={16}
+              height={16}
+            /> Face ID 
           </span>or 
           <span className="font-bold mx-1">
-            <img src="/images/touchid.svg" className="inline h-4 w-4" alt="Touch ID" /> Touch ID 
+            <Image 
+              src="/images/touchid.svg" 
+              className="inline h-4 w-4" 
+              alt="Touch ID" 
+              width={16}
+              height={16}
+            /> Touch ID 
           </span>
         </p>
       )}

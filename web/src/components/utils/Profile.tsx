@@ -1,6 +1,6 @@
 import { AccountAvatar } from "thirdweb/react"
 
-import { AccountName } from "thirdweb/react"
+import { AccountName, Blobbie } from "thirdweb/react"
 import { Name as OckName, Avatar as OckAvatar } from "@coinbase/onchainkit/identity"
 
 import { AccountProvider } from "thirdweb/react"
@@ -32,6 +32,7 @@ export const Avatar: FC<AvatarProps> = ({ address, size }) => {
             address={address}
             chain={CHAIN}
             className={`rounded-full h-${size} w-${size}`}
+            defaultComponent={<Blobbie address={address} className={`h-${size} w-${size}`} />}
           />
         }
       />
