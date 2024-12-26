@@ -29,7 +29,11 @@ import { CLIENT } from '~/constants';
 
 const SHOW_THIRDWEB_WALLET = true;
 
-export function WalletComponents() {
+type Props = {
+  btnClassName?: string;
+  hideText?: boolean;
+}
+export function WalletComponents({ btnClassName, hideText }: Props) {
   const { isConnected } = useAccount();
   const { disconnectAsync } = useDisconnect();
   const { switchChainAsync } = useSwitchChain();
@@ -78,7 +82,7 @@ export function WalletComponents() {
     <div className="flex flex-col gap-2 text-center justify-center items-center">
       <Wallet>
         <ConnectWallet
-          className={`px-4 py-2 ${connectButtonTextSize} font-bold text-white ${connectButtonColor} rounded-md flex items-center gap-2`}
+          className={`px-4 py-2 ${connectButtonTextSize} font-bold text-white ${connectButtonColor} rounded-md flex items-center gap-2 ${btnClassName}`}
         >
           <ConnectWalletText>
             <span>Create or Connect Wallet</span>
@@ -105,7 +109,7 @@ export function WalletComponents() {
           <WalletDropdownDisconnect />
         </WalletDropdown>
       </Wallet>
-      {!isConnected && (
+      {!isConnected && !hideText && (
         <p className="text-center text-gray-600 max-w-xs text-sm">
           Create a wallet with 
           <span className="font-bold mx-1">

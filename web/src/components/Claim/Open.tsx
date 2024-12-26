@@ -5,13 +5,15 @@ import { openPackWithPassword } from "~/thirdweb/8453/0x1b6e902360035ac523e27d8f
 import { useAccount } from "wagmi";
 import { Transaction, TransactionButton, TransactionStatus, TransactionStatusAction, TransactionStatusLabel } from "@coinbase/onchainkit/transaction";
 import { api } from "~/utils/api";
+import { cn } from "@coinbase/onchainkit/theme";
 
 type Props = {
   password: string;
   onClaimStarted: () => void;
+  btnClassName?: string;
 }
-export const Open: FC<Props> = ({ password, onClaimStarted }) => {
-  const { address } = useAccount();
+export const Open: FC<Props> = ({ password, onClaimStarted, btnClassName }) => {
+  const { isConnected, address } = useAccount();
   const { mutateAsync: open, isPending } = api.engine.openPack.useMutation();
   const [isGasFree, setIsGasFree] = useState(true);
   const [isClaiming, setIsClaiming] = useState(false);
@@ -43,10 +45,10 @@ export const Open: FC<Props> = ({ password, onClaimStarted }) => {
   }
 
   return (
-    <div className="flex flex-col justify-center mx-auto max-w-sm">
+    <div className="flex flex-col max-w-sm">
       {isGasFree ? (
         <button 
-          className="px-4 py-2 text-lg font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 w-fit mx-auto disabled:bg-gray-400"
+          className={cn(`text-sm px-2 py-1 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 w-fit disabled:bg-gray-400 ${!isConnected ? "opacity-50" : ""}`, btnClassName)}
           onClick={() => handleOpenPack()}
           disabled={isPending || !address}
         >
@@ -69,7 +71,7 @@ export const Open: FC<Props> = ({ password, onClaimStarted }) => {
           <TransactionButton 
             disabled={isPending || !address}
             text="Open Gift Pack"
-            className="px-4 py-2 text-lg font-bold text-white bg-yellow-600 rounded-md hover:bg-yellow-700 w-fit mx-auto disabled:bg-gray-400"
+            className={cn("text-sm px-2 py-1 -mb-1 font-bold text-white bg-yellow-600 rounded-md hover:bg-yellow-700 w-fit disabled:bg-gray-400", btnClassName)}
           />
           <TransactionStatus>
             <TransactionStatusLabel />
@@ -78,7 +80,7 @@ export const Open: FC<Props> = ({ password, onClaimStarted }) => {
         </Transaction>
       )}
       {!isClaiming && (
-        <div className="flex items-center justify-center gap-2 mt-4">
+        <div className="flex items-center gap-2 mt-2">
           <span className="text-sm text-gray-600">Claim for free</span>
           <button
             type="button"
