@@ -1,5 +1,5 @@
 import { http, cookieStorage, createConfig, createStorage } from 'wagmi';
-import { coinbaseWallet, metaMask, walletConnect, safe, injected } from 'wagmi/connectors';
+import { coinbaseWallet, metaMask, walletConnect} from 'wagmi/connectors';
 import { WAGMI_CHAIN } from '.';
 import { env } from '~/env';
 import { frameConnector } from '~/lib/connector';
@@ -18,8 +18,6 @@ export function getConfig() {
       walletConnect({
         projectId: 'c4d3090a956c5b2d21f433c265a76830'
       }),
-      safe(),
-      injected(),
       frameConnector(),
     ],
     storage: createStorage({
