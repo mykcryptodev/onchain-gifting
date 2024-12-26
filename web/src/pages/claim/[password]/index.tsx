@@ -162,9 +162,9 @@ export default function Claim() {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-medium">Create or Connect Your Wallet</h3>
-                  <p className="text-sm text-gray-600">Create a wallet in seconds with Face ID or Touch ID</p>
+                  <p className="text-sm text-gray-600">Create a wallet in seconds via Face ID or Touch ID</p>
                   <div className="flex">
-                    <WalletComponents btnClassName="text-sm px-2 py-1 my-2 backdrop-blur-sm animate-[pulse-shadow_3s_ease-in-out_infinite]" hideText={true} />
+                    <WalletComponents btnClassName="my-2 backdrop-blur-sm animate-[pulse-shadow_3s_ease-in-out_infinite]" hideText={true} />
                   </div>
                 </div>
               </div>
@@ -181,7 +181,7 @@ export default function Claim() {
                     password={password} 
                     key={claimingIsFinished ? "finished" : "not-finished"}
                     onClaimStarted={() => setIsClaiming(true)}
-                    btnClassName={`text-sm px-2 py-1 mt-2 backdrop-blur-sm ${address && !isClaiming && !claimingIsFinished ? "animate-[pulse-shadow_3s_ease-in-out_infinite]" : ""}`}
+                    btnClassName={`backdrop-blur-sm ${address && !isClaiming && !claimingIsFinished ? "animate-[pulse-shadow_3s_ease-in-out_infinite] text-lg px-4 py-2 mt-2" : "text-sm px-2 py-1 mt-2 "}`}
                   />
                   <WatchClaim onClaim={handleClaim} />
                 </div>
