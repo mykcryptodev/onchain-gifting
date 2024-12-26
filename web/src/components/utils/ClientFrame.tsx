@@ -2,25 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-// Create a store to hold the frame status
-const frameState = {
-  isInFrame: false,
-  setIsInFrame: (value: boolean) => {
-    frameState.isInFrame = value;
-  }
-};
-
-// Export a hook to access the frame status
-export function useIsInFrame() {
-  const [isInFrame, setIsInFrame] = useState(frameState.isInFrame);
-
-  useEffect(() => {
-    setIsInFrame(frameState.isInFrame);
-  }, []);
-
-  return isInFrame;
-}
-
 export default function ClientFrame() {
   const [isSDKLoaded, setIsSDKLoaded] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -38,9 +19,6 @@ export default function ClientFrame() {
           if (frameSDK?.default) {
             const sdk = frameSDK.default;
             await sdk.actions.ready({});
-            const context = await sdk.context;
-            console.log({ frameContext: context });
-            frameState.setIsInFrame(!!context);
           }
         }
       } catch (err) {
