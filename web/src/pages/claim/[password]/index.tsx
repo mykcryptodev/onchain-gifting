@@ -61,6 +61,18 @@ export default function Claim() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchPack]);
 
+  const handleClaim = (id: string) => {
+    console.log({gotClaim:true, id});
+    void fetchPack();
+    setClaimingIsFinished(true);
+    setShowConfetti(true);
+    setIsClaiming(false);
+    // vibrate the device if it supports it
+    if (navigator.vibrate) {
+      navigator.vibrate([100, 50, 100, 50, 200]); // Short-short-long celebratory pattern
+    }
+  }
+
   if (!pack) return null;
 
   return (
@@ -171,12 +183,7 @@ export default function Claim() {
                     onClaimStarted={() => setIsClaiming(true)}
                     btnClassName={`text-sm px-2 py-1 mt-2 backdrop-blur-sm ${address && !isClaiming && !claimingIsFinished ? "animate-[pulse-shadow_3s_ease-in-out_infinite]" : ""}`}
                   />
-                  <WatchClaim onClaim={() => {
-                    void fetchPack();
-                    setClaimingIsFinished(true);
-                    setShowConfetti(true);
-                    setIsClaiming(false);
-                  }} />
+                  <WatchClaim onClaim={handleClaim} />
                 </div>
               </div>
             </div>
