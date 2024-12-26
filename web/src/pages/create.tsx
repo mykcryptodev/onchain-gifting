@@ -5,6 +5,11 @@ import { PackValue } from "~/components/PackValue";
 import { WalletBalances } from "~/components/WalletBalances";
 import { useGiftItems } from "~/contexts/GiftItemsContext";
 import { Password } from "~/components/Password";
+import dynamic from "next/dynamic";
+
+const WalletComponents = dynamic(() => import("~/components/utils/WalletComponents"), {
+  ssr: false,
+});
 
 export default function Home() {
   const { address } = useAccount();
@@ -12,6 +17,9 @@ export default function Home() {
 
   return (
     <>
+      <div className="my-8">
+        <WalletComponents />
+      </div>
       <h1 className="text-2xl font-bold mb-4 text-center">Create a Gift Pack</h1>
       <PackValue />
       <PackContents />

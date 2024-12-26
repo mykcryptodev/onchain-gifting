@@ -20,6 +20,12 @@ import { ClaimContents } from "~/components/Claim/Contents";
 import Confetti from "~/components/Claim/Confetti";
 import { UnwrappingAnimation } from "~/components/Claim/UnwrappingAnimation";
 import Link from "next/link";
+import { useAccount } from "wagmi";
+import dynamic from "next/dynamic";
+
+const WalletComponents = dynamic(() => import("~/components/utils/WalletComponents"), {
+  ssr: false,
+});
 
 export default function Claim() {
   const router = useRouter();
@@ -28,6 +34,7 @@ export default function Claim() {
   const [claimingIsFinished, setClaimingIsFinished] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
+  const { isConnected, address } = useAccount();
 
   const fetchPack = useCallback(async () => {
     if (pack || !password) return;
@@ -54,12 +61,27 @@ export default function Claim() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchPack]);
 
-  console.log({pack});
+  const handleClaim = (id: string) => {
+    console.log({gotClaim:true, id});
+    void fetchPack();
+    setClaimingIsFinished(true);
+    setShowConfetti(true);
+    setIsClaiming(false);
+    // vibrate the device if it supports it
+    if (navigator.vibrate) {
+      navigator.vibrate([100, 50, 100, 50, 200]); // Short-short-long celebratory pattern
+    }
+  }
 
   if (!pack) return null;
 
   return (
     <div className="flex flex-col gap-2 justify-center items-center">
+      <div className="mb-8">
+        {isConnected && (
+          <WalletComponents />
+        )}
+      </div>
       <h1 className="text-2xl font-bold text-center">Claim Your Gift Pack</h1>
       <p className="text-center text-gray-600">You have been sent an onchain gift pack from</p>
       {pack?.creator && (
@@ -103,18 +125,69 @@ export default function Claim() {
         <ClaimContents pack={pack} />
       ) : (
         <>
-          <Open 
-            password={password} 
-            key={claimingIsFinished ? "finished" : "not-finished"}
-            onClaimStarted={() => setIsClaiming(true)}
-          />
-          <WatchClaim onClaim={(id) => {
-            console.log({gotClaim:true, id});
-            void fetchPack();
-            setClaimingIsFinished(true);
-            setShowConfetti(true);
-            setIsClaiming(false);
-          }} />
+          <div className="flex flex-col gap-4 w-full max-w-sm">
+            <h2 className="text-2xl font-bold text-center mt-4">How to Claim</h2>
+            {address ? (
+              <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600 font-bold">
+                  ✓
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-medium">Create or Connect Your Wallet</h3>
+                  <p className="text-sm text-gray-600 flex items-center gap-1">
+                    <span>You have connected with</span>
+                    {address && (
+                      <AccountProvider address={address} client={CLIENT}>
+                        <AccountName
+                          loadingComponent={
+                            <div className="h-6 w-24 rounded-lg bg-gray-200 animate-pulse" />
+                          }
+                          fallbackComponent={
+                            <Name
+                              address={address}
+                              chain={CHAIN}
+                              className="text-sm text-gray-600"
+                            />
+                          }
+                        />
+                      </AccountProvider>
+                    )}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-start gap-4">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold">
+                  1
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-medium">Create or Connect Your Wallet</h3>
+                  <p className="text-sm text-gray-600">Create a wallet in seconds via Face ID or Touch ID</p>
+                  <div className="flex">
+                    <WalletComponents btnClassName="my-2 backdrop-blur-sm animate-[pulse-shadow_3s_ease-in-out_infinite]" hideText={true} />
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className="flex items-start gap-4">
+              <div className={`flex items-center justify-center w-8 h-8 rounded-full ${pack?.opened ? "bg-green-100 text-green-600" : "bg-blue-100 text-blue-600"} font-bold`}>
+                {pack?.opened ? "✓" : "2"}
+              </div>
+              <div className="flex-1">
+                <h3 className="font-medium">Open Your Gift</h3>
+                <p className="text-sm text-gray-600">Unwrap your gift to see what&apos;s inside</p>
+                <div className="flex flex-col gap-2">
+                  <Open 
+                    password={password} 
+                    key={claimingIsFinished ? "finished" : "not-finished"}
+                    onClaimStarted={() => setIsClaiming(true)}
+                    btnClassName={`backdrop-blur-sm ${address && !isClaiming && !claimingIsFinished ? "animate-[pulse-shadow_3s_ease-in-out_infinite] text-lg px-4 py-2 mt-2" : "text-sm px-2 py-1 mt-2 "}`}
+                  />
+                  <WatchClaim onClaim={handleClaim} />
+                </div>
+              </div>
+            </div>
+          </div>
         </>
       )}
       {showConfetti && <Confetti />}
@@ -160,6 +233,25 @@ export default function Claim() {
           </div>
         </div>
       )}
+      <style jsx>{`
+        @keyframes pulse-shadow {
+          0% {
+            box-shadow: 0 0 2px rgba(37,99,235,0.5);
+          }
+          25% {
+            box-shadow: 0 0 20px rgba(37,99,235,0.5);
+          }
+          50% {
+            box-shadow: 0 0 40px rgba(37,99,235,0.99); 
+          }
+          75% {
+            box-shadow: 0 0 20px rgba(37,99,235,0.5);
+          }
+          100% {
+            box-shadow: 0 0 2px rgba(37,99,235,0.5);
+          }
+        }
+      `}</style>
     </div>
   );
 }
