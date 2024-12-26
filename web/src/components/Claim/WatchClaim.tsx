@@ -5,15 +5,13 @@ import { getConfig } from "~/constants/wagmi";
 import { isAddress } from "thirdweb";
 import { useAccount } from "wagmi";
 import { isAddressEqual, zeroAddress } from "viem";
-import { useIsInFrame } from "../utils/ClientFrame";
 
 type Prop = {
   onClaim: (tokenId: string) => void;
 }
 export const WatchClaim: FC<Prop> = ({ onClaim }) => {
   const { address } = useAccount();
-  const isInFrame = useIsInFrame();
-  const wagmiConfig = getConfig(isInFrame);
+  const wagmiConfig = getConfig();
   const unwatch = watchContractEvent(wagmiConfig, {
     address: GIFT_PACK_ADDRESS,
     abi: [
