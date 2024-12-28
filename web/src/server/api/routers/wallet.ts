@@ -98,9 +98,9 @@ export const walletRouter = createTRPCRouter({
         }
       `;
 
-      const giveCardQuery = `
-        query GetNFTs($owners: [Address!]!, $network: Network, $first: Int, $after: String, $giveCardQueryCollectionId: [ID!]) {
-          nftUsersTokens(owners: $owners, network: $network, first: $first, after: $after, collectionIds: $giveCardQueryCollectionId) {
+      const giftCardQuery = `
+        query GetNFTs($owners: [Address!]!, $network: Network, $first: Int, $after: String, $giftCardQueryCollectionId: [ID!]) {
+          nftUsersTokens(owners: $owners, network: $network, first: $first, after: $after, collectionIds: $giftCardQueryCollectionId) {
             pageInfo {
               hasNextPage
               endCursor
@@ -146,11 +146,11 @@ export const walletRouter = createTRPCRouter({
         first: input.nftsFirst,
         after: input.cursor?.nftsAfter,
         baseNameCollectionId: ["TmZ0Q29sbGVjdGlvbi0yMTM1OTU1NA=="],
-        giveCardQueryCollectionId: ["TmZ0Q29sbGVjdGlvbi0yMTM1OTU1NA=="],
+        giftCardQueryCollectionId: ["TmZ0Q29sbGVjdGlvbi0yMTM1OTU1NA=="],
       };
       console.log({ variables });
 
-      const [portfolioResponse, nftResponse, giveCardRespone] =
+      const [portfolioResponse, nftResponse, giftCardRespone] =
         await Promise.all([
           fetch("https://public.zapper.xyz/graphql", {
             method: "POST",
@@ -181,16 +181,16 @@ export const walletRouter = createTRPCRouter({
               Authorization: `Basic ${Buffer.from(env.ZAPPER_API_KEY).toString("base64")}`,
             },
             body: JSON.stringify({
-              query: giveCardQuery,
+              query: giftCardQuery,
               variables,
             }),
           }),
         ]);
 
-      const [portfolioData, nftData, giveCardData] = await Promise.all([
+      const [portfolioData, nftData, giftCardData] = await Promise.all([
         portfolioResponse.json() as Promise<ZapperPortfolioResponse>,
         nftResponse.json() as Promise<ZapperNFTResponse>,
-        giveCardRespone.json() as Promise<ZapperNFTResponse>,
+        giftCardRespone.json() as Promise<ZapperNFTResponse>,
       ]);
 
       if (portfolioData.errors) {
@@ -205,9 +205,9 @@ export const walletRouter = createTRPCRouter({
         );
       }
 
-      if (giveCardData.errors) {
+      if (giftCardData.errors) {
         throw new Error(
-          giveCardData.errors[0]?.message ?? "Failed to fetch NFT data",
+          giftCardData.errors[0]?.message ?? "Failed to fetch NFT data",
         );
       }
 
@@ -217,7 +217,7 @@ export const walletRouter = createTRPCRouter({
       const baseNameNfts = nftData.data.nftUsersTokens.edges.map(
         (edge) => edge.node,
       );
-      const giveCardNfts = giveCardData.data.nftUsersTokens.edges.map(
+      const giftCardNfts = giftCardData.data.nftUsersTokens.edges.map(
         (edge) => edge.node,
       );
       const nftPageInfo = nftData.data.nftUsersTokens.pageInfo;
@@ -237,7 +237,7 @@ export const walletRouter = createTRPCRouter({
         tokenBalances,
         baseNameNfts,
         nftPageInfo,
-        giveCardNfts,
+        giftCardNfts,
       };
     }),
 });
