@@ -1,22 +1,41 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "~/lib/utils"
+import { cn } from "~/lib/utils";
 
-const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
-  ({ className, type, ...props }, ref) => {
+// Extend the props type to include 'icon'
+type InputProps = React.ComponentProps<"input"> & {
+  icon?: React.ElementType;
+  startDecorators?: React.ReactNode;
+  endDecorators?: React.ReactNode;
+};
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  (
+    { className, type, icon: Icon, startDecorators, endDecorators, ...props },
+    ref,
+  ) => {
     return (
-      <input
-        type={type}
+      <div
         className={cn(
-          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-          className
+          "relative flex items-center rounded-md border border-input p-2",
+          "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          className,
         )}
-        ref={ref}
-        {...props}
-      />
-    )
-  }
-)
-Input.displayName = "Input"
+      >
+        {startDecorators}
+        <input
+          type={type}
+          className={cn(
+            "flex max-h-10 w-full bg-background text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+          )}
+          ref={ref}
+          {...props}
+        />
+        {endDecorators}
+      </div>
+    );
+  },
+);
+Input.displayName = "Input";
 
-export { Input }
+export { Input };
