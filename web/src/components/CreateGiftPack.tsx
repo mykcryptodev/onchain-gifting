@@ -186,7 +186,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
     };
 
     void prepareCalls();
-  }, [erc20ApprovalTransactions, erc721ApprovalTransactions, erc1155ApprovalTransactions, createPackTransaction]);
+  }, [erc20ApprovalTransactions, erc721ApprovalTransactions, erc1155ApprovalTransactions, createPackTransaction, erc20sWithSufficientAllowance]);
 
   return (
     <div className="p-4 flex flex-col items-center justify-center">
