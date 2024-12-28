@@ -12,8 +12,8 @@ export default function CreatePage() {
   const { selectedAssets, hash } = useGiftItems();
 
   return (
-    <div>
-      <Card className="space-y-6 p-10">
+    <div className="w-screen bg-gradient-to-br from-white to-blue-500 py-12">
+      <Card className="mx-auto w-fit space-y-6 bg-white/60 p-10 backdrop-blur-sm">
         <Image
           src="/images/bgb-giftcard.png"
           alt="logo"

@@ -35,7 +35,7 @@ const mockNames = [
   },
 ] as const;
 
-export function BaseNameSelector({
+export function GiftCardSelector({
   form,
 }: {
   form: UseFormReturn<z.infer<typeof CreateGiftFormSchema>>;
@@ -43,10 +43,10 @@ export function BaseNameSelector({
   return (
     <FormField
       control={form.control}
-      name="baseName"
+      name="giftCard"
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel>Basename</FormLabel>
+          <FormLabel>Gift Card</FormLabel>
           <Popover>
             <PopoverTrigger asChild>
               <FormControl>
@@ -73,7 +73,7 @@ export function BaseNameSelector({
                       <span className="text-[16px]">{field.value}</span>
                     </div>
                   ) : (
-                    "Select basename"
+                    "Select gift card"
                   )}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
@@ -82,18 +82,18 @@ export function BaseNameSelector({
             <PopoverContent className="w-[512px] p-0">
               <Command>
                 <CommandInput
-                  placeholder="Search basename..."
+                  placeholder="Search giftcard..."
                   className="h-9"
                 />
                 <CommandList>
-                  <CommandEmpty>No basename found.</CommandEmpty>
+                  <CommandEmpty>No gift cards found.</CommandEmpty>
                   <CommandGroup>
                     {mockNames.map((name) => (
                       <CommandItem
                         value={name.value}
                         key={name.value}
                         onSelect={() => {
-                          form.setValue("baseName", name.value);
+                          form.setValue("giftCard", name.value);
                         }}
                         className="flex items-center justify-between hover:bg-red-500"
                       >

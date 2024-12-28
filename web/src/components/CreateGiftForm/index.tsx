@@ -10,8 +10,8 @@ import { Button } from "~/components/ui/button";
 import { Form } from "~/components/ui/form";
 
 import { BaseNameSelector } from "./BaseNameSelector";
-import { BGBGiftSelector } from "./BGBGiftSelector";
 import { InputUSDC } from "./InputUSDC";
+import { GiftCardSelector } from "./GiftCardSelector";
 
 export const CreateGiftFormSchema = z.object({
   usdcAmount: z.string({
@@ -42,7 +42,7 @@ export function CreateGiftForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <InputUSDC form={form} />
         <BaseNameSelector form={form} />
-        <BGBGiftSelector form={form} />
+        <GiftCardSelector form={form} />
         <Button type="submit">Send GIft</Button>
       </form>
     </Form>
