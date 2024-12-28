@@ -11,11 +11,13 @@ export default function CreatePage() {
   const { address } = useAccount();
   const { selectedAssets, hash } = useGiftItems();
 
+  console.log("#########selectedAssets:", selectedAssets);
+
   return (
     <div className="w-screen py-12">
-      <Card className="mx-auto w-fit space-y-6 bg-white/60 p-10 backdrop-blur-sm">
+      <Card className="mx-auto flex w-fit flex-col gap-6 bg-white/60 p-10 backdrop-blur-sm md:flex-row">
         <Image
-          src="/images/bgb-giftcard.png"
+          src="/images/BASE_GLOBAL_BLUE.gif"
           alt="logo"
           width={512}
           height={512}
