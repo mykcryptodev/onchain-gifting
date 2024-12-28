@@ -219,6 +219,7 @@ export function CreateGiftPack({
     erc721ApprovalTransactions,
     erc1155ApprovalTransactions,
     createPackTransaction,
+    erc20sWithSufficientAllowance,
   ]);
 
   return (

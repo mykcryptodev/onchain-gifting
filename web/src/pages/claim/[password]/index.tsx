@@ -1,8 +1,8 @@
 import { Name } from "@coinbase/onchainkit/identity";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useState } from "react";
 import { getContract } from "thirdweb";
-import { CLIENT, GIFT_PACK_ADDRESS } from "~/constants";
+import { CLIENT, GIFT_PACK_ADDRESS, SALT_SEPARATOR } from "~/constants";
 import { CHAIN } from "~/constants";
 import { getPackByHash } from "~/thirdweb/8453/0x1b6e902360035ac523e27d8fe69140a271ab9e7c";
 import { type Pack } from "~/types/giftpack";
@@ -35,6 +35,7 @@ export default function Claim() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
   const { isConnected, address } = useAccount();
+  const passwordWithoutSalt = useMemo(() => password?.split(SALT_SEPARATOR)[0], [password]);
 
   const fetchPack = useCallback(async () => {
     if (pack || !password) return;
@@ -90,7 +91,7 @@ export default function Claim() {
         </div>
       )}
       <p className="text-center text-gray-600">they said...</p>
-      <p className="text-lg font-bold">{password}</p>
+      <p className="text-lg font-bold text-center max-w-xl">{passwordWithoutSalt}</p>
       {pack?.opened ? (
         <ClaimContents pack={pack} />
       ) : (
