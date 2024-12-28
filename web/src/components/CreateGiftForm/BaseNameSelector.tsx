@@ -28,6 +28,7 @@ import { cn } from "~/lib/utils";
 import { type CreateGiftFormSchema } from ".";
 import { BaseNameOption } from "./BaseNameOption";
 import { type ZapperNFT } from "~/types/zapper";
+import Link from "next/link";
 
 const mockNames = [
   {
@@ -93,7 +94,14 @@ export function BaseNameSelector({
                   className="h-9"
                 />
                 <CommandList>
-                  <CommandEmpty>No basename found.</CommandEmpty>
+                  <CommandEmpty className="py-2 text-sm">
+                    <div className="flex flex-col items-start justify-center h-auto gap-y-1 px-4">
+                      <p className="text-sm">Basename</p>
+                      <div className="flex items-center w-full justify-start p-3 h-full border border-text-muted-foreground rounded-md">
+                        <p className="text-muted-foreground">You don&apos;t have a basename. <span className="text-blue-600 underline"><Link target="_blank" href="https://www.base.org/names">Buy now</Link></span></p>
+                      </div>
+                    </div>
+                  </CommandEmpty>
                   <CommandGroup>
                     {baseNameNfts.map((nft) => {
                       const imageUrl = nft.mediasV2[0]?.url;
