@@ -27,6 +27,7 @@ import {
 import { cn } from "~/lib/utils";
 import { type CreateGiftFormSchema } from ".";
 import { BaseNameOption } from "./BaseNameOption";
+import { type ZapperNFT } from "~/types/zapper";
 
 const mockNames = [
   {
@@ -37,8 +38,11 @@ const mockNames = [
 
 export function BaseNameSelector({
   form,
+  baseNameNfts,
 }: {
   form: UseFormReturn<z.infer<typeof CreateGiftFormSchema>>;
+
+  baseNameNfts: ZapperNFT[];
 }) {
   return (
     <FormField
@@ -64,8 +68,11 @@ export function BaseNameSelector({
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={
-                          mockNames.find((name) => name.value === field.value)
-                            ?.img
+                          // mockNames.find((name) => name.value === field.value)
+                          //   ?.img
+                          baseNameNfts.find(
+                            (nft) => nft.tokenId === field.value,
+                          )?.mediasV2[0]?.url ?? ""
                         }
                         alt={field.value}
                         className="h-11 w-11 rounded-sm"
@@ -88,22 +95,25 @@ export function BaseNameSelector({
                 <CommandList>
                   <CommandEmpty>No basename found.</CommandEmpty>
                   <CommandGroup>
-                    {mockNames.map((name) => (
-                      <CommandItem
-                        value={name.value}
-                        key={name.value}
-                        onSelect={() => {
-                          form.setValue("baseName", name.value);
-                        }}
-                        className="flex items-center justify-between hover:bg-red-500"
-                      >
-                        <BaseNameOption
-                          value={name.value}
-                          img={name.img}
-                          isSelected={name.value === field.value}
-                        />
-                      </CommandItem>
-                    ))}
+                    {baseNameNfts.map((nft) => {
+                      const imageUrl = nft.mediasV2[0]?.url;
+                      return (
+                        <CommandItem
+                          value={nft.name}
+                          key={nft.tokenId}
+                          onSelect={() => {
+                            form.setValue("baseName", nft.tokenId);
+                          }}
+                          className="flex items-center justify-between hover:bg-red-500"
+                        >
+                          <BaseNameOption
+                            value={nft.name}
+                            img={imageUrl ?? ""}
+                            isSelected={nft.name === field.value}
+                          />
+                        </CommandItem>
+                      );
+                    })}
                   </CommandGroup>
                 </CommandList>
               </Command>
