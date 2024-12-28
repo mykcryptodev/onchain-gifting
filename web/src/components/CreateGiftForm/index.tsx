@@ -33,6 +33,8 @@ import { allowance, approve as approveERC20 } from "thirdweb/extensions/erc20";
 import { approve as approveERC721 } from "thirdweb/extensions/erc721";
 import { setApprovalForAll as setApprovalForAllERC1155 } from "thirdweb/extensions/erc1155";
 import { CHAIN, GIFT_PACK_ADDRESS, CLIENT } from "~/constants";
+import { InputSecret } from "./SecretInput";
+import { InputResolution } from "./ResolutionInput";
 
 type Props = {
   erc20s: { token: string; amount: string }[];
@@ -57,6 +59,12 @@ export const CreateGiftFormSchema = z.object({
   }),
   giftCard: z.string({
     required_error: "Please select a gift card.",
+  }),
+  secret: z.string({
+    required_error: "Please enter secret words.",
+  }),
+  resolution: z.string({
+    required_error: "Please enter a new year's resolution.",
   }),
 });
 
@@ -94,6 +102,7 @@ export function CreateGiftForm() {
   const ethAmount = selectedAssets.ethAmount;
 
   const allTokens = data?.pages[0]?.tokenBalances ?? [];
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   const baseNameNfts = data?.pages.flatMap((page) => page.baseNameNfts) ?? [];
   const lastPage = data?.pages[data.pages.length - 1];
 
@@ -298,14 +307,14 @@ export function CreateGiftForm() {
       {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <InputUSDC form={form} allTokens={allTokens} />
+        <InputSecret form={form} />
+        <InputResolution form={form} />
         <BaseNameSelector form={form} baseNameNfts={baseNameNfts} />
-        <GiftCardSelector form={form} />
-        {/* <Button type="submit">Send GIft</Button> */}
         <Transaction calls={calls} isSponsored>
           <TransactionButton
             disabled={isPending || !address}
-            text="cre"
-            className="-mb-1 w-fit rounded-md bg-yellow-600 px-2 py-1 text-sm font-bold text-white hover:bg-yellow-700 disabled:bg-gray-400"
+            text="Create Gift"
+            className="-mb-1 h-[46px] w-full rounded-full bg-[#2455FF] px-6 text-sm font-bold text-white hover:opacity-80 disabled:bg-gray-400"
           />
           <TransactionStatus>
             <TransactionStatusLabel />
