@@ -23,7 +23,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <div className="-z-1 absolute left-0 top-5 h-full w-full">
         <ConfettiAnimation />
       </div>
-      <div className="flex w-full items-center justify-between">
+      <div className="flex w-full h-20 items-center justify-between">
         <Link href="/">
           <Image
             src="/images/base-logo.png"
