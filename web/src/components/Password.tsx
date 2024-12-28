@@ -40,20 +40,22 @@ export function Password() {
   }, [debouncedPassword, updatePassword]);
 
   return (
-    <div className="w-full max-w-sm mx-auto">
-      <textarea 
-        placeholder="Enter a message for your recipient!" 
-        onChange={(e) => setPassword(e.target.value)} 
+    <div className="mx-auto w-full max-w-sm">
+      <textarea
+        placeholder="Enter a message for your recipient!"
+        onChange={(e) => setPassword(e.target.value)}
         onFocus={() => {
           if (!hasSeenToast) {
-            toast.info("Be careful with this message! Anyone can use this message to claim your gift.");
+            toast.info(
+              "Be careful with this message! Anyone can use this message to claim your gift.",
+            );
             setHasSeenToast(true);
           }
         }}
-        className={`w-full p-2 border rounded-md ${showError ? 'border-red-500' : 'border-gray-300'}`}
+        className={`w-full rounded-md border p-2 ${showError ? "border-red-500" : "border-gray-300"}`}
       />
       {showError && (
-        <p className="text-red-500 text-sm text-center opacity-90 mt-1">
+        <p className="mt-1 text-center text-sm text-red-500 opacity-90">
           {errorMessage}
         </p>
       )}
