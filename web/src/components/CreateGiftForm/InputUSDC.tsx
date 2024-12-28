@@ -41,7 +41,7 @@ export function InputUSDC({
               }
               endDecorators={<p className="text-[14px] font-medium">USDC</p>}
               type="number"
-              className="flex w-full items-center gap-x-3 rounded-lg p-3"
+              className="flex w-full bg-white items-center gap-x-3 rounded-lg p-3"
               placeholder="$0.00"
               {...field}
             />
