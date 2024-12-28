@@ -1,4 +1,5 @@
-import { type Metadata } from 'next'
+import { type Metadata } from "next";
+import { Toaster } from "~/components/ui/toaster";
 
 const frame = {
   version: "next",
@@ -16,12 +17,18 @@ const frame = {
 };
 
 export const metadata: Metadata = {
-  title: 'Onchain Gift',
-  description: 'Give the gift of coming onchain!',
-  keywords: ['digital gifts', 'gift packs', 'online gifting', 'digital presents', 'gift sharing'],
-  authors: [{ name: 'Onchain Gift Team' }],
-  creator: 'Onchain Gift',
-  publisher: 'Onchain Gift',
+  title: "Onchain Gift",
+  description: "Give the gift of coming onchain!",
+  keywords: [
+    "digital gifts",
+    "gift packs",
+    "online gifting",
+    "digital presents",
+    "gift sharing",
+  ],
+  authors: [{ name: "Onchain Gift Team" }],
+  creator: "Onchain Gift",
+  publisher: "Onchain Gift",
   robots: {
     index: true,
     follow: true,
@@ -31,39 +38,39 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: 'https://onchaingift.com',
-    siteName: 'Onchain Gift',
-    title: 'Onchain Gift',
-    description: 'Give the gift of coming onchain!',
+    type: "website",
+    locale: "en_US",
+    url: "https://onchaingift.com",
+    siteName: "Onchain Gift",
+    title: "Onchain Gift",
+    description: "Give the gift of coming onchain!",
     images: [
       {
-        url: 'https://onchaingift.com/api/og',
+        url: "https://onchaingift.com/api/og",
         width: 1200,
         height: 630,
-        alt: 'Onchain Gift - Digital Gifting Platform',
+        alt: "Onchain Gift - Digital Gifting Platform",
       },
     ],
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Onchain Gift',
-    description: 'Give the gift of coming onchain!',
-    images: ['https://onchaingift.com/api/og'],
-    creator: '@onchaingift',
+    card: "summary_large_image",
+    title: "Onchain Gift",
+    description: "Give the gift of coming onchain!",
+    images: ["https://onchaingift.com/api/og"],
+    creator: "@onchaingift",
   },
-  viewport: 'width=device-width, initial-scale=1',
-  themeColor: '#ffffff',
+  viewport: "width=device-width, initial-scale=1",
+  themeColor: "#ffffff",
   other: {
-    'fc:frame': JSON.stringify(frame),
+    "fc:frame": JSON.stringify(frame),
   },
-}
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
@@ -73,5 +80,5 @@ export default function RootLayout({
       </head>
       <body>{children}</body>
     </html>
-  )
-} 
+  );
+}

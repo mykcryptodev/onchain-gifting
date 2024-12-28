@@ -94,7 +94,8 @@ export interface WalletBalancesResponse {
       total: number;
     }>;
   };
-  nfts: ZapperNFT[];
+  baseNameNfts: ZapperNFT[];
+  giftCardNfts: ZapperNFT[];
   nftPageInfo: PageInfo;
 }
 
