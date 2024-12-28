@@ -63,9 +63,16 @@ export interface ZapperNFT {
   lastSale: {
     valueUsd: number;
   };
-  mediasV2: Array<{
-    url: string;
-  }>;
+  mediasV3: {
+    images: {
+      edges: Array<{
+        node: {
+          original: string;
+          thumbnail: string;
+        };
+      }>;
+    };
+  };
 }
 
 export interface ZapperNFTResponse {

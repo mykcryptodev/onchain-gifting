@@ -11,7 +11,8 @@ export const walletRouter = createTRPCRouter({
       cursor: z.object({
         nftsAfter: z.string().optional(),
       }).optional(),
-      nftsFirst: z.number().default(12)
+      nftsFirst: z.number().default(12),
+      search: z.string().optional()
     }))
     .query(async ({ input }): Promise<WalletBalancesResponse> => {
       const portfolioQuery = `
@@ -50,8 +51,8 @@ export const walletRouter = createTRPCRouter({
       `;
 
       const nftQuery = `
-        query GetNFTs($owners: [Address!]!, $network: Network, $first: Int, $after: String) {
-          nftUsersTokens(owners: $owners, network: $network, first: $first, after: $after) {
+        query GetNFTs($owners: [Address!]!, $network: Network, $first: Int, $after: String, $search: String) {
+          nftUsersTokens(owners: $owners, network: $network, first: $first, after: $after, search: $search) {
             pageInfo {
               hasNextPage
               endCursor
@@ -74,12 +75,14 @@ export const walletRouter = createTRPCRouter({
                 lastSale {
                   valueUsd
                 }
-                mediasV2 {
-                  ... on Image {
-                    url
-                  }
-                  ... on Animation {
-                    url
+                mediasV3 {
+                  images {
+                    edges {
+                      node {
+                        original
+                        thumbnail
+                      }
+                    }
                   }
                 }
               }
@@ -95,6 +98,7 @@ export const walletRouter = createTRPCRouter({
         network: "BASE_MAINNET",
         first: input.nftsFirst,
         after: input.cursor?.nftsAfter,
+        search: input.search,
       };
 
       const [portfolioResponse, nftResponse] = await Promise.all([
