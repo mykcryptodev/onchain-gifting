@@ -1,64 +1,30 @@
 "use client";
 
-import { type UseFormReturn } from "react-hook-form";
-import { type z } from "zod";
-
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { type CreateGiftFormSchema } from ".";
 import Image from "next/image";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
-import { type ZapperTokenBalance } from "~/types/zapper";
+import { Label } from "../ui/label";
 
-export function InputUSDC({
-  form,
-  allTokens,
-}: {
-  form: UseFormReturn<z.infer<typeof CreateGiftFormSchema>>;
-  allTokens: ZapperTokenBalance[];
-}) {
+export function InputUSDC() {
   return (
-    <FormField
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      control={form.control}
-      name="usdcAmount"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>Send gift to a friend</FormLabel>
-          <FormControl>
-            <Input
-              startDecorators={
-                <Image
-                  src="/images/usdc-logo.png"
-                  alt="usdc"
-                  width={18}
-                  height={18}
-                />
-              }
-              endDecorators={<p className="text-[14px] font-medium">USDC</p>}
-              type="number"
-              className="flex w-full items-center gap-x-3 rounded-lg bg-white p-3"
-              placeholder="$5.00"
-              {...field}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
+    <div className="flex flex-col gap-4">
+      <Label className="text-xl font-bold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+        Send new year&apos;s resolution gift to a friend
+      </Label>
+      <Input
+        startDecorators={
+          <Image
+            src="/images/usdc-logo.png"
+            alt="usdc"
+            width={18}
+            height={18}
+          />
+        }
+        endDecorators={<p className="text-[14px] font-medium">USDC</p>}
+        type="number"
+        className="flex w-full items-center gap-x-3 rounded-lg bg-white p-3"
+        value="5.00"
+        readOnly
+      />
+    </div>
   );
 }
