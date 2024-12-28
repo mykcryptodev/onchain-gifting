@@ -19,13 +19,15 @@ export default function CreatePage() {
 
   return (
     <div className="w-screen py-12">
-      <Card className="mx-auto flex w-fit flex-col gap-6 bg-white/60 p-10 backdrop-blur-sm md:flex-row">
-        <Image
-          src="/images/BASE_GLOBAL_BLUE.gif"
-          alt="logo"
-          width={512}
-          height={512}
-        />
+      <Card className="mx-auto flex w-fit flex-col gap-6 bg-white/60 px-6 py-10 md:p-10 backdrop-blur-sm lg:flex-row">
+        <div className="relative flex justify-center items-center h-[300px] w-auto md:h-[512px] md:w-[512px]">
+          <Image
+            src="/images/BASE_GLOBAL_BLUE.gif"
+            alt="logo"
+            fill
+            objectFit="cover"
+          />
+        </div>
         <div className="flex flex-col gap-4">
           {!isCreated && <CreateGiftForm />}
           <CreateGiftPackButton

@@ -71,7 +71,7 @@ export function BaseNameSelector({
             variant="outline"
             role="combobox"
             className={cn(
-              "h-[60px] w-[512px] justify-between",
+              "h-[60px] md:w-[512px] justify-between",
               !selectedBaseName && "text-muted-foreground",
             )}
           >
@@ -91,7 +91,7 @@ export function BaseNameSelector({
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[512px] p-0">
+        <PopoverContent className="w-[300px] sm:w-full md:w-[512px] p-0">
           <Command>
             <CommandInput placeholder="Search basename..." className="h-9" />
             <CommandList>
