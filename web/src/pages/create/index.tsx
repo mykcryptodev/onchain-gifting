@@ -1,3 +1,5 @@
+"use client";
+
 import { useAccount } from "wagmi";
 
 import { useGiftItems } from "~/contexts/GiftItemsContext";
@@ -6,10 +8,12 @@ import { Card } from "~/components/ui/card";
 
 import Image from "next/image";
 import { CreateGiftForm } from "~/components/CreateGiftForm";
+import { CreateGiftPackButton } from "~/components/CreateGiftPackButton";
+import { useState } from "react";
 
 export default function CreatePage() {
-  const { address } = useAccount();
   const { selectedAssets, hash } = useGiftItems();
+  const [isCreated, setIsCreated] = useState(false);
 
   console.log("#########selectedAssets:", selectedAssets);
 
@@ -22,7 +26,18 @@ export default function CreatePage() {
           width={512}
           height={512}
         />
-        <CreateGiftForm />
+        <div className="flex flex-col gap-4">
+          {!isCreated && <CreateGiftForm />}
+          <CreateGiftPackButton
+            erc20s={selectedAssets.erc20}
+            erc721s={selectedAssets.erc721}
+            erc1155s={selectedAssets.erc1155}
+            ethAmount={selectedAssets.ethAmount}
+            hash={hash}
+            isCreated={isCreated}
+            setIsCreated={setIsCreated}
+          />
+        </div>
       </Card>
     </div>
   );

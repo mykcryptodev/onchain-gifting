@@ -1,14 +1,4 @@
-"use client";
-
-import { useAccount } from "wagmi";
-
-import { BaseNameSelector } from "./BaseNameSelector";
-import { InputUSDC } from "./InputUSDC";
-
-import { api } from "~/utils/api";
-import { type WalletBalancesResponse } from "~/types/zapper";
-import { useGiftItems } from "~/contexts/GiftItemsContext";
-
+import { useMemo, useEffect, useState, useCallback } from "react";
 import {
   Transaction,
   TransactionButton,
@@ -17,19 +7,17 @@ import {
   TransactionStatusAction,
   type LifecycleStatus,
 } from "@coinbase/onchainkit/transaction";
-import { useMemo, useEffect, useState, useCallback } from "react";
 import { encode, getContract, keccak256, ZERO_ADDRESS } from "thirdweb";
-import { isAddressEqual, type Hex } from "viem";
-import { toast } from "react-toastify";
+import { CHAIN, GIFT_PACK_ADDRESS, CLIENT } from "~/constants";
 import { createPack } from "~/thirdweb/8453/0x1b6e902360035ac523e27d8fe69140a271ab9e7c";
 import { allowance, approve as approveERC20 } from "thirdweb/extensions/erc20";
 import { approve as approveERC721 } from "thirdweb/extensions/erc721";
 import { setApprovalForAll as setApprovalForAllERC1155 } from "thirdweb/extensions/erc1155";
-import { CHAIN, GIFT_PACK_ADDRESS, CLIENT } from "~/constants";
-import { InputSecret } from "./SecretInput";
-import { InputResolution } from "./ResolutionInput";
-import { CreateGiftPack } from "../CreateGiftPack";
-import { CreateGiftPackButton } from "../CreateGiftPackButton";
+import { isAddressEqual, type Hex } from "viem";
+import { useAccount } from "wagmi";
+import { useGiftItems } from "~/contexts/GiftItemsContext";
+import { api } from "~/utils/api";
+import { toast } from "react-toastify";
 
 type Props = {
   erc20s: { token: string; amount: string }[];
@@ -37,6 +25,8 @@ type Props = {
   erc1155s: { token: string; tokenId: string; amount: string }[];
   ethAmount: string;
   hash: Hex | undefined;
+  isCreated: boolean;
+  setIsCreated: (isCreated: boolean) => void;
 };
 
 type Call = {
@@ -45,45 +35,16 @@ type Call = {
   value: bigint;
 };
 
-export function CreateGiftForm() {
+export function CreateGiftPackButton({
+  erc20s,
+  erc721s,
+  erc1155s,
+  ethAmount,
+  hash,
+  isCreated,
+  setIsCreated,
+}: Props) {
   const { address } = useAccount();
-  const { selectedAssets, hash } = useGiftItems();
-  const { data, fetchNextPage } = api.wallet.getBalances.useInfiniteQuery(
-    {
-      address: address ?? "",
-      nftsFirst: 12,
-    },
-    {
-      enabled: !!address,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      getNextPageParam: (lastPage: WalletBalancesResponse) => {
-        if (!lastPage.nftPageInfo?.hasNextPage) {
-          return undefined;
-        }
-        return {
-          nftsAfter: lastPage.nftPageInfo.endCursor,
-        };
-      },
-    },
-  );
-
-  const erc20s = selectedAssets.erc20;
-  const erc721s = selectedAssets.erc721;
-  const erc1155s = selectedAssets.erc1155;
-  const ethAmount = selectedAssets.ethAmount;
-
-  const allTokens = data?.pages[0]?.tokenBalances ?? [];
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  const baseNameNfts = data?.pages.flatMap((page) => page.baseNameNfts) ?? [];
-  const lastPage = data?.pages[data.pages.length - 1];
-
-  const loadMoreNfts = () => {
-    if (lastPage?.nftPageInfo?.hasNextPage) {
-      void fetchNextPage();
-    }
-  };
   const [erc20sWithSufficientAllowance, setErc20sWithSufficientAllowance] =
     useState<string[]>([]);
   const { hash: giftHash, password } = useGiftItems();
@@ -95,7 +56,7 @@ export function CreateGiftForm() {
       enabled: !!giftHash,
     },
   );
-  const [isCreated, setIsCreated] = useState(false);
+  // const [isCreated, setIsCreated] = useState(false);
 
   const handleOnStatus = useCallback((status: LifecycleStatus) => {
     if (status.statusName === "success") {
@@ -158,12 +119,6 @@ export function CreateGiftForm() {
           tokenAddress: token,
           amount: BigInt(amount),
         })),
-      // erc20Tokens: [
-      //   {
-      //     tokenAddress: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-      //     amount: BigInt(5000000),
-      //   },
-      // ],
       erc721Tokens: erc721s.map(({ token, tokenId }) => ({
         tokenAddress: token,
         tokenId: BigInt(tokenId),
@@ -270,24 +225,95 @@ export function CreateGiftForm() {
     createPackTransaction,
   ]);
 
-  const { mutateAsync: open, isPending } = api.engine.openPack.useMutation();
   return (
-    <div className="flex flex-col gap-4 px-4">
-      <InputUSDC />
-      <InputSecret />
-      <InputResolution />
-      <BaseNameSelector baseNameNfts={baseNameNfts} />
-      {/* <Transaction calls={calls} isSponsored>
+    <div className="flex flex-col items-center justify-center p-4">
+      <Transaction calls={calls} isSponsored onStatus={handleOnStatus}>
         <TransactionButton
-          disabled={isPending || !address}
-          text="Create Gift"
-          className="-mb-1 h-[46px] w-full rounded-full bg-[#2455FF] px-6 text-sm font-bold text-white hover:opacity-80 disabled:bg-gray-400"
+          text="Create Gift Pack"
+          disabled={
+            (!calls.length || !hash || isHashUsed) ?? password.length === 0
+          }
+          className="rounded-md bg-blue-600 px-4 py-2 text-lg font-medium text-white hover:bg-blue-700 disabled:bg-gray-400"
         />
         <TransactionStatus>
           <TransactionStatusLabel />
           <TransactionStatusAction />
         </TransactionStatus>
-      </Transaction> */}
+      </Transaction>
+      {isCreated && (
+        <div className="mt-4 flex flex-col items-center gap-2">
+          <p className="text-sm text-gray-600">
+            Share this link with the recipient:
+          </p>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              readOnly
+              value={`${window.location.origin}/claim/${encodeURIComponent(password ?? "")}`}
+              className="w-64 rounded-md border border-gray-200 px-3 py-2 text-sm"
+            />
+            <button
+              onClick={() => {
+                void navigator.clipboard.writeText(
+                  `${window.location.origin}/claim/${encodeURIComponent(password ?? "")}`,
+                );
+                toast.success("Copied to clipboard!");
+              }}
+              className="p-2 text-gray-600 hover:text-gray-800"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+            <button
+              onClick={() => {
+                if (navigator.share) {
+                  void navigator.share({
+                    title: "Gift Pack",
+                    text: "I sent you a gift pack!",
+                    url: `${window.location.origin}/claim/${encodeURIComponent(password ?? "")}`,
+                  });
+                }
+              }}
+              className="p-2 text-gray-600 hover:text-gray-800"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+      {isHashUsed && password.length > 0 && (
+        <p className="text-sm text-red-500 text-opacity-90">
+          Please use a different message.
+        </p>
+      )}
     </div>
   );
 }
