@@ -6,6 +6,8 @@ export const APP_NAME = "Onchain Gifting";
 
 export const GIFT_PACK_ADDRESS = "0x46659278E7A8838C53EF7fE9939675591757409B";
 
+export const SALT_SEPARATOR = ":::";
+
 export const WAGMI_CHAIN = base;
 export const CHAIN = defineChain({
   id: base.id,

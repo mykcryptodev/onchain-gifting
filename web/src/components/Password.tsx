@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { useGiftItems } from "~/contexts/GiftItemsContext";
 import useDebounce from "~/hooks/useDebounce";
 import crypto from 'crypto';
+import { SALT_SEPARATOR } from "~/constants";
 
 const MIN_PASSWORD_LENGTH = 20;
 
@@ -13,7 +14,7 @@ export function Password() {
   const [hasSeenToast, setHasSeenToast] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const salt = useMemo(() => ':::' + crypto.randomBytes(16).toString('hex'), []);
+  const salt = useMemo(() => SALT_SEPARATOR + crypto.randomBytes(16).toString('hex'), []);
 
   useEffect(() => {
     const isLongEnough = debouncedPassword.length >= MIN_PASSWORD_LENGTH;
@@ -71,7 +72,7 @@ export function Password() {
               </svg>
             </button>
           </div>
-          <p className="text-xs mt-2 p-2 bg-blue-100 text-blue-800 rounded-md">The secret phrase is used to claim your gift. Keep it safe! It is created using your message and a random string. If you lose it, you can reclaim your gift in Gifts From Me section.</p>
+          <p className="text-xs mt-2 p-2 bg-blue-100 text-blue-800 rounded-md">The secret phrase is used to claim your gift. Keep it safe! It is created using your message and a random string. If you lose it, you can reclaim your gift in the Gifts From Me section.</p>
         </div>
       </details>
       {showError && (
