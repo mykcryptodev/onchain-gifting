@@ -21,6 +21,14 @@ import {
 import { cn } from "~/lib/utils";
 import { BaseNameOption } from "./BaseNameOption";
 import { type ZapperNFT } from "~/types/zapper";
+import Link from "next/link";
+
+const mockNames = [
+  {
+    value: "ayvee.base.eth",
+    img: "https://raw.seadn.io/files/b79f096162e1f7d0750cb0f491c8689d.svg",
+  },
+] as const;
 import { useGiftItems } from "~/contexts/GiftItemsContext";
 
 export function BaseNameSelector({
@@ -87,7 +95,21 @@ export function BaseNameSelector({
           <Command>
             <CommandInput placeholder="Search basename..." className="h-9" />
             <CommandList>
-              <CommandEmpty>No basename found.</CommandEmpty>
+              <CommandEmpty className="py-2 text-sm">
+                <div className="flex h-auto flex-col items-start justify-center gap-y-1 px-4">
+                  <p className="text-sm">Basename</p>
+                  <div className="border-text-muted-foreground flex h-full w-full items-center justify-start rounded-md border p-3">
+                    <p className="text-muted-foreground">
+                      You don&apos;t have a basename.{" "}
+                      <span className="text-blue-600 underline">
+                        <Link target="_blank" href="https://www.base.org/names">
+                          Buy now
+                        </Link>
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </CommandEmpty>
               <CommandGroup>
                 {baseNameNfts.map((nft) => (
                   <CommandItem
