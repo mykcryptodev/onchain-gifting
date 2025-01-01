@@ -11,7 +11,7 @@ export const WalletBalances: FC<WalletBalancesProps> = ({ address }) => {
   const [nftSearch, setNftSearch] = useState("");
   const debouncedNftSearch = useDebounce(nftSearch, 500);
 
-  const { data, fetchNextPage } = api.wallet.getBalances.useInfiniteQuery(
+  const { data, isLoading, fetchNextPage } = api.wallet.getBalances.useInfiniteQuery(
     { 
       address,
       nftsFirst: 12,
@@ -83,6 +83,11 @@ export const WalletBalances: FC<WalletBalancesProps> = ({ address }) => {
           {allNfts.map((nft) => (
             <NftOption key={nft.tokenId} nft={nft} />
           ))}
+          {isLoading && (
+            Array.from({ length: 6 }).map((_, index: number) => (
+              <div key={index} className="aspect-square w-full animate-pulse bg-gray-300 rounded-lg"></div>
+            ))
+          )}
           {lastPage?.nftPageInfo?.hasNextPage && (
             <button
               onClick={loadMoreNfts}
