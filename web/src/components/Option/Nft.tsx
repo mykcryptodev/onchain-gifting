@@ -8,7 +8,7 @@ interface NftOptionProps {
 }
 
 export const NftOption: FC<NftOptionProps> = ({ nft }) => {
-  const imageUrl = nft.mediasV2[0]?.url;
+  const imageUrl = nft.mediasV3?.images?.edges?.[0]?.node?.original ?? undefined;
   const { addERC721, removeERC721, selectedAssets } = useGiftItems();
   const assetIsSelected = useMemo(() => {
     const asset = selectedAssets.erc721.find((erc721) => 

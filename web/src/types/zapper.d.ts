@@ -57,15 +57,22 @@ export interface ZapperNFT {
       valueUsd: number;
     };
   };
-  estimatedValue: {
+  estimatedValue?: {
     valueUsd: number;
   };
-  lastSale: {
+  lastSale?: {
     valueUsd: number;
   };
-  mediasV2: Array<{
-    url: string;
-  }>;
+  mediasV3?: {
+    images?: {
+      edges?: Array<{
+        node?: {
+          original?: string;
+          thumbnail?: string;
+        };
+      }>;
+    };
+  };
 }
 
 export interface ZapperNFTResponse {
