@@ -4,12 +4,25 @@ import { type FC, useState } from "react";
 import { type WalletBalancesProps, type WalletBalancesResponse } from "~/types/zapper";
 import { NftOption } from "./Option/Nft";
 import useDebounce from "~/hooks/useDebounce";
+import { isAddress } from "viem";
 
 export const WalletBalances: FC<WalletBalancesProps> = ({ address }) => {
   const [isTokenOpen, setIsTokenOpen] = useState(false);
   const [isNftOpen, setIsNftOpen] = useState(false);
   const [nftSearch, setNftSearch] = useState("");
+  const [tokenAddress, setTokenAddress] = useState("");
   const debouncedNftSearch = useDebounce(nftSearch, 500);
+  const debouncedTokenAddress = useDebounce(tokenAddress, 500);
+
+  const { data: customTokenData } = api.token.getCustomToken.useQuery(
+    { tokenAddress: debouncedTokenAddress, userAddress: address },
+    { 
+      enabled: !!debouncedTokenAddress && isAddress(debouncedTokenAddress) && !!address,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    }
+  );
 
   const { data, isLoading, fetchNextPage } = api.wallet.getBalances.useInfiniteQuery(
     { 
@@ -56,6 +69,16 @@ export const WalletBalances: FC<WalletBalancesProps> = ({ address }) => {
         <h2 className="text-lg font-bold">Tokens</h2>
       </button>
       <div className={`max-h-96 p-4 rounded-lg overflow-y-auto flex flex-col gap-4 content transition-all duration-200 ${isTokenOpen ? 'max-h-[500px] opacity-100 visible' : 'max-h-0 opacity-0 overflow-hidden hidden'}`}>
+        <input
+          type="text"
+          placeholder="Enter token address..."
+          value={tokenAddress}
+          onChange={(e) => setTokenAddress(e.target.value)}
+          className="w-full p-2 border rounded-lg mb-4"
+        />
+        {customTokenData && (
+          <TokenOption key={customTokenData.address} option={customTokenData} />
+        )}
         {allTokens.map((tokenBalance) => (
           <TokenOption key={`${tokenBalance.address}-${tokenBalance.token.baseToken.symbol}`} option={tokenBalance} />
         ))}
