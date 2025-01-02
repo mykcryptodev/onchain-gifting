@@ -7,6 +7,7 @@ import { getChainMetadata } from "thirdweb/chains";
 import { NATIVE_TOKEN_ADDRESS, getContract, readContract, toTokens } from "thirdweb";
 import { customTokenList } from "~/constants/token_lists/custon";
 import { type ZapperTokenBalance } from "~/types/zapper";
+import { balanceOf, getCurrencyMetadata } from "thirdweb/extensions/erc20";
 
 export const tokenRouter = createTRPCRouter({
   getImage: publicProcedure
@@ -48,43 +49,9 @@ export const tokenRouter = createTRPCRouter({
         address: input.tokenAddress,
       });
 
-      const [name, symbol, decimals, balance] = await Promise.all([
-        readContract({
-          contract,
-          method: [
-            "0x06fdde03",
-            [],
-            [{ internalType: "string", name: "", type: "string" }]
-          ],
-          params: []
-        }),
-        readContract({
-          contract,
-          method: [
-            "0x95d89b41",
-            [],
-            [{ internalType: "string", name: "", type: "string" }]
-          ],
-          params: []
-        }),
-        readContract({
-          contract,
-          method: [
-            "0x313ce567",
-            [],
-            [{ internalType: "uint8", name: "", type: "uint8" }]
-          ],
-          params: []
-        }),
-        readContract({
-          contract,
-          method: [
-            "0x70a08231",
-            [{ internalType: "address", name: "account", type: "address" }],
-            [{ internalType: "uint256", name: "", type: "uint256" }]
-          ],
-          params: [input.userAddress]
-        })
+      const [tokenMetadata, balance] = await Promise.all([
+        getCurrencyMetadata({ contract }),
+        balanceOf({ contract, address: input.userAddress }),
       ]);
 
       const imageUrl = await tokenRouter.createCaller({}).getImage({ tokenAddress: input.tokenAddress });
@@ -94,14 +61,14 @@ export const tokenRouter = createTRPCRouter({
         address: input.tokenAddress,
         network: chainName,
         token: {
-          balance: toTokens(balance, Number(decimals)),
+          balance: toTokens(balance, Number(tokenMetadata.decimals)),
           balanceUSD: 0,
           baseToken: {
             address: input.tokenAddress,
-            decimals: Number(decimals),
+            decimals: Number(tokenMetadata.decimals),
             imgUrl: imageUrl,
-            name,
-            symbol,
+            name: tokenMetadata.name,
+            symbol: tokenMetadata.symbol,
             network: chainName,
           },
         },
