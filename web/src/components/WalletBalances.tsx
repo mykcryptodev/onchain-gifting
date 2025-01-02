@@ -17,7 +17,7 @@ export const WalletBalances: FC<WalletBalancesProps> = ({ address }) => {
   const { data: customTokenData } = api.token.getCustomToken.useQuery(
     { tokenAddress: debouncedTokenAddress, userAddress: address },
     { 
-      enabled: !!debouncedTokenAddress && isAddress(debouncedTokenAddress),
+      enabled: !!debouncedTokenAddress && isAddress(debouncedTokenAddress) && !!address,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
