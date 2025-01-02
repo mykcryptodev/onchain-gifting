@@ -4,8 +4,6 @@ import { type FC, useState } from "react";
 import { type WalletBalancesProps, type WalletBalancesResponse } from "~/types/zapper";
 import { NftOption } from "./Option/Nft";
 import useDebounce from "~/hooks/useDebounce";
-import { getContract } from "thirdweb";
-import { CHAIN, CLIENT } from "~/constants";
 import { isAddress } from "viem";
 
 export const WalletBalances: FC<WalletBalancesProps> = ({ address }) => {
