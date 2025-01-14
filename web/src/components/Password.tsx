@@ -5,7 +5,7 @@ import useDebounce from "~/hooks/useDebounce";
 import crypto from 'crypto';
 import { SALT_SEPARATOR } from "~/constants";
 
-const MIN_PASSWORD_LENGTH = 20;
+const MIN_PASSWORD_LENGTH = 1;
 
 export function Password() {
   const { updatePassword, password: saltedPassword } = useGiftItems();
