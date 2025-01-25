@@ -11,6 +11,7 @@ import { useAccount } from "wagmi";
 import { useGiftItems } from "~/contexts/GiftItemsContext";
 import { api } from "~/utils/api";
 import { toast } from "react-toastify";
+import QrCode from "./Create/QRCode";
 
 type Props = {
   erc20s: { token: string; amount: string }[];
@@ -158,6 +159,12 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
 
   const [calls, setCalls] = useState<Call[]>([]);
 
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   useEffect(() => {
     const prepareCalls = async () => {
       const preparedCalls = await Promise.all([
@@ -205,7 +212,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
           <TransactionStatusAction />
         </TransactionStatus>
       </Transaction>
-      {isCreated && (
+      {isCreated || isMounted && (
         <div className="mt-4 flex flex-col items-center gap-2">
           <p className="text-sm text-gray-600">Share this link with the recipient:</p>
           <div className="flex items-center gap-2">
@@ -248,6 +255,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
               </svg>
             </button>
           </div>
+          <QrCode url={`${window.location.origin}/claim/${encodeURIComponent(password ?? '')}`} />
         </div>
       )}
       {isHashUsed && password.length > 0 && (
