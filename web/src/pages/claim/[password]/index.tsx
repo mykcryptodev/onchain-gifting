@@ -36,6 +36,7 @@ export default function Claim() {
   const [isClaiming, setIsClaiming] = useState(false);
   const { isConnected, address } = useAccount();
   const passwordWithoutSalt = useMemo(() => password?.split(SALT_SEPARATOR)[0], [password]);
+  console.log({ pack });
 
   const fetchPack = useCallback(async () => {
     if (pack || !password) return;
@@ -83,7 +84,9 @@ export default function Claim() {
           <WalletComponents />
         )}
       </div>
-      <h1 className="text-2xl font-bold text-center">Claim Your Gift Pack</h1>
+      <h1 className="text-2xl font-bold text-center">
+        {pack?.opened ? "This gift has been claimed!" : "Claim Your Gift Pack"}
+      </h1>
       <p className="text-center text-gray-600">You have been sent an onchain gift pack from</p>
       {pack?.creator && (
         <div className="flex items-center gap-2 border border-gray-200 px-4 py-2 rounded-md">
