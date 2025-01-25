@@ -159,12 +159,6 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
 
   const [calls, setCalls] = useState<Call[]>([]);
 
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   useEffect(() => {
     const prepareCalls = async () => {
       const preparedCalls = await Promise.all([
@@ -212,7 +206,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
           <TransactionStatusAction />
         </TransactionStatus>
       </Transaction>
-      {isCreated || isMounted && (
+      {isCreated && (
         <div className="mt-4 flex flex-col items-center gap-2">
           <p className="text-sm text-gray-600">Share this link with the recipient:</p>
           <div className="flex items-center gap-2">
