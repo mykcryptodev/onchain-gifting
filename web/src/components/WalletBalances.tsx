@@ -5,12 +5,16 @@ import { type WalletBalancesProps, type WalletBalancesResponse } from "~/types/z
 import { NftOption } from "./Option/Nft";
 import useDebounce from "~/hooks/useDebounce";
 import { isAddress } from "viem";
+import { useGiftItems } from "~/contexts/GiftItemsContext";
+import { toast } from "react-toastify";
 
 export const WalletBalances: FC<WalletBalancesProps> = ({ address }) => {
   const [isTokenOpen, setIsTokenOpen] = useState(false);
   const [isNftOpen, setIsNftOpen] = useState(false);
   const [nftSearch, setNftSearch] = useState("");
   const [tokenAddress, setTokenAddress] = useState("");
+  const [nftContractAddress, setNftContractAddress] = useState("");
+  const [nftTokenId, setNftTokenId] = useState("");
   const debouncedNftSearch = useDebounce(nftSearch, 500);
   const debouncedTokenAddress = useDebounce(tokenAddress, 500);
 
@@ -56,6 +60,17 @@ export const WalletBalances: FC<WalletBalancesProps> = ({ address }) => {
     }
   };
 
+  const { addERC721 } = useGiftItems();
+
+  const handleAddNft = () => {
+    if (!isAddress(nftContractAddress) || !nftTokenId) return;
+    
+    addERC721(nftContractAddress, nftTokenId);
+    toast.success('NFT added to gift pack');
+    setNftContractAddress("");
+    setNftTokenId("");
+  };
+
   return (
     <div className="flex flex-col gap-4 w-full mx-auto max-w-lg">
       {/* Tokens */}
@@ -95,6 +110,34 @@ export const WalletBalances: FC<WalletBalancesProps> = ({ address }) => {
         <h2 className="text-lg font-bold">NFTs</h2>
       </button>
       <div className={`max-h-96 p-4 rounded-lg overflow-y-auto flex flex-col gap-4 content transition-all duration-200 ${isNftOpen ? 'max-h-[500px] opacity-100 visible' : 'max-h-0 opacity-0 overflow-hidden hidden'}`}>
+        <div className="flex flex-col gap-4">
+          <div className="border-b pb-4">
+            <h3 className="text-sm font-medium mb-2">Add NFT Manually</h3>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Contract Address"
+                value={nftContractAddress}
+                onChange={(e) => setNftContractAddress(e.target.value)}
+                className="flex-1 p-2 text-sm border rounded-lg"
+              />
+              <input
+                type="text"
+                placeholder="Token ID"
+                value={nftTokenId}
+                onChange={(e) => setNftTokenId(e.target.value)}
+                className="w-32 p-2 text-sm border rounded-lg"
+              />
+              <button
+                onClick={handleAddNft}
+                disabled={!isAddress(nftContractAddress) || !nftTokenId}
+                className="px-3 py-1 text-sm font-medium text-blue-600 border border-blue-600 rounded-md hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
         <input
           type="text"
           placeholder="Search NFTs..."
