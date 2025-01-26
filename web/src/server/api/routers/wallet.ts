@@ -39,12 +39,19 @@ interface JobStatusResponse {
 const lastComputeRequestByAddress = new Map<string, number>();
 const COMPUTE_COOLDOWN_MS = 30000; // 30 seconds between compute requests per address
 
+// Feature flag to disable balance computation
+const ENABLE_BALANCE_COMPUTATION = true
+
 export const walletRouter = createTRPCRouter({
   computeBalances: publicProcedure
     .input(z.object({
       address: z.string(),
     }))
     .mutation(async ({ input }) => {
+      if (!ENABLE_BALANCE_COMPUTATION) {
+        throw new Error("Balance computation is currently disabled");
+      }
+
       // Check if we're within the cooldown period
       const lastRequest = lastComputeRequestByAddress.get(input.address);
       const now = Date.now();
@@ -103,6 +110,10 @@ export const walletRouter = createTRPCRouter({
       jobId: z.string(),
     }))
     .query(async ({ input }) => {
+      if (!ENABLE_BALANCE_COMPUTATION) {
+        throw new Error("Balance computation is currently disabled");
+      }
+
       const statusQuery = `
         query BalanceJobStatus($jobId: String!) {
           balanceJobStatus(jobId: $jobId) {
