@@ -31,6 +31,7 @@ export default function Claim() {
   const router = useRouter();
   const { password } = router.query as { password: string };
   const [pack, setPack] = useState<Pack | null>(null);
+  const [isLoadingPack, setIsLoadingPack] = useState(false);
   const [claimingIsFinished, setClaimingIsFinished] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
@@ -40,20 +41,27 @@ export default function Claim() {
 
   const fetchPack = useCallback(async () => {
     if (pack || !password) return;
+    setIsLoadingPack(true);
     const encodedPassword = encodeAbiParameters(
       [{ type: 'string' }],
       [password]
     );
     const hash = viemKeccak256(encodedPassword);
-    const fetchedPack = await getPackByHash({
-      contract: getContract({
-        address: GIFT_PACK_ADDRESS,
+    try {
+      const fetchedPack = await getPackByHash({
+        contract: getContract({
+          address: GIFT_PACK_ADDRESS,
         chain: CHAIN,
         client: CLIENT,
       }),
       hash,
-    });
-    setPack(fetchedPack);
+      });
+      setPack(fetchedPack);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingPack(false);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [password]);
 
@@ -75,7 +83,32 @@ export default function Claim() {
     }
   }
 
-  if (!pack) return null;
+  if (isLoadingPack) return (
+    <div className="flex flex-col items-center justify-center p-4 pt-20">
+      <div className="animate-spin w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+    </div>
+  );
+
+  if (!pack) return (
+    <div className="flex flex-col items-center justify-center p-4 pt-20">
+      <Image
+        src="/images/brokenheart.png"
+        alt="Broken Heart"
+        width={75}
+        height={75}
+      />
+      <div className="text-center space-y-4">
+        <h1 className="text-2xl font-bold text-gray-800 pt-4">No Gift Found</h1>
+        <p className="text-gray-600">This link doesnt have a gift associated with it.</p>
+        <Link 
+          href="/" 
+          className="inline-block px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+        >
+          Return Home
+        </Link>
+      </div>
+    </div>
+  );
 
   return (
     <div className="flex flex-col gap-2 justify-center items-center">
