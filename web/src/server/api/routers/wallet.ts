@@ -17,7 +17,131 @@ interface CollectionsResponse {
   errors?: Array<{ message: string }>;
 }
 
+interface ComputeBalancesResponse {
+  data: {
+    computeTokenBalances: {
+      jobId: string;
+    };
+  };
+  errors?: Array<{ message: string }>;
+}
+
+interface JobStatusResponse {
+  data: {
+    balanceJobStatus: {
+      status: "pending" | "completed" | "failed";
+    };
+  };
+  errors?: Array<{ message: string }>;
+}
+
+// In-memory store for rate limiting
+const lastComputeRequestByAddress = new Map<string, number>();
+const COMPUTE_COOLDOWN_MS = 30000; // 30 seconds between compute requests per address
+
 export const walletRouter = createTRPCRouter({
+  computeBalances: publicProcedure
+    .input(z.object({
+      address: z.string(),
+    }))
+    .mutation(async ({ input }) => {
+      // Check if we're within the cooldown period
+      const lastRequest = lastComputeRequestByAddress.get(input.address);
+      const now = Date.now();
+      if (lastRequest && now - lastRequest < COMPUTE_COOLDOWN_MS) {
+        const remainingCooldown = Math.ceil((COMPUTE_COOLDOWN_MS - (now - lastRequest)) / 1000);
+        throw new Error(`Please wait ${remainingCooldown} seconds before requesting another balance computation`);
+      }
+
+      const computeQuery = `
+        mutation ComputeTokenBalances($input: PortfolioInput!) {
+          computeTokenBalances(input: $input) {
+            jobId
+          }
+        }
+      `;
+
+      const computeResponse = await fetch("https://public.zapper.xyz/graphql", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Basic ${Buffer.from(env.ZAPPER_API_KEY).toString('base64')}`,
+        },
+        body: JSON.stringify({
+          query: computeQuery,
+          variables: {
+            input: {
+              addresses: [input.address],
+              networks: ["BASE_MAINNET"],
+            },
+          },
+        }),
+      });
+
+      if (computeResponse.status === 429) {
+        throw new Error("Rate limit exceeded. Please try again later.");
+      }
+
+      const computeData = await computeResponse.json() as ComputeBalancesResponse;
+
+      if (computeData.errors) {
+        const errorMessage = computeData.errors[0]?.message;
+        if (errorMessage?.toLowerCase().includes("rate limit")) {
+          throw new Error("Rate limit exceeded. Please try again later.");
+        }
+        throw new Error(errorMessage ?? "Failed to compute balances");
+      }
+
+      // Update the last request timestamp
+      lastComputeRequestByAddress.set(input.address, now);
+
+      return { jobId: computeData.data.computeTokenBalances.jobId };
+    }),
+
+  checkBalanceStatus: publicProcedure
+    .input(z.object({
+      jobId: z.string(),
+    }))
+    .query(async ({ input }) => {
+      const statusQuery = `
+        query BalanceJobStatus($jobId: String!) {
+          balanceJobStatus(jobId: $jobId) {
+            status
+          }
+        }
+      `;
+
+      const statusResponse = await fetch("https://public.zapper.xyz/graphql", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Basic ${Buffer.from(env.ZAPPER_API_KEY).toString('base64')}`,
+        },
+        body: JSON.stringify({
+          query: statusQuery,
+          variables: { jobId: input.jobId },
+        }),
+      });
+
+      if (statusResponse.status === 429) {
+        throw new Error("Rate limit exceeded. Please try again later.");
+      }
+
+      const statusData = await statusResponse.json() as JobStatusResponse;
+
+      if (statusData.errors) {
+        const errorMessage = statusData.errors[0]?.message;
+        if (errorMessage?.toLowerCase().includes("rate limit")) {
+          throw new Error("Rate limit exceeded. Please try again later.");
+        }
+        throw new Error(errorMessage ?? "Failed to check job status");
+      }
+
+      return {
+        status: statusData.data.balanceJobStatus.status,
+      };
+    }),
+
   getBalances: publicProcedure
     .input(z.object({ 
       address: z.string(),

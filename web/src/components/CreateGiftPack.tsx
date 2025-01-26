@@ -37,13 +37,73 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
     enabled: !!giftHash,
   });
   const [isCreated, setIsCreated] = useState(false);
+  const [currentJobId, setCurrentJobId] = useState<string | null>(null);
+  const utils = api.useUtils();
+
+  const { mutate: computeBalances } = api.wallet.computeBalances.useMutation({
+    onSuccess: ({ jobId }) => {
+      setCurrentJobId(jobId);
+    },
+    onError: (error) => {
+      if (error.message.includes("rate limit")) {
+        toast.warning(error.message);
+      } else if (error.message.includes("Please wait")) {
+        console.log("Please wait");
+      } else {
+        console.error('Failed to compute balances:', error);
+        toast.error('Failed to compute balances');
+      }
+    }
+  });
+
+  api.wallet.checkBalanceStatus.useQuery(
+    { jobId: currentJobId! },
+    {
+      enabled: !!currentJobId,
+      refetchInterval: (query) => {
+        const status = query.state.data;
+        if (!status) return 1000;
+        if (status.status === "completed" || status.status === "failed") {
+          setCurrentJobId(null);
+          if (status.status === "completed") {
+            void utils.wallet.getBalances.invalidate();
+          } else {
+            toast.error('Balance computation failed');
+          }
+          return false;
+        }
+        return 1000; // Poll every second while pending
+      },
+      retry: (failureCount, error) => {
+        // Don't retry on rate limit errors
+        if (error.message.includes("rate limit")) {
+          toast.warning(error.message);
+          return false;
+        }
+        return failureCount < 3;
+      }
+    }
+  );
+
+  // Compute balances when the component mounts and when the address changes
+  useEffect(() => {
+    if (address && !currentJobId) {
+      console.log("Computing balances");
+      computeBalances({ address });
+    }
+  }, [address, computeBalances, currentJobId]);
 
   const handleOnStatus = useCallback((status: LifecycleStatus) => { 
     if (status.statusName === 'success') {
       toast.success('Gift pack created!');
       setIsCreated(true);
+      // Recompute balances after successful gift pack creation
+      if (address && !currentJobId) {
+        console.log("Recomputing balances");
+        computeBalances({ address });
+      }
     }
-  }, []); 
+  }, [address, computeBalances, currentJobId]); 
 
   useEffect(() => {
     const checkAllowances = async () => {
