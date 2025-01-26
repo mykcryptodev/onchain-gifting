@@ -31,7 +31,7 @@ export default function Claim() {
   const router = useRouter();
   const { password } = router.query as { password: string };
   const [pack, setPack] = useState<Pack | null>(null);
-  const [isLoadingPack, setIsLoadingPack] = useState(false);
+  const [isLoadingPack, setIsLoadingPack] = useState(true);
   const [claimingIsFinished, setClaimingIsFinished] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
