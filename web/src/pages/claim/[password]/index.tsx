@@ -27,6 +27,24 @@ const WalletComponents = dynamic(() => import("~/components/utils/WalletComponen
   ssr: false,
 });
 
+function useWindowSize() {
+  const [size, setSize] = useState<'base' | 'md'>('base');
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+    function updateSize() {
+      setSize(window.innerWidth >= 768 ? 'md' : 'base');
+    }
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+
+  // Return base during SSR, actual size after mounting
+  return hasMounted ? size : 'base';
+}
+
 export default function Claim() {
   const router = useRouter();
   const { password } = router.query as { password: string };
@@ -36,6 +54,7 @@ export default function Claim() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
   const { isConnected, address } = useAccount();
+  const size = useWindowSize();
   const passwordWithoutSalt = useMemo(() => password?.split(SALT_SEPARATOR)[0], [password]);
   console.log({ pack });
 
@@ -212,7 +231,11 @@ export default function Claim() {
           <p className="text-center text-gray-600 mb-2 max-w-[300px] mx-auto">Bring your passkey to the mobile app and do more with your crypto!</p>
           <div className="grid grid-cols-2 gap-2">
             <Link 
-              href="https://go.cb-w.com/wallet-download?source=wallet_coinbase_com"
+              // deep link to app import smart wallet if on mobile, otherwise link to app store
+              href={{
+                md: "https://go.cb-w.com/wallet-download?source=wallet_coinbase_com",
+                base: "https://wallet.coinbase.com/links/import-smart-wallet"
+              }[size]}
               className="flex flex-col items-center gap-2 border border-gray-200 px-4 py-2 rounded-lg"
             >
               <Image 
@@ -225,7 +248,10 @@ export default function Claim() {
               Download on iOS
             </Link>
             <Link 
-              href="https://go.cb-w.com/wallet-mobile-download?source=wallet_coinbase_com"
+              href={{
+                md: "https://go.cb-w.com/wallet-mobile-download?source=wallet_coinbase_com",
+                base: "https://wallet.coinbase.com/links/import-smart-wallet"
+              }[size]}
               className="flex flex-col items-center gap-2 border border-gray-200 px-4 py-2 rounded-lg"
             >
               <Image 
