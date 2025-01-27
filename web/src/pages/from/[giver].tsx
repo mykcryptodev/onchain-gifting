@@ -3,6 +3,7 @@ import { useAccount } from "wagmi";
 import dynamic from "next/dynamic";
 import Pack from "~/components/My/Pack";
 import { useRouter } from "next/router";
+import { useCallback, useState } from "react";
 
 const WalletComponents = dynamic(() => import("~/components/utils/WalletComponents"), {
   ssr: false,
@@ -12,8 +13,13 @@ export default function From() {
   const router = useRouter();
   const { giver } = router.query as { giver: string };
   const { address } = useAccount();
-  const { data: packs, refetch, isLoading } = api.pack.getPackMetadatasByCreator.useQuery({
+  const [currentCursor, setCurrentCursor] = useState<string | null>(null);
+  const ITEMS_PER_PAGE = 25;
+
+  const { data: packsData, refetch, isLoading } = api.pack.getPackMetadatasByCreator.useQuery({
     owner: giver ?? address ?? "",
+    limit: ITEMS_PER_PAGE,
+    after: currentCursor ?? undefined,
   }, {
     enabled: !!address,
     refetchOnMount: false,
@@ -21,9 +27,23 @@ export default function From() {
     refetchOnReconnect: false,
   });
 
-  console.log({ packs, isLoading });
+  const handleNextPage = useCallback(() => {
+    if (packsData?.pageInfo.hasNextPage) {
+      setCurrentCursor(packsData.pageInfo.endCursor);
+    }
+    // scroll to the top
+    window.scrollTo(0, 0);
+  }, [packsData]);
 
-  if (!isLoading && packs?.length === 0) {
+  const handlePreviousPage = useCallback(() => {
+    if (packsData?.pageInfo.hasPreviousPage) {
+      setCurrentCursor(packsData.pageInfo.startCursor);
+    }
+    // scroll to the top
+    window.scrollTo(0, 0);
+  }, [packsData]);
+
+  if (!isLoading && (!packsData?.items || packsData.items.length === 0)) {
     return <div className="flex flex-col items-center justify-center w-full">
       <WalletComponents />
       <div className="flex flex-col my-4 gap-4 items-center justify-center w-full min-h-96">
@@ -32,7 +52,7 @@ export default function From() {
     </div>;
   }
 
-  if (isLoading) {
+  if (isLoading || !packsData) {
     return <div className="flex flex-col items-center justify-center w-full gap-4">
       <WalletComponents />
       {Array.from({ length: 10 }).map((_, index) => (
@@ -57,7 +77,7 @@ export default function From() {
     <div className="flex flex-col items-center justify-center w-full">
       <WalletComponents />
       <div className="flex flex-col my-4 gap-4 items-center justify-center w-full">
-        {packs?.map((pack) => (
+        {packsData.items.map((pack) => (
           <Pack 
             key={pack.id} 
             tokenId={Number(pack.id)} 
@@ -71,6 +91,24 @@ export default function From() {
           />
         ))}
       </div>
+      <div className="flex justify-center items-center gap-4 my-4">
+        {packsData.pageInfo.hasPreviousPage && (
+          <button
+            onClick={handlePreviousPage}
+            className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300"
+          >
+            Previous
+          </button>
+        )}
+        {packsData.pageInfo.hasNextPage && (
+          <button
+            onClick={handleNextPage}
+            className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300"
+          >
+            Next
+          </button>
+        )}
+      </div>
     </div>
-  )
+  );
 }

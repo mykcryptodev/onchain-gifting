@@ -19,6 +19,12 @@ type PackMetadataResponse = {
   data: {
     packs: {
       items: Pack[];
+      pageInfo: {
+        hasNextPage: boolean;
+        hasPreviousPage: boolean;
+        startCursor: string | null;
+        endCursor: string | null;
+      };
     };
   };
 };
@@ -79,17 +85,23 @@ export const packRouter = createTRPCRouter({
   getPackMetadatasByCreator: publicProcedure
     .input(z.object({
       owner: z.string(),
+      limit: z.number().min(1).max(100).default(25),
+      after: z.string().optional(),
+      before: z.string().optional(),
     }))
     .query(async ({ input }) => {
       const queryUrl = env.GHOST_QUERY_URL;
       const apiKey = env.GHOST_API_KEY;
 
       const query = `
-        query GetPacksByCreator($creator: String!) {
+        query GetPacksByCreator($creator: String!, $limit: Int!, $after: String, $before: String) {
           packs(
             where: { creator: $creator }
             orderBy: "id"
             orderDirection: "desc"
+            limit: $limit
+            after: $after
+            before: $before
           ) {
             items {
               id
@@ -97,6 +109,12 @@ export const packRouter = createTRPCRouter({
               openedAtTimestamp
               creator
               createdAtTimestamp
+            }
+            pageInfo {
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              endCursor
             }
           }
         }
@@ -112,7 +130,10 @@ export const packRouter = createTRPCRouter({
           body: JSON.stringify({
             query,
             variables: {
-              creator: input.owner
+              creator: input.owner,
+              limit: input.limit,
+              after: input.after,
+              before: input.before,
             }
           }),
         });
@@ -122,14 +143,15 @@ export const packRouter = createTRPCRouter({
         }
 
         const json = (await response.json()) as PackMetadataResponse;
-        const packs = json.data.packs.items;
-
-        return packs;
+        return {
+          items: json.data.packs.items,
+          pageInfo: json.data.packs.pageInfo,
+        };
       } catch (error) {
         console.error('Error fetching pack metadata:', error);
         throw error;
       }
-    }),
+    })
 });
 
 export default packRouter;
