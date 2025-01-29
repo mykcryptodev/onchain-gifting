@@ -1,0 +1,42 @@
+{
+  "language": "Language",
+  "create_gift": "Create Gift",
+  "wallet": "Wallet",
+  "connect_wallet": "Connect Wallet",
+  "disconnect": "Disconnect",
+  "balance": "Balance",
+  "send": "Send",
+  "receive": "Receive",
+  "create": "Create",
+  "next": "Next",
+  "back": "Back",
+  "confirm": "Confirm",
+  "gifts_from_me": "Gifts From Me",
+  "built_by": "Built by",
+  "social_links": {
+    "x": "Follow on X",
+    "farcaster": "Follow on Farcaster",
+    "github": "View on Github"
+  },
+  "alt_text": {
+    "logo": "Logo",
+    "profile": "Profile picture"
+  },
+  "meta": {
+    "title": "Onchain Gift",
+    "description": "Send and receive blockchain gifts"
+  },
+  "form": {
+    "password": "Password",
+    "submit": "Submit",
+    "enter_password": "Enter password"
+  },
+  "tokens": {
+    "unknown": "Unknown",
+    "ether": "Ether",
+    "eth": "ETH"
+  },
+  "errors": {
+    "failed_language_change": "Failed to change language"
+  }
+} 
