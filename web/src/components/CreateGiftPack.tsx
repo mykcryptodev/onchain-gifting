@@ -12,6 +12,7 @@ import { useGiftItems } from "~/contexts/GiftItemsContext";
 import { api } from "~/utils/api";
 import { toast } from "react-toastify";
 import QrCode from "./Create/QRCode";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   erc20s: { token: string; amount: string }[];
@@ -39,6 +40,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
   const [isCreated, setIsCreated] = useState(false);
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
   const utils = api.useUtils();
+  const { t } = useTranslation();
 
   const { mutate: computeBalances } = api.wallet.computeBalances.useMutation({
     onSuccess: ({ jobId }) => {
@@ -46,12 +48,12 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
     },
     onError: (error) => {
       if (error.message.includes("rate limit")) {
-        toast.warning(error.message);
+        toast.warning(t('gift_pack.rate_limit'));
       } else if (error.message.includes("Please wait")) {
-        console.log("Please wait");
+        console.log(t('gift_pack.please_wait'));
       } else {
         console.error('Failed to compute balances:', error);
-        toast.error('Failed to compute balances');
+        toast.error(t('errors.compute_balances'));
       }
     }
   });
@@ -68,16 +70,15 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
           if (status.status === "completed") {
             void utils.wallet.getBalances.invalidate();
           } else {
-            toast.error('Balance computation failed');
+            toast.error(t('errors.compute_balances'));
           }
           return false;
         }
-        return 1000; // Poll every second while pending
+        return 1000;
       },
       retry: (failureCount, error) => {
-        // Don't retry on rate limit errors
         if (error.message.includes("rate limit")) {
-          toast.warning(error.message);
+          toast.warning(t('gift_pack.rate_limit'));
           return false;
         }
         return failureCount < 3;
@@ -85,25 +86,23 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
     }
   );
 
-  // Compute balances when the component mounts and when the address changes
   useEffect(() => {
     if (address && !currentJobId) {
-      console.log("Computing balances");
+      console.log(t('gift_pack.computing_balances'));
       computeBalances({ address });
     }
-  }, [address, computeBalances, currentJobId]);
+  }, [address, computeBalances, currentJobId, t]);
 
   const handleOnStatus = useCallback((status: LifecycleStatus) => { 
     if (status.statusName === 'success') {
-      toast.success('Gift pack created!');
+      toast.success(t('gift_pack.success'));
       setIsCreated(true);
-      // Recompute balances after successful gift pack creation
       if (address && !currentJobId) {
-        console.log("Recomputing balances");
+        console.log(t('gift_pack.computing_balances'));
         computeBalances({ address });
       }
     }
-  }, [address, computeBalances, currentJobId]); 
+  }, [address, computeBalances, currentJobId, t]);
 
   useEffect(() => {
     const checkAllowances = async () => {
@@ -257,7 +256,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
         onStatus={handleOnStatus}
       >
         <TransactionButton 
-          text="Create Gift Pack"
+          text={t('create_gift')}
           disabled={!calls.length || !hash || isHashUsed}
           className="px-4 py-2 text-lg font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
         />
@@ -268,7 +267,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
       </Transaction>
       {isCreated && (
         <div className="mt-4 flex flex-col items-center gap-2">
-          <p className="text-sm text-gray-600">Share this link with the recipient:</p>
+          <p className="text-sm text-gray-600">{t('gift_pack.share.share_link')}</p>
           <div className="flex items-center gap-2">
             <input
               type="text"
@@ -279,7 +278,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
             <button
               onClick={() => {
                 void navigator.clipboard.writeText(`${window.location.origin}/claim/${encodeURIComponent(password ?? '')}`);
-                toast.success('Copied to clipboard!');
+                toast.success(t('gift_pack.share.copied'));
               }}
               className="p-2 text-gray-600 hover:text-gray-800"
             >
@@ -292,8 +291,8 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
               onClick={() => {
                 if (navigator.share) {
                   void navigator.share({
-                    title: 'Gift Pack',
-                    text: 'I sent you a gift pack!',
+                    title: t('gift_pack.share.title'),
+                    text: t('gift_pack.share.text'),
                     url: `${window.location.origin}/claim/${encodeURIComponent(password ?? '')}`
                   });
                 }
@@ -314,7 +313,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
       )}
       {isHashUsed && password.length > 0 && (
         <p className="text-red-500 text-opacity-90 text-sm">
-          Please use a different message.
+          {t('gift_pack.share.use_different_message')}
         </p>
       )}
     </div>

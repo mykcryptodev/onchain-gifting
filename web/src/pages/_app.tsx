@@ -8,7 +8,10 @@ import { GiftItemsProvider } from "~/contexts/GiftItemsContext";
 import { OnchainProviders } from "~/providers/OnchainProviders";
 import { Layout } from "~/components/utils/Layout";
 import { ToastContainer } from "react-toastify";
-const MyApp: AppType = ({ Component, pageProps }) => {
+import { appWithTranslation } from 'next-i18next';
+import type { AppProps } from 'next/app';
+
+const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
   return (
     <GiftItemsProvider>
       <ThirdwebProvider>
@@ -24,4 +27,5 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   );
 };
 
-export default api.withTRPC(MyApp);
+// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+export default api.withTRPC(appWithTranslation(MyApp));

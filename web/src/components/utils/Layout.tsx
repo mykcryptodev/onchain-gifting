@@ -2,6 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useAccount } from "wagmi";
+import { LanguageSwitcher } from "~/components/LanguageSwitcher";
+import { useTranslation } from "next-i18next";
 
 const Frame = dynamic(() => import("~/components/utils/Frame"), {
   ssr: false,
@@ -59,27 +61,32 @@ const SOCIAL_LINKS = [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const { address } = useAccount();
+  const { t } = useTranslation();
+
   return (
     <>
     <main className="flex min-h-screen flex-col items-center sm:px-20 sm:pb-20 mb-20 sm:pt-10 p-4 w-full">
       <div className="flex justify-between items-center w-full">
         <Link href="/">
-          <Image src="/images/logo.png" alt="Logo" width={32} height={32} priority />
+          <Image src="/images/logo.png" alt={t('alt_text.logo')} width={32} height={32} priority />
         </Link>
-        {address && (
-          <Link href={`/from/${address}`}>
-            Gifts From Me
-          </Link>
-        )}
+        <div className="flex items-center gap-4">
+          {address && (
+            <Link href={`/from/${address}`}>
+              {t('gifts_from_me')}
+            </Link>
+          )}
+          <LanguageSwitcher />
+        </div>
       </div>
       {children}
     </main>
     <footer className="fixed bottom-0 w-full bg-blue-50 p-4">
       <div className="flex justify-between items-center w-full max-w-5xl mx-auto">
         <div className="flex items-center gap-1">
-          <span>Built by</span>
+          <span>{t('built_by')}</span>
           <Link href="https://www.twitter.com/mykcryptodev" className="underline flex items-center gap-1">
-            <Image src="/images/myk.jpg" alt="myk.eth" width={16} height={16} className="rounded-full" />
+            <Image src="/images/myk.jpg" alt={t('alt_text.profile')} width={16} height={16} className="rounded-full" />
             myk.eth
           </Link>
         </div>
@@ -91,6 +98,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               className="underline flex items-center gap-1"
               target="_blank"
               rel="noopener noreferrer"
+              title={t(`social_links.${link.name.toLowerCase()}`)}
             >
               {link.icon()}
             </Link>
@@ -100,5 +108,5 @@ export function Layout({ children }: { children: React.ReactNode }) {
     </footer>
     <Frame />
     </>
-  )
+  );
 }

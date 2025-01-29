@@ -4,6 +4,7 @@ import { useGiftItems } from "~/contexts/GiftItemsContext";
 import useDebounce from "~/hooks/useDebounce";
 import crypto from 'crypto';
 import { SALT_SEPARATOR } from "~/constants";
+import { useTranslation } from "next-i18next";
 
 const MIN_PASSWORD_LENGTH = 1;
 
@@ -15,6 +16,7 @@ export function Password() {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const salt = useMemo(() => SALT_SEPARATOR + crypto.randomBytes(16).toString('hex'), []);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const isLongEnough = debouncedPassword.length >= MIN_PASSWORD_LENGTH;
@@ -22,7 +24,7 @@ export function Password() {
 
     if (debouncedPassword.length > 0) {
       if (!isLongEnough) {
-        setErrorMessage(`Message must be at least ${MIN_PASSWORD_LENGTH} characters long`);
+        setErrorMessage(t('errors.password_length', { length: MIN_PASSWORD_LENGTH }));
         setShowError(true);
       } else {
         setShowError(false);
@@ -38,31 +40,31 @@ export function Password() {
     } else {
       updatePassword("");
     }
-  }, [debouncedPassword, updatePassword, salt]);
+  }, [debouncedPassword, updatePassword, salt, t]);
 
   return (
     <div className="w-full max-w-sm mx-auto">
       <textarea 
-        placeholder="Enter a message for your recipient!" 
+        placeholder={t('password.placeholder')}
         onChange={(e) => setPassword(e.target.value)} 
         onFocus={() => {
           if (!hasSeenToast) {
-            toast.info("Be careful with this message! Anyone can use this message to claim your gift.");
+            toast.info(t('password.warning'));
             setHasSeenToast(true);
           }
         }}
         className={`w-full p-2 border rounded-md ${showError ? 'border-red-500' : 'border-gray-300'}`}
       />
       <details className={password ? 'block' : 'hidden'}>
-        <summary className="text-sm">View gift secret</summary>
+        <summary className="text-sm">{t('password.view_secret')}</summary>
         <div className="flex flex-col p-2">
-          <p className="text-xs">Secret phrase to claim gift:</p>
+          <p className="text-xs">{t('password.secret_phrase')}</p>
           <div className="flex items-center gap-2">
             <code className="flex-1 text-xs p-2 bg-gray-100 rounded-md overflow-x-auto whitespace-nowrap">{saltedPassword}</code>
             <button
               onClick={() => {
                 void navigator.clipboard.writeText(saltedPassword);
-                toast.success('Copied to clipboard!');
+                toast.success(t('password.copied'));
               }}
               className="p-2 text-gray-600 hover:text-gray-900"
             >
@@ -72,7 +74,7 @@ export function Password() {
               </svg>
             </button>
           </div>
-          <p className="text-xs mt-2 p-2 bg-blue-100 text-blue-800 rounded-md">The secret phrase is used to claim your gift. Keep it safe! It is created using your message and a random string. If you lose it, you can reclaim your gift in the Gifts From Me section.</p>
+          <p className="text-xs mt-2 p-2 bg-blue-100 text-blue-800 rounded-md">{t('password.security_note')}</p>
         </div>
       </details>
       {showError && (

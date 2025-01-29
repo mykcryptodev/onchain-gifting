@@ -1,0 +1,126 @@
+{
+  "language": "Language",
+  "create_gift": "Create Gift",
+  "wallet": "Wallet",
+  "connect_wallet": "Connect Wallet",
+  "disconnect": "Disconnect",
+  "balance": "Balance",
+  "send": "Send",
+  "receive": "Receive",
+  "create": "Create",
+  "next": "Next",
+  "back": "Back",
+  "confirm": "Confirm",
+  "gifts_from_me": "Gifts From Me",
+  "built_by": "Built by",
+  "social_links": {
+    "x": "Follow on X",
+    "farcaster": "Follow on Farcaster",
+    "github": "View on Github"
+  },
+  "alt_text": {
+    "logo": "Logo",
+    "profile": "Profile picture",
+    "face_id": "Face ID",
+    "touch_id": "Touch ID"
+  },
+  "meta": {
+    "title": "Onchain Gift",
+    "description": "Send and receive blockchain gifts"
+  },
+  "form": {
+    "password": "Password",
+    "submit": "Submit",
+    "enter_password": "Enter password"
+  },
+  "tokens": {
+    "unknown": "Unknown",
+    "ether": "Ether",
+    "eth": "ETH"
+  },
+  "errors": {
+    "failed_language_change": "Failed to change language",
+    "password_length": "Message must be at least {{length}} characters long",
+    "compute_balances": "Failed to compute balances"
+  },
+  "create_page": {
+    "title": "Create a Gift Pack",
+    "pack_value": "Pack Value",
+    "pack_contents": "Pack Contents",
+    "wallet_balances": "Wallet Balances",
+    "total_pack_value": "Total Pack Value"
+  },
+  "password": {
+    "placeholder": "Enter a message for your recipient!",
+    "warning": "Be careful with this message! Anyone can use this message to claim your gift.",
+    "view_secret": "View gift secret",
+    "secret_phrase": "Secret phrase to claim gift:",
+    "copied": "Copied to clipboard!",
+    "security_note": "The secret phrase is used to claim your gift. Keep it safe! It is created using your message and a random string. If you lose it, you can reclaim your gift in the Gifts From Me section."
+  },
+  "gift_pack": {
+    "success": "Gift pack created!",
+    "computing_balances": "Computing balances",
+    "please_wait": "Please wait",
+    "rate_limit": "Rate limit exceeded. Please try again later.",
+    "share": {
+      "title": "Gift Pack",
+      "text": "I sent you a gift pack!",
+      "share_link": "Share this link with the recipient:",
+      "copied": "Copied to clipboard!",
+      "use_different_message": "Please use a different message."
+    }
+  },
+  "wallet_components": {
+    "create_wallet": "Create a Wallet",
+    "connect_wallet": "Connect a Wallet",
+    "view_funds": "View Funds",
+    "connect_modal": {
+      "title": "Connect to Onchain Gift"
+    },
+    "biometric_text": "Create a wallet with {{biometric}}",
+    "or": "or",
+    "face_id": "Face ID",
+    "touch_id": "Touch ID"
+  },
+  "from_page": {
+    "no_packs": "No packs found",
+    "loading": "Loading...",
+    "navigation": {
+      "previous": "Previous",
+      "next": "Next"
+    }
+  },
+  "claim_page": {
+    "loading": "Loading...",
+    "no_gift": {
+      "title": "No Gift Found",
+      "description": "This link doesn't have a gift associated with it.",
+      "return_home": "Return Home"
+    },
+    "claimed": "This gift has been claimed!",
+    "claim_title": "Claim Your Gift Pack",
+    "sent_from": "You have been sent an onchain gift pack from",
+    "they_said": "they said...",
+    "how_to_claim": "How to Claim",
+    "wallet_step": {
+      "title": "Create or Connect Your Wallet",
+      "connected_with": "You have connected with",
+      "description": "Create a wallet in seconds via Face ID or Touch ID"
+    },
+    "open_step": {
+      "title": "Open Your Gift",
+      "description": "Unwrap your gift to see what's inside",
+      "button": {
+        "open": "Open Gift Pack",
+        "opening": "Opening Gift Pack...",
+        "claim_free": "Claim for free"
+      }
+    },
+    "coinbase": {
+      "title": "Get started with Coinbase Wallet!",
+      "description": "Bring your passkey to the mobile app and do more with your crypto!",
+      "download_ios": "Download on iOS"
+    }
+  }
+} 
