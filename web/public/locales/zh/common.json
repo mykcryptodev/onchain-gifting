@@ -37,6 +37,36 @@
     "eth": "ETH"
   },
   "errors": {
-    "failed_language_change": "更改语言失败"
+    "failed_language_change": "更改语言失败",
+    "password_length": "消息至少需要 {{length}} 个字符",
+    "compute_balances": "计算余额失败"
+  },
+  "create_page": {
+    "title": "创建礼物包",
+    "pack_value": "礼物价值",
+    "pack_contents": "礼物内容",
+    "wallet_balances": "钱包余额",
+    "total_pack_value": "礼物总价值"
+  },
+  "password": {
+    "placeholder": "为收礼人输入一条消息！",
+    "warning": "请小心保管此消息！任何人都可以使用此消息领取您的礼物。",
+    "view_secret": "查看礼物密钥",
+    "secret_phrase": "领取礼物的密钥：",
+    "copied": "已复制到剪贴板！",
+    "security_note": "此密钥用于领取您的礼物。请妥善保管！它是使用您的消息和随机字符串生成的。如果丢失，您可以在我的礼物部分重新领取礼物。"
+  },
+  "gift_pack": {
+    "success": "礼物包已创建！",
+    "computing_balances": "正在计算余额",
+    "please_wait": "请稍候",
+    "rate_limit": "已超出速率限制。请稍后再试。",
+    "share": {
+      "title": "礼物包",
+      "text": "我给你发了一个礼物包！",
+      "share_link": "分享此链接给收礼人：",
+      "copied": "已复制到剪贴板！",
+      "use_different_message": "请使用不同的消息。"
+    }
   }
 } 

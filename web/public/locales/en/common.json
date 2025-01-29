@@ -37,6 +37,36 @@
     "eth": "ETH"
   },
   "errors": {
-    "failed_language_change": "Failed to change language"
+    "failed_language_change": "Failed to change language",
+    "password_length": "Message must be at least {{length}} characters long",
+    "compute_balances": "Failed to compute balances"
+  },
+  "create_page": {
+    "title": "Create a Gift Pack",
+    "pack_value": "Pack Value",
+    "pack_contents": "Pack Contents",
+    "wallet_balances": "Wallet Balances",
+    "total_pack_value": "Total Pack Value"
+  },
+  "password": {
+    "placeholder": "Enter a message for your recipient!",
+    "warning": "Be careful with this message! Anyone can use this message to claim your gift.",
+    "view_secret": "View gift secret",
+    "secret_phrase": "Secret phrase to claim gift:",
+    "copied": "Copied to clipboard!",
+    "security_note": "The secret phrase is used to claim your gift. Keep it safe! It is created using your message and a random string. If you lose it, you can reclaim your gift in the Gifts From Me section."
+  },
+  "gift_pack": {
+    "success": "Gift pack created!",
+    "computing_balances": "Computing balances",
+    "please_wait": "Please wait",
+    "rate_limit": "Rate limit exceeded. Please try again later.",
+    "share": {
+      "title": "Gift Pack",
+      "text": "I sent you a gift pack!",
+      "share_link": "Share this link with the recipient:",
+      "copied": "Copied to clipboard!",
+      "use_different_message": "Please use a different message."
+    }
   }
 } 

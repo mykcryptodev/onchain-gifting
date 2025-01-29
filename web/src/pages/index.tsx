@@ -32,7 +32,10 @@ export default function Home() {
               const form = e.target as HTMLFormElement;
               const password = new FormData(form).get("password") as string;
               if (password) {
-                void router.push(`/claim/${password}`);
+                void router.push({
+                  pathname: '/claim/[password]',
+                  query: { password }
+                }, `/claim/${password}`, { locale: router.locale });
               }
             }}
           >
@@ -57,6 +60,7 @@ export default function Home() {
           <p className="text-gray-600 text-center">{t('meta.description')}</p>
           <Link
             href="/create"
+            locale={router.locale}
             className="w-full max-w-sm bg-blue-600 text-white text-center py-2 px-4 rounded-md hover:bg-blue-700 transition-colors mt-auto"
           >
             {t('create_gift')}
