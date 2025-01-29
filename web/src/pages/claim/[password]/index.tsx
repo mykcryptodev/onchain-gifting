@@ -22,6 +22,10 @@ import Link from "next/link";
 import { useAccount } from "wagmi";
 import dynamic from "next/dynamic";
 import { Profile } from "~/components/utils/Profile";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import type { GetStaticProps } from "next";
+import i18nConfig from "../../../../next-i18next.config.js";
 
 const WalletComponents = dynamic(() => import("~/components/utils/WalletComponents"), {
   ssr: false,
@@ -55,6 +59,7 @@ export default function Claim() {
   const [isClaiming, setIsClaiming] = useState(false);
   const { isConnected, address } = useAccount();
   const size = useWindowSize();
+  const { t } = useTranslation();
   const passwordWithoutSalt = useMemo(() => password?.split(SALT_SEPARATOR)[0], [password]);
   console.log({ pack });
 
@@ -105,6 +110,7 @@ export default function Claim() {
   if (isLoadingPack) return (
     <div className="flex flex-col items-center justify-center p-4 pt-20">
       <div className="animate-spin w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+      <p>{t('claim_page.loading')}</p>
     </div>
   );
 
@@ -117,13 +123,13 @@ export default function Claim() {
         height={75}
       />
       <div className="text-center space-y-4">
-        <h1 className="text-2xl font-bold text-gray-800 pt-4">No Gift Found</h1>
-        <p className="text-gray-600">This link doesnt have a gift associated with it.</p>
+        <h1 className="text-2xl font-bold text-gray-800 pt-4">{t('claim_page.no_gift.title')}</h1>
+        <p className="text-gray-600">{t('claim_page.no_gift.description')}</p>
         <Link 
           href="/" 
           className="inline-block px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
         >
-          Return Home
+          {t('claim_page.no_gift.return_home')}
         </Link>
       </div>
     </div>
@@ -137,31 +143,31 @@ export default function Claim() {
         )}
       </div>
       <h1 className="text-2xl font-bold text-center">
-        {pack?.opened ? "This gift has been claimed!" : "Claim Your Gift Pack"}
+        {pack?.opened ? t('claim_page.claimed') : t('claim_page.claim_title')}
       </h1>
-      <p className="text-center text-gray-600">You have been sent an onchain gift pack from</p>
+      <p className="text-center text-gray-600">{t('claim_page.sent_from')}</p>
       {pack?.creator && (
         <div className="flex items-center gap-2 border border-gray-200 px-4 py-2 rounded-md">
           <Profile address={pack.creator} />
         </div>
       )}
-      <p className="text-center text-gray-600">they said...</p>
+      <p className="text-center text-gray-600">{t('claim_page.they_said')}</p>
       <p className="text-lg font-bold text-center max-w-xl">{passwordWithoutSalt}</p>
       {pack?.opened ? (
         <ClaimContents pack={pack} />
       ) : (
         <>
           <div className="flex flex-col gap-4 w-full max-w-sm">
-            <h2 className="text-2xl font-bold text-center mt-4">How to Claim</h2>
+            <h2 className="text-2xl font-bold text-center mt-4">{t('claim_page.how_to_claim')}</h2>
             {address ? (
               <div className="flex items-center gap-4">
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600 font-bold">
                   ✓
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-medium">Create or Connect Your Wallet</h3>
+                  <h3 className="font-medium">{t('claim_page.wallet_step.title')}</h3>
                   <p className="text-sm text-gray-600 flex items-center gap-1">
-                    <span>You have connected with</span>
+                    <span>{t('claim_page.wallet_step.connected_with')}</span>
                     {address && (
                       <AccountProvider address={address} client={CLIENT}>
                         <AccountName
@@ -187,8 +193,8 @@ export default function Claim() {
                   1
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-medium">Create or Connect Your Wallet</h3>
-                  <p className="text-sm text-gray-600">Create a wallet in seconds via Face ID or Touch ID</p>
+                  <h3 className="font-medium">{t('claim_page.wallet_step.title')}</h3>
+                  <p className="text-sm text-gray-600">{t('claim_page.wallet_step.description')}</p>
                   <div className="flex">
                     <WalletComponents btnClassName="my-2 backdrop-blur-sm animate-[pulse-shadow_3s_ease-in-out_infinite]" hideText={true} />
                   </div>
@@ -200,8 +206,8 @@ export default function Claim() {
                 {pack?.opened ? "✓" : "2"}
               </div>
               <div className="flex-1">
-                <h3 className="font-medium">Open Your Gift</h3>
-                <p className="text-sm text-gray-600">Unwrap your gift to see what&apos;s inside</p>
+                <h3 className="font-medium">{t('claim_page.open_step.title')}</h3>
+                <p className="text-sm text-gray-600">{t('claim_page.open_step.description')}</p>
                 <div className="flex flex-col gap-2">
                   <Open 
                     password={password} 
@@ -227,11 +233,10 @@ export default function Claim() {
             height={64}
             className="mx-auto"
           />
-          <h2 className="text-2xl text-center font-bold my-2 max-w-[200px] mx-auto">Get started with Coinbase Wallet!</h2>
-          <p className="text-center text-gray-600 mb-2 max-w-[300px] mx-auto">Bring your passkey to the mobile app and do more with your crypto!</p>
+          <h2 className="text-2xl text-center font-bold my-2 max-w-[200px] mx-auto">{t('claim_page.coinbase.title')}</h2>
+          <p className="text-center text-gray-600 mb-2 max-w-[300px] mx-auto">{t('claim_page.coinbase.description')}</p>
           <div className="grid grid-cols-2 gap-2">
             <Link 
-              // deep link to app import smart wallet if on mobile, otherwise link to app store
               href={{
                 md: "https://go.cb-w.com/wallet-download?source=wallet_coinbase_com",
                 base: "https://wallet.coinbase.com/links/import-smart-wallet"
@@ -245,23 +250,7 @@ export default function Claim() {
                 height={40} 
                 className="rounded-lg"
               />
-              Download on iOS
-            </Link>
-            <Link 
-              href={{
-                md: "https://go.cb-w.com/wallet-mobile-download?source=wallet_coinbase_com",
-                base: "https://wallet.coinbase.com/links/import-smart-wallet"
-              }[size]}
-              className="flex flex-col items-center gap-2 border border-gray-200 px-4 py-2 rounded-lg"
-            >
-              <Image 
-                src="https://images.ctfassets.net/o10es7wu5gm1/3HcmawNrvNUzoKNyMBtetL/e568428b7810a0133933a0321248579a/image_6.svg" 
-                alt="Download on Android" 
-                width={40} 
-                height={40} 
-                className="rounded-lg"
-              />
-              Download on Android
+              {t('claim_page.coinbase.download_ios')}
             </Link>
           </div>
         </div>
@@ -288,3 +277,27 @@ export default function Claim() {
     </div>
   );
 }
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  try {
+    return {
+      props: {
+        ...(await serverSideTranslations(locale ?? 'en', ['common'], i18nConfig)),
+      },
+    };
+  } catch (error) {
+    console.error('Error in getStaticProps:', error);
+    return {
+      props: {
+        ...(await serverSideTranslations(locale ?? 'en', ['common'])),
+      },
+    };
+  }
+};
+
+export const getStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};

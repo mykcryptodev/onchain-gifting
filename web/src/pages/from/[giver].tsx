@@ -4,6 +4,10 @@ import dynamic from "next/dynamic";
 import Pack from "~/components/My/Pack";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import type { GetStaticProps, GetStaticPaths } from "next";
+import i18nConfig from "../../../next-i18next.config.js";
 
 const WalletComponents = dynamic(() => import("~/components/utils/WalletComponents"), {
   ssr: false,
@@ -14,6 +18,7 @@ export default function From() {
   const { giver } = router.query as { giver: string };
   const { address } = useAccount();
   const [currentCursor, setCurrentCursor] = useState<string | null>(null);
+  const { t } = useTranslation();
   const ITEMS_PER_PAGE = 25;
 
   const { data: packsData, refetch, isLoading } = api.pack.getPackMetadatasByCreator.useQuery({
@@ -47,7 +52,7 @@ export default function From() {
     return <div className="flex flex-col items-center justify-center w-full">
       <WalletComponents />
       <div className="flex flex-col my-4 gap-4 items-center justify-center w-full min-h-96">
-        <div className="text-lg font-bold">No packs found</div>
+        <div className="text-lg font-bold">{t('from_page.no_packs')}</div>
       </div>
     </div>;
   }
@@ -97,7 +102,7 @@ export default function From() {
             onClick={handlePreviousPage}
             className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300"
           >
-            Previous
+            {t('from_page.navigation.previous')}
           </button>
         )}
         {packsData.pageInfo.hasNextPage && (
@@ -105,10 +110,25 @@ export default function From() {
             onClick={handleNextPage}
             className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300"
           >
-            Next
+            {t('from_page.navigation.next')}
           </button>
         )}
       </div>
     </div>
   );
 }
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? 'en', ['common'], i18nConfig)),
+    },
+  };
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};

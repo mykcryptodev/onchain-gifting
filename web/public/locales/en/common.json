@@ -20,7 +20,9 @@
   },
   "alt_text": {
     "logo": "Logo",
-    "profile": "Profile picture"
+    "profile": "Profile picture",
+    "face_id": "Face ID",
+    "touch_id": "Touch ID"
   },
   "meta": {
     "title": "Onchain Gift",
@@ -67,6 +69,58 @@
       "share_link": "Share this link with the recipient:",
       "copied": "Copied to clipboard!",
       "use_different_message": "Please use a different message."
+    }
+  },
+  "wallet_components": {
+    "create_wallet": "Create a Wallet",
+    "connect_wallet": "Connect a Wallet",
+    "view_funds": "View Funds",
+    "connect_modal": {
+      "title": "Connect to Onchain Gift"
+    },
+    "biometric_text": "Create a wallet with {{biometric}}",
+    "or": "or",
+    "face_id": "Face ID",
+    "touch_id": "Touch ID"
+  },
+  "from_page": {
+    "no_packs": "No packs found",
+    "loading": "Loading...",
+    "navigation": {
+      "previous": "Previous",
+      "next": "Next"
+    }
+  },
+  "claim_page": {
+    "loading": "Loading...",
+    "no_gift": {
+      "title": "No Gift Found",
+      "description": "This link doesn't have a gift associated with it.",
+      "return_home": "Return Home"
+    },
+    "claimed": "This gift has been claimed!",
+    "claim_title": "Claim Your Gift Pack",
+    "sent_from": "You have been sent an onchain gift pack from",
+    "they_said": "they said...",
+    "how_to_claim": "How to Claim",
+    "wallet_step": {
+      "title": "Create or Connect Your Wallet",
+      "connected_with": "You have connected with",
+      "description": "Create a wallet in seconds via Face ID or Touch ID"
+    },
+    "open_step": {
+      "title": "Open Your Gift",
+      "description": "Unwrap your gift to see what's inside",
+      "button": {
+        "open": "Open Gift Pack",
+        "opening": "Opening Gift Pack...",
+        "claim_free": "Claim for free"
+      }
+    },
+    "coinbase": {
+      "title": "Get started with Coinbase Wallet!",
+      "description": "Bring your passkey to the mobile app and do more with your crypto!",
+      "download_ios": "Download on iOS"
     }
   }
 } 

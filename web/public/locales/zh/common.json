@@ -20,7 +20,9 @@
   },
   "alt_text": {
     "logo": "标志",
-    "profile": "头像"
+    "profile": "头像",
+    "face_id": "面容ID",
+    "touch_id": "指纹ID"
   },
   "meta": {
     "title": "链上礼物",
@@ -54,7 +56,7 @@
     "view_secret": "查看礼物密钥",
     "secret_phrase": "领取礼物的密钥：",
     "copied": "已复制到剪贴板！",
-    "security_note": "此密钥用于领取您的礼物。请妥善保管！它是使用您的消息和随机字符串生成的。如果丢失，您可以在我的礼物部分重新领取礼物。"
+    "security_note": "此密钥用于领取您的礼物。请妥善保管！它是使用您的消息和随机字符串生成的。如果丢失，您可以在\"我的礼物\"部分重新领取礼物。"
   },
   "gift_pack": {
     "success": "礼物包已创建！",
@@ -67,6 +69,58 @@
       "share_link": "分享此链接给收礼人：",
       "copied": "已复制到剪贴板！",
       "use_different_message": "请使用不同的消息。"
+    }
+  },
+  "wallet_components": {
+    "create_wallet": "创建钱包",
+    "connect_wallet": "连接钱包",
+    "view_funds": "查看资金",
+    "connect_modal": {
+      "title": "连接到链上礼物"
+    },
+    "biometric_text": "使用{{biometric}}创建钱包",
+    "or": "或",
+    "face_id": "面容ID",
+    "touch_id": "指纹ID"
+  },
+  "from_page": {
+    "no_packs": "未找到礼物包",
+    "loading": "加载中...",
+    "navigation": {
+      "previous": "上一页",
+      "next": "下一页"
+    }
+  },
+  "claim_page": {
+    "loading": "加载中...",
+    "no_gift": {
+      "title": "未找到礼物",
+      "description": "此链接没有关联的礼物。",
+      "return_home": "返回首页"
+    },
+    "claimed": "此礼物已被领取！",
+    "claim_title": "领取您的礼物包",
+    "sent_from": "您收到了一个来自以下地址的链上礼物包",
+    "they_said": "他们说...",
+    "how_to_claim": "如何领取",
+    "wallet_step": {
+      "title": "创建或连接钱包",
+      "connected_with": "您已连接",
+      "description": "通过面容ID或指纹ID几秒钟内创建钱包"
+    },
+    "open_step": {
+      "title": "打开您的礼物",
+      "description": "拆开礼物看看里面有什么",
+      "button": {
+        "open": "打开礼物包",
+        "opening": "正在打开礼物包...",
+        "claim_free": "免费领取"
+      }
+    },
+    "coinbase": {
+      "title": "开始使用Coinbase钱包",
+      "description": "将您的密钥带到移动应用程序，让您的加密货币发挥更大作用！",
+      "download_ios": "在iOS上下载"
     }
   }
 } 

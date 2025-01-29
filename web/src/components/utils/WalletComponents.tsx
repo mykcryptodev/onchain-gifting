@@ -19,17 +19,19 @@ import {
 import { createWallet, createWalletAdapter, type Wallet as ThirdwebWallet } from "thirdweb/wallets";
 import { 
   ConnectButton, 
+  LocaleId, 
   useSetActiveWallet 
 } from "thirdweb/react";
 import { useAccount, useDisconnect, useWalletClient, useSwitchChain } from "wagmi";
 import { viemAdapter } from "thirdweb/adapters/viem";
 import { useEffect } from 'react';
 import { defineChain } from 'thirdweb/chains';
-import { CHAIN, CLIENT, WAGMI_CHAIN } from '~/constants';
+import { CHAIN, CLIENT } from '~/constants';
 import Image from 'next/image';
 import { useConnect } from "wagmi";
 import { viemClientWalletConnector } from './ViemClientWalletConnector';
-
+import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 const SHOW_THIRDWEB_WALLET = true;
 
 type Props = {
@@ -44,7 +46,11 @@ export function WalletComponents({ btnClassName, hideText }: Props) {
   const { data: walletClient } = useWalletClient();
   const { connectAsync } = useConnect();
   const setActiveWallet = useSetActiveWallet();
-
+  const { t } = useTranslation();
+  const router = useRouter();
+  console.log({
+    locale: router.locale
+  })
   const connectButtonColor = isConnected ? "bg-gray-200" : "bg-blue-600 hover:bg-blue-700";
   const connectButtonTextSize = isConnected ? "text-md" : "text-lg";
 
@@ -106,7 +112,7 @@ export function WalletComponents({ btnClassName, hideText }: Props) {
             className={`px-4 py-2 ${connectButtonTextSize} font-bold text-white ${connectButtonColor} rounded-md flex items-center gap-2 ${btnClassName}`}
           >
             <ConnectWalletText>
-              <span>Create a Wallet</span>
+              <span>{t('wallet_components.create_wallet')}</span>
             </ConnectWalletText>
             <Avatar className="h-6 w-6" />
             <Name />
@@ -125,7 +131,7 @@ export function WalletComponents({ btnClassName, hideText }: Props) {
               href="https://wallet.coinbase.com"
               rel="noopener noreferrer"
             >
-              View Funds
+              {t('wallet_components.view_funds')}
             </WalletDropdownLink> 
             <WalletDropdownDisconnect />
           </WalletDropdown>
@@ -144,36 +150,38 @@ export function WalletComponents({ btnClassName, hideText }: Props) {
           ]}
           chain={CHAIN}
           connectButton={{
-            label: "Connect a Wallet",
+            label: t('wallet_components.connect_wallet'),
             className: `!px-4 !py-2 !h-auto !text-lg !rounded-md ${connectButtonTextSize} !min-w-0 hover:bg-gray-300 !font-bold rounded-md flex items-center gap-2 ${btnClassName}`,
           }}
           connectModal={{
-            title: "Connect to Onchain Gift",
+            title: t('wallet_components.connect_modal.title'),
             titleIcon: "/images/logo.png",
             showThirdwebBranding: false,
           }}
+          locale={router.locale as LocaleId}
         />
       </div>
       {!isConnected && !hideText && (
         <p className="text-center text-gray-600 max-w-xs text-sm">
-          Create a wallet with 
+          {t('wallet_components.biometric_text', { biometric: '' })}
           <span className="font-bold mx-1">
             <Image 
               src="/images/faceid.svg" 
               className="inline h-4 w-4" 
-              alt="Face ID" 
+              alt={t('alt_text.face_id')}
               width={16}
               height={16}
-            /> Face ID 
-          </span>or 
+            /> {t('wallet_components.face_id')}
+          </span>
+          {t('wallet_components.or')}
           <span className="font-bold mx-1">
             <Image 
               src="/images/touchid.svg" 
               className="inline h-4 w-4" 
-              alt="Touch ID" 
+              alt={t('alt_text.touch_id')}
               width={16}
               height={16}
-            /> Touch ID 
+            /> {t('wallet_components.touch_id')}
           </span>
         </p>
       )}
