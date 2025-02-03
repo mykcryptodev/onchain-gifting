@@ -8,6 +8,7 @@ import { ClaimContents } from "../Claim/Contents";
 import { isAddressEqual, zeroAddress } from "viem";
 import { Profile } from "../utils/Profile";
 import { Reclaim } from "./Reclaim";
+import Link from "next/link";
 
 type Props = {
   tokenId: number;
@@ -53,8 +54,12 @@ const Pack: FC<Props> = ({ tokenId, packMetadata, onReclaimed }) => {
       {isOpened ? (
         <div className="flex flex-col w-full justify-center items-center gap-2">
           <div className="flex flex-row gap-2 items-start mt-4">
-            <span className="text-sm text-gray-500 mt-0.5">Opened by:</span>
-            <Profile address={packMetadata.opener} />
+            <Link href={`https://basescan.org/address/${packMetadata.opener}`} target="_blank" rel="noopener noreferrer">
+              <>
+                <span className="text-sm text-gray-500 mt-0.5">Opened by:</span>
+                <Profile address={packMetadata.opener} />
+              </>
+            </Link>
           </div>
           <div className="flex flex-row gap-2 items-start">
             <span className="text-sm text-gray-500">Opened at:</span>
