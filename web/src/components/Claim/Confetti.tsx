@@ -1,9 +1,9 @@
 import { type FC, useEffect, useMemo, memo } from "react";
 import { useConfetti } from "use-confetti-svg";
-import { giftImage, heartRibbonImage, redEnvelopeImage, confettiImage, popperImage } from './confetti-images';
+import { giftImage, heartRibbonImage, confettiImage, popperImage, redHeartImage } from './confetti-images';
 
 type Props = {
-  image?: 'gift' | 'heart' | 'envelope' | 'confetti' | 'popper';
+  image?: 'gift' | 'heart' | 'confetti' | 'popper' | 'redheart';
   duration?: number
 }
 
@@ -12,7 +12,7 @@ const ConfettiComponent: FC<Props> = ({ image, duration = 600 }) => {
     const images = [
       { src: giftImage, weight: 10 },
       { src: heartRibbonImage, weight: 10 },
-      { src: redEnvelopeImage, weight: 60 },
+      { src: redHeartImage, weight: 60 },
       { src: confettiImage, weight: 10 },
       { src: popperImage, weight: 10 },
     ];
@@ -21,7 +21,7 @@ const ConfettiComponent: FC<Props> = ({ image, duration = 600 }) => {
       const selectedImage = {
         gift: giftImage,
         heart: heartRibbonImage,
-        envelope: redEnvelopeImage,
+        redheart: redHeartImage,
         confetti: confettiImage,
         popper: popperImage
       }[image];
