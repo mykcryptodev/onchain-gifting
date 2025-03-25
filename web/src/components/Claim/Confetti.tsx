@@ -10,11 +10,11 @@ type Props = {
 const ConfettiComponent: FC<Props> = ({ image, duration = 600 }) => {
   const confettiConfig = useMemo(() => {
     const images = [
-      { src: giftImage, weight: 10 },
-      { src: heartRibbonImage, weight: 10 },
-      { src: redEnvelopeImage, weight: 60 },
-      { src: confettiImage, weight: 10 },
-      { src: popperImage, weight: 10 },
+      { src: giftImage, weight: 25 },
+      { src: heartRibbonImage, weight: 25 },
+      { src: redEnvelopeImage, weight: 0 },
+      { src: confettiImage, weight: 25 },
+      { src: popperImage, weight: 25 },
     ];
 
     if (image) {

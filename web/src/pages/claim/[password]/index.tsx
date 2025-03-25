@@ -1,4 +1,4 @@
-import { Name } from "@coinbase/onchainkit/identity";
+import { IdentityCard, Name } from "@coinbase/onchainkit/identity";
 import { useCallback, useEffect, useMemo } from "react";
 import { useState } from "react";
 import { getContract } from "thirdweb";
@@ -11,17 +11,12 @@ import { Open } from "~/components/Claim/Open";
 import { keccak256 as viemKeccak256, encodeAbiParameters } from "viem";
 import { WatchClaim } from "~/components/Claim/WatchClaim";
 import Image from "next/image";
-import {
-  AccountProvider,
-  AccountName,
-} from "thirdweb/react";
 import { ClaimContents } from "~/components/Claim/Contents";
 import Confetti from "~/components/Claim/Confetti";
 import { UnwrappingAnimation } from "~/components/Claim/UnwrappingAnimation";
 import Link from "next/link";
 import { useAccount } from "wagmi";
 import dynamic from "next/dynamic";
-import { Profile } from "~/components/utils/Profile";
 
 const WalletComponents = dynamic(() => import("~/components/utils/WalletComponents"), {
   ssr: false,
@@ -141,9 +136,7 @@ export default function Claim() {
       </h1>
       <p className="text-center text-gray-600">You have been sent an onchain gift pack from</p>
       {pack?.creator && (
-        <div className="flex items-center gap-2 border border-gray-200 px-4 py-2 rounded-md">
-          <Profile address={pack.creator} />
-        </div>
+        <IdentityCard address={pack.creator as `0x${string}`} className="flex items-center border-none px-4 py-2 rounded-md bg-white" />
       )}
       <p className="text-center text-gray-600">they said...</p>
       <p className="text-lg font-bold text-center max-w-xl">{passwordWithoutSalt}</p>
@@ -154,31 +147,18 @@ export default function Claim() {
           <div className="flex flex-col gap-4 w-full max-w-sm">
             <h2 className="text-2xl font-bold text-center mt-4">How to Claim</h2>
             {address ? (
-              <div className="flex items-center gap-4">
+              <div className="flex items-start gap-4">
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600 font-bold">
                   ✓
                 </div>
                 <div className="flex-1">
                   <h3 className="font-medium">Create or Connect Your Wallet</h3>
-                  <p className="text-sm text-gray-600 flex items-center gap-1">
+                  <div className="text-sm text-gray-600 flex flex flex-col gap-2">
                     <span>You have connected with</span>
                     {address && (
-                      <AccountProvider address={address} client={CLIENT}>
-                        <AccountName
-                          loadingComponent={
-                            <div className="h-6 w-24 rounded-lg bg-gray-200 animate-pulse" />
-                          }
-                          fallbackComponent={
-                            <Name
-                              address={address}
-                              chain={CHAIN}
-                              className="text-sm text-gray-600"
-                            />
-                          }
-                        />
-                      </AccountProvider>
+                      <IdentityCard address={address} className="p-2 bg-white" />
                     )}
-                  </p>
+                  </div>
                 </div>
               </div>
             ) : (

@@ -106,7 +106,7 @@ export function GiftItemsProvider({ children }: { children: ReactNode }) {
       erc20: prev.erc20.filter((erc20) => erc20.token !== token)
     }));
     // if this is the zero address, remove the ethAmount
-    if (isAddressEqual(token, ZERO_ADDRESS)) {
+    if (isAddressEqual(token as `0x${string}`, ZERO_ADDRESS)) {
       setSelectedAssets(prev => ({
         ...prev,
         ethAmount: "0",
@@ -144,7 +144,7 @@ export function GiftItemsProvider({ children }: { children: ReactNode }) {
 
   const getTotalValueUsd = () => {
     const erc20Value = selectedAssets.erc20
-      .filter(token => !isAddressEqual(token.token, ZERO_ADDRESS))
+      .filter(token => !isAddressEqual(token.token as `0x${string}`, ZERO_ADDRESS))
       .reduce((sum, token) => sum + (token.valueUsd ?? 0), 0);
     const erc721Value = selectedAssets.erc721.reduce((sum, token) => sum + (token.valueUsd ?? 0), 0);
     const erc1155Value = selectedAssets.erc1155.reduce((sum, token) => sum + (token.valueUsd ?? 0), 0);

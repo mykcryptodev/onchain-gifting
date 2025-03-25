@@ -6,7 +6,7 @@ import { Name as OckName, Avatar as OckAvatar } from "@coinbase/onchainkit/ident
 import { AccountProvider } from "thirdweb/react"
 import { CHAIN, CLIENT } from "~/constants"
 import { type FC } from "react"
-
+import { type Chain } from "viem"
 type Props = {
   address: string;
   avatarSize?: number;
@@ -29,8 +29,8 @@ export const Avatar: FC<AvatarProps> = ({ address, size }) => {
         }
         fallbackComponent={
           <OckAvatar
-            address={address}
-            chain={CHAIN}
+            address={address as `0x${string}`}
+            chain={CHAIN as unknown as Chain}
             className={`rounded-full h-${size} w-${size}`}
             defaultComponent={<Blobbie address={address} className={`h-${size} w-${size}`} />}
           />
@@ -52,8 +52,8 @@ export const Name: FC<Props> = ({ address }) => {
         }
         fallbackComponent={
           <OckName
-            address={address}
-            chain={CHAIN}
+            address={address as `0x${string}`}
+            chain={CHAIN as unknown as Chain}
           />
         }
       />

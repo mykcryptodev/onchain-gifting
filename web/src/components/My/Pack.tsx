@@ -34,7 +34,7 @@ const Pack: FC<Props> = ({ tokenId, packMetadata, onReclaimed }) => {
   }, [tokenId, contract]);
   
   const isOpened = useMemo(() => {
-    return !isAddressEqual(packMetadata?.opener, zeroAddress);
+    return !isAddressEqual(packMetadata?.opener as `0x${string}`, zeroAddress);
   }, [packMetadata.opener]);
   
   if (!pack) return null;

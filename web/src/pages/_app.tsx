@@ -5,9 +5,10 @@ import '@coinbase/onchainkit/styles.css';
 import "react-toastify/dist/ReactToastify.css";
 import "~/styles/globals.css";
 import { GiftItemsProvider } from "~/contexts/GiftItemsContext";
-import { OnchainProviders } from "~/providers/OnchainProviders";
+import OnchainProviders from "~/providers/OnchainProviders";
 import { Layout } from "~/components/utils/Layout";
 import { ToastContainer } from "react-toastify";
+
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <GiftItemsProvider>
