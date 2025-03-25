@@ -1,4 +1,4 @@
-import { Name } from "@coinbase/onchainkit/identity";
+import { IdentityCard, Name } from "@coinbase/onchainkit/identity";
 import { useCallback, useEffect, useMemo } from "react";
 import { useState } from "react";
 import { getContract } from "thirdweb";
@@ -11,10 +11,6 @@ import { Open } from "~/components/Claim/Open";
 import { keccak256 as viemKeccak256, encodeAbiParameters } from "viem";
 import { WatchClaim } from "~/components/Claim/WatchClaim";
 import Image from "next/image";
-import {
-  AccountProvider,
-  AccountName,
-} from "thirdweb/react";
 import { ClaimContents } from "~/components/Claim/Contents";
 import Confetti from "~/components/Claim/Confetti";
 import { UnwrappingAnimation } from "~/components/Claim/UnwrappingAnimation";
@@ -160,25 +156,12 @@ export default function Claim() {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-medium">Create or Connect Your Wallet</h3>
-                  <p className="text-sm text-gray-600 flex items-center gap-1">
+                  <div className="text-sm text-gray-600 flex flex flex-col gap-2">
                     <span>You have connected with</span>
                     {address && (
-                      <AccountProvider address={address} client={CLIENT}>
-                        <AccountName
-                          loadingComponent={
-                            <div className="h-6 w-24 rounded-lg bg-gray-200 animate-pulse" />
-                          }
-                          fallbackComponent={
-                            <Name
-                              address={address}
-                              chain={CHAIN}
-                              className="text-sm text-gray-600"
-                            />
-                          }
-                        />
-                      </AccountProvider>
+                      <IdentityCard address={address} className="p-2 bg-base-100" />
                     )}
-                  </p>
+                  </div>
                 </div>
               </div>
             ) : (

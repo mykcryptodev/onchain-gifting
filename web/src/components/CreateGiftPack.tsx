@@ -259,7 +259,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
         <TransactionButton 
           text="Create Gift Pack"
           disabled={!calls.length || !hash || isHashUsed}
-          className="px-4 py-2 text-lg font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+          className="px-4 py-2 text-lg font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
         />
         <TransactionStatus>
           <TransactionStatusLabel />
