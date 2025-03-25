@@ -17,7 +17,6 @@ import { UnwrappingAnimation } from "~/components/Claim/UnwrappingAnimation";
 import Link from "next/link";
 import { useAccount } from "wagmi";
 import dynamic from "next/dynamic";
-import { Profile } from "~/components/utils/Profile";
 
 const WalletComponents = dynamic(() => import("~/components/utils/WalletComponents"), {
   ssr: false,
@@ -137,9 +136,7 @@ export default function Claim() {
       </h1>
       <p className="text-center text-gray-600">You have been sent an onchain gift pack from</p>
       {pack?.creator && (
-        <div className="flex items-center gap-2 border border-gray-200 px-4 py-2 rounded-md">
-          <Profile address={pack.creator} />
-        </div>
+        <IdentityCard address={pack.creator as `0x${string}`} className="flex items-center border-none px-4 py-2 rounded-md bg-white" />
       )}
       <p className="text-center text-gray-600">they said...</p>
       <p className="text-lg font-bold text-center max-w-xl">{passwordWithoutSalt}</p>
@@ -159,7 +156,7 @@ export default function Claim() {
                   <div className="text-sm text-gray-600 flex flex flex-col gap-2">
                     <span>You have connected with</span>
                     {address && (
-                      <IdentityCard address={address} className="p-2 bg-base-100" />
+                      <IdentityCard address={address} className="p-2 bg-white" />
                     )}
                   </div>
                 </div>

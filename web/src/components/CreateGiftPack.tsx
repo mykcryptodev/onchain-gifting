@@ -109,7 +109,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
     const checkAllowances = async () => {
       if (!address) return [];
       const erc20sWithSufficientAllowance = await Promise.all(erc20s.map(async ({ token, amount }) => {
-        if (isAddressEqual(token, ZERO_ADDRESS)) return {
+        if (isAddressEqual(token as `0x${string}`, ZERO_ADDRESS)) return {
           token,
           sufficient: true,
         };
@@ -148,7 +148,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
         address: GIFT_PACK_ADDRESS,
         client: CLIENT,
       }),
-      erc20Tokens: erc20s.filter(({ token }) => !isAddressEqual(token, ZERO_ADDRESS)).map(({ token, amount }) => ({
+      erc20Tokens: erc20s.filter(({ token }) => !isAddressEqual(token as `0x${string}`, ZERO_ADDRESS)).map(({ token, amount }) => ({
         tokenAddress: token,
         amount: BigInt(amount),
       })),
@@ -175,7 +175,7 @@ export function CreateGiftPack({ erc20s, erc721s, erc1155s, ethAmount, hash }: P
 
   const erc20ApprovalTransactions = useMemo(() => {
     return erc20s
-      .filter(({ token }) => !isAddressEqual(token, ZERO_ADDRESS) && !erc20sWithSufficientAllowance.includes(token))
+      .filter(({ token }) => !isAddressEqual(token as `0x${string}`, ZERO_ADDRESS) && !erc20sWithSufficientAllowance.includes(token))
       .map(({ token, amount }) => {
         return approveERC20({
           contract: getContract({

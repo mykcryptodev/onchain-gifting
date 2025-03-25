@@ -21,7 +21,7 @@ export const AddTokenModal: FC<AddTokenModalProps> = ({ token, onClose }) => {
     const valueUsd = token.token.balanceUSD * (parseFloat(amount) / parseFloat(token.token.balance));
     const amountUnits = toUnits(amount.toString(), token.token.baseToken.decimals).toString();
     
-    if (isAddressEqual(token.token.baseToken.address, ZERO_ADDRESS)) {
+    if (isAddressEqual(token.token.baseToken.address as `0x${string}`, ZERO_ADDRESS)) {
       setEthAmount(amountUnits, valueUsd);
     }
     addERC20(
