@@ -150,7 +150,7 @@ export default function Claim() {
           <div className="flex flex-col gap-4 w-full max-w-sm">
             <h2 className="text-2xl font-bold text-center mt-4">How to Claim</h2>
             {address ? (
-              <div className="flex items-center gap-4">
+              <div className="flex items-start gap-4">
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600 font-bold">
                   ✓
                 </div>
